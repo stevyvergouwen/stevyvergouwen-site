@@ -1,0 +1,431 @@
+{
+ "categories": [
+  {
+   "id": "events",
+   "name": "Events",
+   "folder": "01_EVENTS"
+  },
+  {
+   "id": "brands",
+   "name": "Commercial & Brands",
+   "folder": "02_COMMERCIAL&BRANDS"
+  },
+  {
+   "id": "portraits",
+   "name": "Portraits",
+   "folder": "03_PORTRAITS"
+  },
+  {
+   "id": "travel",
+   "name": "Travel",
+   "folder": "04_TRAVEL"
+  },
+  {
+   "id": "minidv",
+   "name": "MiniDV",
+   "folder": "05_MINIDV"
+  },
+  {
+   "id": "bts",
+   "name": "BTS",
+   "folder": "08_BTS"
+  }
+ ],
+ "jobs": [
+  {
+   "id": "ian-zwaardski-malle-molen",
+   "category": "events",
+   "artist": "IAN ZWAARDSKI",
+   "date": "2026.09",
+   "title": "MALLE MOLEN",
+   "folder": "2026.09 | MALLE MOLEN",
+   "path": "01_EVENTS/*Artist folders/IAN ZWAARDSKI/2026.09 | MALLE MOLEN",
+   "clips": [
+    {
+     "loop": "media/clips/ian-zwaardski-malle-molen-1-loop.mp4",
+     "poster": "media/clips/ian-zwaardski-malle-molen-1.jpg",
+     "src": "media/clips/ian-zwaardski-malle-molen-1.mp4",
+     "duration": 32.64,
+     "file": "IANZWAARDSKI-MALLE-MOLEN-@stevyvergouwen-16X9-HD_06.mp4"
+    },
+    {
+     "loop": "media/clips/ian-zwaardski-malle-molen-2-loop.mp4",
+     "poster": "media/clips/ian-zwaardski-malle-molen-2.jpg",
+     "src": "media/clips/ian-zwaardski-malle-molen-2.mp4",
+     "duration": 32.23,
+     "file": "IANZWAARDSKI-MALLE-MOLEN-@stevyvergouwen-16X9-HD_12.mp4"
+    }
+   ]
+  },
+  {
+   "id": "alois-groovebox-outdoor",
+   "category": "events",
+   "artist": "ALOÏS",
+   "date": "2026.07",
+   "title": "Groovebox Outdoor",
+   "folder": "2026.07 | Groovebox Outdoor",
+   "path": "01_EVENTS/*Artist folders/ALOÏS/2026.07 | Groovebox Outdoor",
+   "clips": [
+    {
+     "loop": "media/clips/alois-groovebox-outdoor-1-loop.mp4",
+     "poster": "media/clips/alois-groovebox-outdoor-1.jpg",
+     "src": "media/clips/alois-groovebox-outdoor-1.mp4",
+     "duration": 31.96,
+     "file": "ALOIS-GROOVEBOX-STEVYVERGOUWEN-16X9-HD_01.mp4"
+    },
+    {
+     "loop": "media/clips/alois-groovebox-outdoor-2-loop.mp4",
+     "poster": "media/clips/alois-groovebox-outdoor-2.jpg",
+     "src": "media/clips/alois-groovebox-outdoor-2.mp4",
+     "duration": 27.24,
+     "file": "ALOIS-GROOVEBOX-STEVYVERGOUWEN-16X9-HD_04.mp4"
+    }
+   ]
+  },
+  {
+   "id": "alois-azure",
+   "category": "events",
+   "artist": "ALOÏS",
+   "date": "2026.06",
+   "title": "Azure",
+   "folder": "2026.06 | ALOÏS - Azure",
+   "path": "01_EVENTS/*Artist folders/ALOÏS/2026.06 | ALOÏS - Azure",
+   "clips": [
+    {
+     "loop": "media/clips/alois-azure-1-loop.mp4",
+     "poster": "media/clips/alois-azure-1.jpg",
+     "src": "media/clips/alois-azure-1.mp4",
+     "duration": 32.32,
+     "file": "ALOÏS-AZURE-STEVYVERGOUWEN-HD-16X9_02.mp4"
+    },
+    {
+     "loop": "media/clips/alois-azure-2-loop.mp4",
+     "poster": "media/clips/alois-azure-2.jpg",
+     "src": "media/clips/alois-azure-2.mp4",
+     "duration": 25.47,
+     "file": "ALOÏS-AZURE-STEVYVERGOUWEN-HD-16X9_05.mp4"
+    }
+   ]
+  },
+  {
+   "id": "alois-festifoort",
+   "category": "events",
+   "artist": "ALOÏS",
+   "date": "2026.06",
+   "title": "Festifoort",
+   "folder": "2026.06 | Festifoort",
+   "path": "01_EVENTS/*Artist folders/ALOÏS/2026.06 | Festifoort",
+   "clips": [
+    {
+     "loop": "media/clips/alois-festifoort-1-loop.mp4",
+     "poster": "media/clips/alois-festifoort-1.jpg",
+     "src": "media/clips/alois-festifoort-1.mp4",
+     "duration": 30.19,
+     "file": "ALOIS-FESTIFOORT-16X9-HD-11.mp4"
+    },
+    {
+     "loop": "media/clips/alois-festifoort-2-loop.mp4",
+     "poster": "media/clips/alois-festifoort-2.jpg",
+     "src": "media/clips/alois-festifoort-2.mp4",
+     "duration": 45.18,
+     "file": "ALOIS-FESTIFOORT-16X9-HD-09.mp4"
+    }
+   ]
+  },
+  {
+   "id": "alois-off-the-radar",
+   "category": "events",
+   "artist": "ALOÏS",
+   "date": "2026.05",
+   "title": "Off the Radar",
+   "folder": "2026.05 | Aloïs - Off the Radar",
+   "path": "01_EVENTS/*Artist folders/ALOÏS/2026.05 | Aloïs - Off the Radar",
+   "clips": [
+    {
+     "loop": "media/clips/alois-off-the-radar-1-loop.mp4",
+     "poster": "media/clips/alois-off-the-radar-1.jpg",
+     "src": "media/clips/alois-off-the-radar-1.mp4",
+     "duration": 18.67,
+     "file": "ALOÏS-OTR-StevyVergouwen-16X9-HD_01.mp4"
+    },
+    {
+     "loop": "media/clips/alois-off-the-radar-2-loop.mp4",
+     "poster": "media/clips/alois-off-the-radar-2.jpg",
+     "src": "media/clips/alois-off-the-radar-2.mp4",
+     "duration": 27.65,
+     "file": "ALOÏS-OTR-StevyVergouwen-16X9-HD_08.mp4"
+    }
+   ]
+  },
+  {
+   "id": "rasa-sol-oranje-zoet",
+   "category": "events",
+   "artist": "RASA SOL",
+   "date": "2026.04",
+   "title": "Oranje Zoet",
+   "folder": "2026.04 | Rasa Sol - Oranje Zoet",
+   "path": "01_EVENTS/*Artist folders/RASA SOL/2026.04 | Rasa Sol - Oranje Zoet",
+   "clips": [
+    {
+     "loop": "media/clips/rasa-sol-oranje-zoet-1-loop.mp4",
+     "poster": "media/clips/rasa-sol-oranje-zoet-1.jpg",
+     "src": "media/clips/rasa-sol-oranje-zoet-1.mp4",
+     "duration": 18.75,
+     "file": "RASA-SOL_OranjeZoet-StevyVergouwen_16X9_3.mp4"
+    },
+    {
+     "loop": "media/clips/rasa-sol-oranje-zoet-2-loop.mp4",
+     "poster": "media/clips/rasa-sol-oranje-zoet-2.jpg",
+     "src": "media/clips/rasa-sol-oranje-zoet-2.mp4",
+     "duration": 23.79,
+     "file": "RASA-SOL_OranjeZoet-StevyVergouwen_16X9_5.mp4"
+    }
+   ]
+  }
+ ],
+ "photos": [
+  {
+   "date": "2025.04.20",
+   "time": "14:22",
+   "event": "DGTL",
+   "src": "media/photos/200425-1422-dgtl-bradamedia-0006.jpg",
+   "small": "media/photos/200425-1422-dgtl-bradamedia-0006-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.04.20",
+   "time": "15:45",
+   "event": "DGTL",
+   "src": "media/photos/200425-1545-dgtl-bradamedia-0000070.jpg",
+   "small": "media/photos/200425-1545-dgtl-bradamedia-0000070-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.04.26",
+   "time": "15:48",
+   "event": "Verknipt",
+   "src": "media/photos/20250426-1548-verknipt-bradamedia0087.jpg",
+   "small": "media/photos/20250426-1548-verknipt-bradamedia0087-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.10.24",
+   "time": "17:23",
+   "event": "Awakenings · ADE",
+   "src": "media/photos/20251024-1723-awakenings-bradamedia-stevyvergouwen-03904.jpg",
+   "small": "media/photos/20251024-1723-awakenings-bradamedia-stevyvergouwen-03904-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.06.07",
+   "time": "19:20",
+   "event": "Crave",
+   "src": "media/photos/20250607-1920-crave-bradamedia0062.jpg",
+   "small": "media/photos/20250607-1920-crave-bradamedia0062-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.08.18",
+   "time": "19:25",
+   "event": "Sonus",
+   "src": "media/photos/20250818-1925-sonus-bradamedia-sv-07364.jpg",
+   "small": "media/photos/20250818-1925-sonus-bradamedia-sv-07364-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.06.15",
+   "time": "20:32",
+   "event": "Modular",
+   "src": "media/photos/20250615-2032-modular-bradamedia0043.jpg",
+   "small": "media/photos/20250615-2032-modular-bradamedia0043-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.10.25",
+   "time": "21:37",
+   "event": "Lumine · ADE",
+   "src": "media/photos/20251025-2137-lumine-bradamedia-stevyvergouwen-07133.jpg",
+   "small": "media/photos/20251025-2137-lumine-bradamedia-stevyvergouwen-07133-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.06.21",
+   "time": "21:48",
+   "event": "Winson",
+   "src": "media/photos/210625-2148-winson-bradamedia-0027.jpg",
+   "small": "media/photos/210625-2148-winson-bradamedia-0027-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.05.05",
+   "time": "22:02",
+   "event": "Yousuke Yukimatsu",
+   "src": "media/photos/250505-2202-yousuke-stevyvergouwen-0089.jpg",
+   "small": "media/photos/250505-2202-yousuke-stevyvergouwen-0089-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.05.05",
+   "time": "22:39",
+   "event": "Yousuke Yukimatsu",
+   "src": "media/photos/250505-2239-yousuke-stevyvergouwen-0136.jpg",
+   "small": "media/photos/250505-2239-yousuke-stevyvergouwen-0136-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.04.18",
+   "time": "23:09",
+   "event": "Paaspop",
+   "src": "media/photos/20250418-2309-paaspop-bradamedia0070.jpg",
+   "small": "media/photos/20250418-2309-paaspop-bradamedia0070-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.08.17",
+   "time": "23:42",
+   "event": "Sonus",
+   "src": "media/photos/20250817-2342-sonus-bradamedia-sv-04437.jpg",
+   "small": "media/photos/20250817-2342-sonus-bradamedia-sv-04437-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.07.19",
+   "time": "23:54",
+   "event": "Verknipt",
+   "src": "media/photos/20250719-2354-verknipt-bradamedia0052.jpg",
+   "small": "media/photos/20250719-2354-verknipt-bradamedia0052-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.04.19",
+   "time": "00:09",
+   "event": "Paaspop",
+   "src": "media/photos/20250419-0009-paaspop-bradamedia0028.jpg",
+   "small": "media/photos/20250419-0009-paaspop-bradamedia0028-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.06.16",
+   "time": "00:23",
+   "event": "Modular",
+   "src": "media/photos/20250616-0023-modular-bradamedia0188.jpg",
+   "small": "media/photos/20250616-0023-modular-bradamedia0188-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.08.21",
+   "time": "00:45",
+   "event": "Sonus",
+   "src": "media/photos/20250821-0045-sonus-bradamedia-sv-06303.jpg",
+   "small": "media/photos/20250821-0045-sonus-bradamedia-sv-06303-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.10.24",
+   "time": "01:25",
+   "event": "AO · ADE",
+   "src": "media/photos/20251024-0125-ao-bradamedia-stevyvergouwen-01064.jpg",
+   "small": "media/photos/20251024-0125-ao-bradamedia-stevyvergouwen-01064-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.07.20",
+   "time": "01:27",
+   "event": "Verknipt",
+   "src": "media/photos/20250720-0127-verknipt-bradamedia0067.jpg",
+   "small": "media/photos/20250720-0127-verknipt-bradamedia0067-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.10.23",
+   "time": "01:44",
+   "event": "Winson Naga · ADE",
+   "src": "media/photos/20251023-0144-naga-bradamedia-stevyvergouwen-07644.jpg",
+   "small": "media/photos/20251023-0144-naga-bradamedia-stevyvergouwen-07644-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.10.27",
+   "time": "02:02",
+   "event": "AO · ADE",
+   "src": "media/photos/20251027-0202-ao-bradamedia-stevyvergouwen-09412.jpg",
+   "small": "media/photos/20251027-0202-ao-bradamedia-stevyvergouwen-09412-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.07.20",
+   "time": "02:33",
+   "event": "Verknipt",
+   "src": "media/photos/20250720-0233-verknipt-bradamedia0023.jpg",
+   "small": "media/photos/20250720-0233-verknipt-bradamedia0023-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.08.17",
+   "time": "02:33",
+   "event": "Sonus",
+   "src": "media/photos/20250817-0233-sonus-bradamedia-sv-02156.jpg",
+   "small": "media/photos/20250817-0233-sonus-bradamedia-sv-02156-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.08.21",
+   "time": "02:40",
+   "event": "Sonus",
+   "src": "media/photos/20250821-0240-sonus-bradamedia-sv-07820.jpg",
+   "small": "media/photos/20250821-0240-sonus-bradamedia-sv-07820-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.03.01",
+   "time": "02:50",
+   "event": "Verknipt",
+   "src": "media/photos/20250301-0250-verknipt-bradamedia0109.jpg",
+   "small": "media/photos/20250301-0250-verknipt-bradamedia0109-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.10.26",
+   "time": "04:39",
+   "event": "AMF · ADE",
+   "src": "media/photos/20251026-0439-amf-bradamedia-stevyvergouwen-08475.jpg",
+   "small": "media/photos/20251026-0439-amf-bradamedia-stevyvergouwen-08475-s.jpg",
+   "w": 1466,
+   "h": 2200
+  },
+  {
+   "date": "2025.03.01",
+   "time": "06:40",
+   "event": "Verknipt",
+   "src": "media/photos/20250301-0640-verknipt-bradamedia0039.jpg",
+   "small": "media/photos/20250301-0640-verknipt-bradamedia0039-s.jpg",
+   "w": 1759,
+   "h": 2200
+  }
+ ]
+}

@@ -1,0 +1,86 @@
+{
+  "_": "What the concept shows, by path under Dropbox-Persoonlijk/01_MEDIA - the same folders Stevy files his work in.",
+  "root": "~/Library/CloudStorage/Dropbox-Persoonlijk/01_MEDIA",
+  "jobs": [
+    {
+      "category": "events",
+      "artist": "IAN ZWAARDSKI",
+      "folder": "01_EVENTS/*Artist folders/IAN ZWAARDSKI/2026.09 | MALLE MOLEN",
+      "clips": ["16X9/IANZWAARDSKI-MALLE-MOLEN-@stevyvergouwen-16X9-HD_06.mp4",
+                "16X9/IANZWAARDSKI-MALLE-MOLEN-@stevyvergouwen-16X9-HD_12.mp4"]
+    },
+    {
+      "category": "events",
+      "artist": "ALOÏS",
+      "folder": "01_EVENTS/*Artist folders/ALOÏS/2026.07 | Groovebox Outdoor",
+      "clips": ["Clips/ALOIS-GROOVEBOX-STEVYVERGOUWEN-16X9-HD_01.mp4",
+                "Clips/ALOIS-GROOVEBOX-STEVYVERGOUWEN-16X9-HD_04.mp4"]
+    },
+    {
+      "category": "events",
+      "artist": "ALOÏS",
+      "folder": "01_EVENTS/*Artist folders/ALOÏS/2026.06 | ALOÏS - Azure",
+      "clips": ["Clips/ALOÏS-AZURE-STEVYVERGOUWEN-HD-16X9_02.mp4",
+                "Clips/ALOÏS-AZURE-STEVYVERGOUWEN-HD-16X9_05.mp4"]
+    },
+    {
+      "category": "events",
+      "artist": "ALOÏS",
+      "folder": "01_EVENTS/*Artist folders/ALOÏS/2026.06 | Festifoort",
+      "clips": ["Festifoort Festival/16X9/ALOIS-FESTIFOORT-16X9-HD-11.mp4",
+                "Festifoort Festival/16X9/ALOIS-FESTIFOORT-16X9-HD-09.mp4"]
+    },
+    {
+      "category": "events",
+      "artist": "ALOÏS",
+      "folder": "01_EVENTS/*Artist folders/ALOÏS/2026.05 | Aloïs - Off the Radar",
+      "clips": ["Clips/ALOÏS-OTR-StevyVergouwen-16X9-HD_01.mp4",
+                "Clips/ALOÏS-OTR-StevyVergouwen-16X9-HD_08.mp4"]
+    },
+    {
+      "category": "events",
+      "artist": "RASA SOL",
+      "folder": "01_EVENTS/*Artist folders/RASA SOL/2026.04 | Rasa Sol - Oranje Zoet",
+      "clips": ["16X9/RASA-SOL_OranjeZoet-StevyVergouwen_16X9_3.mp4",
+                "16X9/RASA-SOL_OranjeZoet-StevyVergouwen_16X9_5.mp4"]
+    }
+  ],
+  "photos": {
+    "folder": "07_BEST-OF",
+    "names": {
+      "VERKNIPT": "Verknipt", "PAASPOP": "Paaspop", "DGTL": "DGTL", "CRAVE": "Crave",
+      "MODULAR": "Modular", "SONUS": "Sonus", "WINSON": "Winson", "YOUSUKE": "Yousuke Yukimatsu",
+      "AWAKENINGS": "Awakenings · ADE", "LUMINE": "Lumine · ADE", "NAGA": "Winson Naga · ADE",
+      "AMF": "AMF · ADE", "AO": "AO · ADE"
+    },
+    "files": [
+      "20250719_2354_VERKNIPT_BRADAMEDIA0052.jpg",
+      "20250720_0127_VERKNIPT_BRADAMEDIA0067.jpg",
+      "20250720_0233_VERKNIPT_BRADAMEDIA0023.jpg",
+      "20250301_0250_VERKNIPT_BRADAMEDIA0109.jpg",
+      "20250301_0640_VERKNIPT_BRADAMEDIA0039.jpg",
+      "20250426_1548_VERKNIPT_BRADAMEDIA0087.jpg",
+      "20250418_2309_PAASPOP_BRADAMEDIA0070.jpg",
+      "20250419_0009_PAASPOP_BRADAMEDIA0028.jpg",
+      "200425_1545_DGTL_BRADAMEDIA_0000070.jpg",
+      "200425_1422_DGTL_BRADAMEDIA_0006.jpg",
+      "20250607_1920_CRAVE_BRADAMEDIA0062.jpg",
+      "20250615_2032_MODULAR_BRADAMEDIA0043.jpg",
+      "20250616_0023_MODULAR_BRADAMEDIA0188.jpg",
+      "20250817_0233_SONUS_BRADAMEDIA_SV_02156.jpg",
+      "20250817_2342_SONUS_BRADAMEDIA_SV_04437.jpg",
+      "20250818_1925_SONUS_BRADAMEDIA_SV_07364.jpg",
+      "20250821_0045_SONUS_BRADAMEDIA_SV_06303.jpg",
+      "20250821_0240_SONUS_BRADAMEDIA_SV_07820.jpg",
+      "210625_2148_WINSON_BRADAMEDIA_0027.jpg",
+      "250505_2202_YOUSUKE_STEVYVERGOUWEN_0089.jpg",
+      "250505_2239_YOUSUKE_STEVYVERGOUWEN_0136.jpg",
+      "Best of ADE 2025/Day 3 | Charlotte de Witte X Awakenings/20251024_1723_AWAKENINGS_BRADAMEDIA_STEVYVERGOUWEN_03904.jpg",
+      "Best of ADE 2025/Day 4 | Boat party Lumine/20251025_2137_LUMINE_BRADAMEDIA_STEVYVERGOUWEN_07133.jpg",
+      "Best of ADE 2025/Day 1 | Winson Naga/20251023_0144_NAGA_BRADAMEDIA_STEVYVERGOUWEN_07644.jpg",
+      "Best of ADE 2025/Day 5 | AMF/20251026_0439_AMF_BRADAMEDIA_STEVYVERGOUWEN_08475.jpg",
+      "Best of ADE 2025/Day 5 | Funk Tribu & Friends @ Loft/20251027_0202_AO_BRADAMEDIA_STEVYVERGOUWEN_09412.jpg",
+      "Best of ADE 2025/Day 2 | AO X Hangar/20251024_0125_AO_BRADAMEDIA_STEVYVERGOUWEN_01064.jpg"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+[
+ {
+  "type": "photo",
+  "src": "media/bg/20250711-2058-awake-bradamedia0077.jpg"
+ },
+ {
+  "type": "video",
+  "src": "media/bg/alois-groovebox-stevyvergouwen-16x9-hd-15.mp4",
+  "poster": "media/bg/alois-groovebox-stevyvergouwen-16x9-hd-15.jpg"
+ },
+ {
+  "type": "video",
+  "src": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9.mp4",
+  "poster": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9.jpg"
+ },
+ {
+  "type": "video",
+  "src": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09.mp4",
+  "poster": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09.jpg"
+ },
+ {
+  "type": "video",
+  "src": "media/bg/locus-error-awakenings-16x9-hd-18.mp4",
+  "poster": "media/bg/locus-error-awakenings-16x9-hd-18.jpg"
+ },
+ {
+  "type": "video",
+  "src": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10.mp4",
+  "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10.jpg"
+ },
+ {
+  "type": "video",
+  "src": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13.mp4",
+  "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13.jpg"
+ },
+ {
+  "type": "video",
+  "src": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8.mp4",
+  "poster": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8.jpg"
+ },
+ {
+  "type": "video",
+  "src": "media/bg/spanishheat-tstyle-stevyvergouwen-16x9-hd-16.mp4",
+  "poster": "media/bg/spanishheat-tstyle-stevyvergouwen-16x9-hd-16.jpg"
+ }
+]

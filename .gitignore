@@ -4,6 +4,7 @@ ontwerp.html
 css/
 js/
 data/
-media/
+media/*
+!media/bg/
 tools/
 serve.py

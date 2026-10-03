@@ -77,9 +77,10 @@
   const tick = () => { show((cur + 1) % slides.length); timer = setTimeout(tick, wait()); };
   const start = () => { if (!timer && slides.length > 1 && !calm) timer = setTimeout(tick, wait()); };
   const stop = () => { clearTimeout(timer); timer = null; };
+  addEventListener("pageshow", () => { const s = slides[cur]; const v = s && s.el && s.el.querySelector("video"); if (v && v.paused && !v.ended) v.play().catch(() => {}); });
   document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
 
-  fetch("media/bg/bg.json").then(r => (r.ok ? r.json() : [])).then(list => {
+  fetch("media/bg/bg.json?v=" + Date.now(), { cache: "no-store" }).then(r => (r.ok ? r.json() : [])).then(list => {
     slides = list.filter(s => s && s.src);
     if (!slides.length) return;
     // shuffle, then mix photos and video: the photos are spread evenly between the video pieces

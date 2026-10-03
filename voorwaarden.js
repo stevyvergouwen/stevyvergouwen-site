@@ -37,7 +37,7 @@
     if (loaded) return;
     loaded = true;
     const body = panel.querySelector("[data-vw-body]");
-    fetch(L() === "nl" ? "/algemene-voorwaarden/inhoud.nl.html" : "/algemene-voorwaarden/inhoud.en.html").then(r => r.text()).then(html => {
+    fetch((L() === "nl" ? "/algemene-voorwaarden/inhoud.nl.html" : "/algemene-voorwaarden/inhoud.en.html") + "?v=" + 1791051488).then(r => r.text()).then(html => {
       body.innerHTML = html;
       body.lang = L();
       const sc = panel.querySelector("[data-vw-scroll]");

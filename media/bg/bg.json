@@ -1,27 +1,6 @@
 [
  {
   "type": "photo",
-  "src": "media/bg/20250711-2058-awake-bradamedia0077.jpg",
-  "group": "20250711-2058-awake-bradamedia0077",
-  "dur": 5,
-  "pos": "50% 20%"
- },
- {
-  "type": "photo",
-  "src": "media/bg/20260712-2028-verknipt-bm-stevyvergouwen-09006.jpg",
-  "group": "20260712-2028-verknipt-bm-stevyvergouwen-09006",
-  "dur": 5,
-  "pos": "50% 50%"
- },
- {
-  "type": "photo",
-  "src": "media/bg/20260812-2102-glitch-stevyvergouwen-09209.jpg",
-  "group": "20260812-2102-glitch-stevyvergouwen-09209",
-  "dur": 5,
-  "pos": "50% 50%"
- },
- {
-  "type": "photo",
   "src": "media/bg/20260812-2255-glitch-stevyvergouwen-01297.jpg",
   "group": "20260812-2255-glitch-stevyvergouwen-01297",
   "dur": 5,
@@ -85,7 +64,7 @@
   "src": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-c.mp4",
   "poster": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-c.jpg",
   "group": "hazel-zeevonq-stevyvergouwen-16x9-hd-09",
-  "dur": 2.55,
+  "dur": 2.6,
   "opener": false
  },
  {
@@ -101,7 +80,7 @@
   "src": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10-a.mp4",
   "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10-a.jpg",
   "group": "lou-d-solar-stevyvergouwen-16x9-hd-10",
-  "dur": 2.22,
+  "dur": 2.26,
   "opener": true
  },
  {
@@ -109,7 +88,7 @@
   "src": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13-a.mp4",
   "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13-a.jpg",
   "group": "lou-d-solar-stevyvergouwen-16x9-hd-13",
-  "dur": 3.02,
+  "dur": 3.0,
   "opener": true
  },
  {
@@ -117,7 +96,7 @@
   "src": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13-b.mp4",
   "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13-b.jpg",
   "group": "lou-d-solar-stevyvergouwen-16x9-hd-13",
-  "dur": 3.02,
+  "dur": 2.98,
   "opener": true
  },
  {
@@ -133,7 +112,7 @@
   "src": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-b.mp4",
   "poster": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-b.jpg",
   "group": "rasa-sol-oranjezoet-stevyvergouwen-16x9-8",
-  "dur": 2.54,
+  "dur": 2.5,
   "opener": false
  },
  {
@@ -157,7 +136,7 @@
   "src": "media/bg/spanishheat-tstyle-stevyvergouwen-16x9-hd-16-b.mp4",
   "poster": "media/bg/spanishheat-tstyle-stevyvergouwen-16x9-hd-16-b.jpg",
   "group": "spanishheat-tstyle-stevyvergouwen-16x9-hd-16",
-  "dur": 4.51,
+  "dur": 4.47,
   "opener": false
  }
 ]

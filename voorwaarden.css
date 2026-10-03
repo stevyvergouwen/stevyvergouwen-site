@@ -59,3 +59,9 @@ body.vw-open { overflow: hidden; }
   .vw-contact strong { color: #111; }
   .vw .article + .article, .vw-bar, .vw-contact { border-color: #ccc; }
 }
+
+.vw-lang { display: inline-flex; gap: 2px; }
+.vw-lang i { font-style: normal; color: #2c2b29; }
+.vw-lang button { color: #8b8880; }
+.vw-lang button.is-on { color: #ebe7e0; }
+@media print { .vw-lang { display: none; } }

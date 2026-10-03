@@ -25,16 +25,24 @@
   .top { color:var(--dim); }
   h1 { margin:0; font:700 clamp(2.8rem,9vw,8rem)/.98 "Helvetica Neue",Helvetica,Arial,sans-serif; letter-spacing:-.04em; }
 
-  h1 span.ln { display: block; overflow: hidden; padding: .05em 0 .12em; margin-bottom: -.1em; }
+  h1 { position: relative; }
+  h1 span.ln { display: block; overflow: hidden; padding: .06em 0 .14em; margin-bottom: -.12em; }
   h1 .dim { color: var(--dim); }
-  h1 .w { display: inline-block; transform-origin: 0 100%; animation: pop .95s cubic-bezier(.34,1.56,.64,1) both; animation-delay: calc(.25s + var(--i) * .085s); }
-  @keyframes pop { 0% { opacity: 0; transform: translateY(115%) rotate(7deg) scale(.7); filter: blur(8px); }
-                   55% { opacity: 1; filter: blur(0); } 100% { opacity: 1; transform: none; filter: blur(0); } }
-  main p, .top, .foot { animation: rise .9s cubic-bezier(.2,.7,.1,1) both; }
-  main p:nth-of-type(1) { animation-delay: 1.15s; } main p:nth-of-type(2) { animation-delay: 1.3s; }
-  .top { animation-delay: .1s; } .foot { animation-delay: 1.5s; }
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { h1 .w, main p, .top, .foot { animation: none; } }
+  h1 .wd { display: inline-block; white-space: nowrap; }
+  h1 .ch { display: inline-block; transform: translateY(112%); animation: up 1.15s cubic-bezier(.16,1,.3,1) forwards; animation-delay: calc(.55s + var(--i) * 24ms); }
+  h1 .dim .ch { animation-delay: calc(.8s + var(--i) * 24ms); }
+  @keyframes up { to { transform: none; } }
+  h1::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 1px; background: var(--paper);
+    transform: scaleX(0); transform-origin: 0 50%; animation: rule 1.5s cubic-bezier(.76,0,.24,1) .15s forwards; }
+  @keyframes rule { 0% { transform: scaleX(0); opacity: 1; } 55% { transform: scaleX(1); opacity: 1; transform-origin: 0 50%; }
+                    56% { transform-origin: 100% 50%; } 100% { transform: scaleX(0); transform-origin: 100% 50%; opacity: 1; } }
+  [data-bg] { animation: flash 1.6s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes flash { 0% { filter: brightness(2.3) contrast(1.15); } 100% { filter: none; } }
+  main p, .top, .foot { animation: rise 1s cubic-bezier(.16,1,.3,1) both; }
+  main p:nth-of-type(1) { animation-delay: 1.35s; } main p:nth-of-type(2) { animation-delay: 1.5s; }
+  .top { animation-delay: .1s; } .foot { animation-delay: 1.7s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { h1 .ch { transform: none; animation: none; } h1::before, [data-bg], main p, .top, .foot { animation: none; } h1::before { display: none; } }
   p { margin:24px 0 0; color:var(--dim); }
   .foot { color:var(--dim); }
 </style>
@@ -44,11 +52,26 @@
 <div data-bg aria-hidden="true"></div>
 <div class="top"><span>STEVY VERGOUWEN</span></div>
 <main>
-  <h1 aria-label="Made for the night. Built for the brand."><span class="ln" aria-hidden="true"><span class="w" style="--i:0">Made</span> <span class="w" style="--i:1">for</span> <span class="w" style="--i:2">the</span> <span class="w" style="--i:3">night.</span></span><span class="ln dim" aria-hidden="true"><span class="w" style="--i:4">Built</span> <span class="w" style="--i:5">for</span> <span class="w" style="--i:6">the</span> <span class="w" style="--i:7">brand.</span></span></h1>
+  <h1 aria-label="Made for the night. Built for the brand."><span class="ln" aria-hidden="true">Made for the night.</span><span class="ln dim" aria-hidden="true">Built for the brand.</span></h1>
   <p>Visuals for artists, events and brands. Portfolio coming soon.</p>
   <p><a href="mailto:info@shotbystevy.com">info@shotbystevy.com</a> &nbsp;·&nbsp; <a href="https://www.instagram.com/stevyvergouwen" target="_blank" rel="noopener" aria-label="Instagram: @stevyvergouwen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b8880" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:8px"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r=".6" fill="#8b8880"/></svg>Instagram @stevyvergouwen ↗</a></p>
 </main>
 <div class="foot"><span>© <script>document.write(new Date().getFullYear())</script> Stevy Vergouwen</span><a href="/terms/" data-voorwaarden>Terms &amp; conditions</a></div>
+<script>
+(function () {
+  var i = 0;
+  document.querySelectorAll("h1 .ln").forEach(function (ln) {
+    var words = ln.textContent.split(" "); ln.textContent = "";
+    words.forEach(function (w, n) {
+      var wd = document.createElement("span"); wd.className = "wd";
+      w.split("").forEach(function (c) { var ch = document.createElement("span"); ch.className = "ch"; ch.style.setProperty("--i", i++); ch.textContent = c; wd.appendChild(ch); });
+      ln.appendChild(wd);
+      if (n < words.length - 1) ln.appendChild(document.createTextNode(" "));
+    });
+    i = 0;
+  });
+})();
+</script>
 <script src="achtergrond.js"></script>
 <script src="taal.js"></script>
 <script src="voorwaarden.js"></script>

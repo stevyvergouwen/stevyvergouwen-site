@@ -7,7 +7,7 @@
 <meta name="description" content="Stevy Vergouwen - photo and film, Breda.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
 </head>
 <body class="is-loading">
@@ -25,17 +25,20 @@
   <a href="#top" class="logo">STEVY VERGOUWEN</a>
   <nav class="nav">
     <a href="#work">Work</a>
-    <a href="#night">Night</a>
+    <a href="#photo">Photo</a>
     <a href="#shop">Shop</a>
     <a href="#about">About</a>
   </nav>
-  <div class="top-right"><span class="clock" data-clock>BREDA --:--</span></div>
+  <div class="top-right"><span class="clock" data-clock>BREDA --:--</span><a class="book" href="mailto:info@shotbystevy.com?subject=Booking" data-cursor="Mail">Book</a></div>
 </header>
 
 <main id="top">
 
   <section class="hero">
-    <video class="hero-video" muted loop playsinline autoplay></video>
+    <div class="hero-media">
+      <video class="hero-video" muted playsinline autoplay></video>
+      <img class="hero-photo" alt="">
+    </div>
     <div class="hero-shade"></div>
     <h1 class="hero-title"><span class="line"><span>Stevy</span></span><span class="line"><span>Vergouwen</span></span></h1>
     <div class="hero-foot">
@@ -61,32 +64,25 @@
     <div class="folder-preview" aria-hidden="true"><video muted loop playsinline></video></div>
   </section>
 
-  <section class="night" id="night">
-    <div class="night-intro">
-      <h2 class="section-title">The night,<br><em>by the hour</em></h2>
-      <p class="night-lede" data-night-lede></p>
-    </div>
-    <div class="night-body">
-      <div class="night-clock">
-        <div class="night-time" data-night-time>--:--</div>
-        <div class="night-meta" data-night-meta></div>
-      </div>
-      <div class="night-photos" data-night-photos></div>
-    </div>
+  <section class="photo" id="photo">
+    <div class="section-head"><h2 class="section-title">Photo <sup data-photo-count></sup></h2></div>
+    <div class="photo-grid" data-photo-grid></div>
   </section>
 
   <section class="shop" id="shop">
     <div class="section-head"><h2 class="section-title">Shop</h2><span class="soon">Soon</span></div>
     <div class="shop-row">
-      <div class="shop-item"><span class="shop-no">01</span><span class="shop-name">LUTs</span><span class="shop-what">The grade from these films</span></div>
-      <div class="shop-item"><span class="shop-no">02</span><span class="shop-name">Presets</span><span class="shop-what">Lightroom, for the night</span></div>
-      <div class="shop-item"><span class="shop-no">03</span><span class="shop-name">Tutorials</span><span class="shop-what">Shooting and cutting events</span></div>
-      <div class="shop-item"><span class="shop-no">04</span><span class="shop-name">Tools</span><span class="shop-what">Made for the edit</span></div>
+      <div class="shop-item"><span class="shop-no">01</span><span class="shop-name">Prints</span><span class="shop-what">Photographs on paper</span></div>
+      <div class="shop-item"><span class="shop-no">02</span><span class="shop-name">LUTs</span><span class="shop-what">The grade from these films</span></div>
+      <div class="shop-item"><span class="shop-no">03</span><span class="shop-name">Presets</span><span class="shop-what">Lightroom, for the night</span></div>
+      <div class="shop-item"><span class="shop-no">04</span><span class="shop-name">Tutorials</span><span class="shop-what">Shooting and cutting events</span></div>
+      <div class="shop-item"><span class="shop-no">05</span><span class="shop-name">Tools</span><span class="shop-what">Made for the edit</span></div>
     </div>
   </section>
 
   <section class="about" id="about">
     <p class="about-text">Photo and film.<br>Breda, the Netherlands.</p>
+    <a class="book-big" href="mailto:info@shotbystevy.com?subject=Booking" data-cursor="Mail">Book a night, a shoot, a film <span>→</span></a>
     <div class="about-links">
       <a href="mailto:info@shotbystevy.com" data-cursor="Mail">info@shotbystevy.com</a>
       <a href="https://www.instagram.com/stevyvergouwen" target="_blank" rel="noopener" data-cursor="Open">@stevyvergouwen ↗</a>
@@ -112,6 +108,15 @@
     <span class="player-count" data-player-count></span>
     <button class="player-step" data-player-next aria-label="Next clip">→</button>
   </div>
+</div>
+
+<!-- a photo, big -->
+<div class="lightbox" data-lightbox hidden>
+  <img class="lightbox-img" data-lightbox-img alt="">
+  <button class="lightbox-close" data-lightbox-close aria-label="Close">Close</button>
+  <button class="lightbox-step is-prev" data-lightbox-prev aria-label="Previous photo">←</button>
+  <button class="lightbox-step is-next" data-lightbox-next aria-label="Next photo">→</button>
+  <span class="lightbox-count" data-lightbox-count></span>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>

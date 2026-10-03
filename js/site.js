@@ -1,6 +1,6 @@
 /* Stevy Vergouwen - the page's behaviour. Reads data/site.json (made by
    tools/maak_media.py from his Dropbox folders) and builds the work, the
-   folders view, the night and the player from it. */
+   folders view, the photos and the player from it. */
 
 (() => {
   const $ = (s, el = document) => el.querySelector(s);
@@ -55,40 +55,72 @@
   });
 
   function build(site) {
-    const jobs = site.jobs, photos = site.photos;
-    hero(jobs);
+    const jobs = site.jobs;
+    hero(jobs, site.photos);
     work(site);
-    night(photos);
+    photos(site.photos);
     player();
     intro();
   }
 
   // -------------------------------------------------------------------- hero
-  function hero(jobs) {
-    const all = jobs.flatMap(j => j.clips.map(c => ({ ...c, job: j })));
-    if (!all.length) return;
-    const v = $(".hero-video"), out = $("[data-hero-tc]"), now = $("[data-hero-now]");
-    let i = Math.floor(Math.random() * all.length), loops = 0;
-    const play = () => {
-      const c = all[i % all.length];
-      v.src = c.loop; v.play().catch(() => {});
-      now.textContent = `Now · ${c.job.artist} · ${c.job.title} · ${c.job.date}`;
-    };
-    // each drop plays twice, then the next one: the hero keeps changing like a night does
+  // film and photo take turns: a drop from a clip, then a photo that slowly
+  // closes in, then the next drop - he shoots both, the banner shows both
+  function hero(jobs, photos) {
+    const clips = jobs.flatMap(j => j.clips.map(c => ({ kind: "film", ...c, job: j })));
+    const tall = innerHeight > innerWidth;
+    let stills = photos.filter(p => (p.h > p.w) === tall);
+    if (stills.length < 3) stills = photos;
+    stills = stills.map(p => ({ kind: "photo", ...p }));
+    const mix = arr => arr.map(x => [Math.random(), x]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+    const a = mix(clips), b = mix(stills), slides = [];
+    for (let n = 0; n < Math.max(a.length, b.length); n++) {
+      if (a[n % a.length]) slides.push(a[n % a.length]);
+      if (b.length) slides.push(b[n % b.length]);
+    }
+    if (!slides.length) return;
+
+    const v = $(".hero-video"), img = $(".hero-photo"), out = $("[data-hero-tc]"), now = $("[data-hero-now]");
+    let k = -1, cur = null, timer = 0, inView = true;
     v.loop = false;
-    v.addEventListener("timeupdate", () => { out.textContent = `TC ${tc(v.currentTime)}`; });
-    v.addEventListener("ended", () => {
-      if (++loops % 2 === 0) { i++; play(); } else { v.currentTime = 0; v.play().catch(() => {}); }
-    });
-    play();
+    const next = () => {
+      clearTimeout(timer);
+      k = (k + 1) % slides.length; cur = slides[k];
+      if (cur.kind === "film") {
+        v.src = cur.loop; v.play().catch(() => {});
+        v.addEventListener("playing", () => {
+          gsap.to(v, { opacity: 1, duration: 1.2, ease: "power2.out" });
+          gsap.to(img, { opacity: 0, duration: 1.2, ease: "power2.out" });
+        }, { once: true });
+        now.textContent = `Film · ${cur.job.artist} · ${cur.job.title} · ${cur.job.date}`;
+      } else {
+        const pic = new Image();
+        pic.onload = () => {
+          img.src = cur.src;
+          gsap.fromTo(img, { scale: 1.1 }, { scale: 1, duration: 6.5, ease: "none" });
+          gsap.to(img, { opacity: 1, duration: 1.2, ease: "power2.out" });
+          gsap.to(v, { opacity: 0, duration: 1.2, ease: "power2.out", onComplete: () => v.pause() });
+          out.textContent = "Still";
+          timer = setTimeout(next, 5200);
+        };
+        pic.onerror = () => next();
+        pic.src = cur.src;
+        now.textContent = `Photo · ${cur.event} · ${cur.date}`;
+      }
+    };
+    v.addEventListener("timeupdate", () => { if (cur?.kind === "film") out.textContent = `TC ${tc(v.currentTime)}`; });
+    v.addEventListener("ended", next);
     // a browser may hold a muted video until it can play, or stop it in a
-    // hidden tab: while the hero is on screen it keeps running, off screen it rests
-    let inView = true;
-    new IntersectionObserver(([e]) => { inView = e.isIntersecting; inView ? v.play().catch(() => {}) : v.pause(); }).observe($(".hero"));
-    v.addEventListener("canplay", () => { if (inView) v.play().catch(() => {}); });
-    setInterval(() => { if (inView && v.paused && !document.hidden) v.play().catch(() => {}); }, 1000);
+    // hidden tab: while the hero is on screen a film keeps running, off screen it rests
+    new IntersectionObserver(([e]) => {
+      inView = e.isIntersecting;
+      if (cur?.kind === "film") inView ? v.play().catch(() => {}) : v.pause();
+    }).observe($(".hero"));
+    v.addEventListener("canplay", () => { if (inView && cur?.kind === "film") v.play().catch(() => {}); });
+    setInterval(() => { if (inView && cur?.kind === "film" && v.paused && !document.hidden) v.play().catch(() => {}); }, 1000);
+    next();
     if (!calm) {
-      gsap.to(".hero-video", { scale: 1.22, yPercent: 8, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+      gsap.to(".hero-media", { scale: 1.22, yPercent: 8, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
       gsap.to(".hero-title", { yPercent: -30, opacity: 0, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "70% top", scrub: true } });
     }
   }
@@ -195,34 +227,46 @@
     }));
   }
 
-  // ------------------------------------------------------------------- night
-  function night(photos) {
-    const box = $("[data-night-photos]"), time = $("[data-night-time]"), meta = $("[data-night-meta]");
-    if (!photos.length) return;
-    $("[data-night-lede]").textContent =
-      `${photos.length} photographs from ${new Set(photos.map(p => p.event)).size} nights, put in the order of the clock - from ${photos[0].time} to ${photos[photos.length - 1].time}. Scroll through one long night.`;
-    box.innerHTML = photos.map(p => `
-      <figure class="shot${p.h > p.w ? " is-tall" : ""}" data-time="${p.time}" data-event="${p.event}" data-date="${p.date}" data-cursor="View" style="margin:0">
-        <img src="${p.small}" data-full="${p.src}" alt="${p.event}, ${p.date}, ${p.time}" loading="lazy" width="${p.w}" height="${p.h}">
+  // ------------------------------------------------------------------- photo
+  // a calm grid: rows of equal height, each photo in its own shape, no words;
+  // a click shows it big
+  function photos(list) {
+    const grid = $("[data-photo-grid]");
+    if (!list.length) { $(".photo").hidden = true; return; }
+    list = [...list].sort((a, b) => b.date.localeCompare(a.date));
+    $("[data-photo-count]").textContent = `(${pad2(list.length)})`;
+    grid.innerHTML = list.map((p, n) => `
+      <figure class="pic" style="--r:${(p.w / p.h).toFixed(4)}" data-n="${n}" data-cursor="View">
+        <img src="${p.small}" alt="${p.event}, ${p.date}" loading="lazy">
       </figure>`).join("");
+    if (!calm) {
+      gsap.set(".pic", { opacity: 0, y: 24 });
+      ScrollTrigger.batch(".pic", { start: "top 92%", once: true,
+        onEnter: els => gsap.to(els, { opacity: 1, y: 0, duration: 1, stagger: 0.05, ease: "power3.out" }) });
+    }
 
-    // the big clock counts to the time of the photo in the middle
-    const shown = { m: 0 };
-    const toMin = s => { const [h, m] = s.split(":").map(Number); return ((h - 12 + 24) % 24) * 60 + m; };
-    const fromMin = v => { const t = Math.round(v); return `${pad2((Math.floor(t / 60) + 12) % 24)}:${pad2(t % 60)}`; };
-    const setTo = fig => {
-      gsap.to(shown, { m: toMin(fig.dataset.time), duration: 0.9, ease: "power2.out", onUpdate: () => { time.textContent = fromMin(shown.m); } });
-      meta.innerHTML = `<b>${fig.dataset.event}</b> · ${fig.dataset.date}`;
+    const box = $("[data-lightbox]"), img = $("[data-lightbox-img]"), count = $("[data-lightbox-count]");
+    let n = 0;
+    const show = () => {
+      const p = list[n];
+      img.src = p.src; img.alt = `${p.event}, ${p.date}`;
+      count.textContent = `${pad2(n + 1)} / ${pad2(list.length)}`;
+      [list[(n + 1) % list.length], list[(n - 1 + list.length) % list.length]].forEach(q => { new Image().src = q.src; });
+      if (!calm) gsap.fromTo(img, { opacity: 0, scale: 0.985 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" });
     };
-    shown.m = toMin(photos[0].time); time.textContent = photos[0].time;
-    meta.innerHTML = `<b>${photos[0].event}</b> · ${photos[0].date}`;
-    $$(".shot", box).forEach(fig => {
-      ScrollTrigger.create({ trigger: fig, start: "top 55%", end: "bottom 45%", onEnter: () => setTo(fig), onEnterBack: () => setTo(fig) });
-      if (!calm) {
-        gsap.fromTo(fig, { clipPath: "inset(12% 8% 12% 8%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", scrollTrigger: { trigger: fig, start: "top bottom", end: "top 35%", scrub: true } });
-        gsap.fromTo($("img", fig), { yPercent: -6 }, { yPercent: 6, ease: "none", scrollTrigger: { trigger: fig, start: "top bottom", end: "bottom top", scrub: true } });
-      }
-      fig.addEventListener("click", () => { const im = $("img", fig); if (im.dataset.full) { im.src = im.dataset.full; delete im.dataset.full; } });
+    const open = i => { n = i; box.hidden = false; lenis?.stop(); show(); };
+    const close = () => { box.hidden = true; lenis?.start(); };
+    const step = d => { n = (n + d + list.length) % list.length; show(); };
+    $$(".pic", grid).forEach(fig => fig.addEventListener("click", () => open(+fig.dataset.n)));
+    $("[data-lightbox-close]").addEventListener("click", close);
+    $("[data-lightbox-prev]").addEventListener("click", () => step(-1));
+    $("[data-lightbox-next]").addEventListener("click", () => step(1));
+    box.addEventListener("click", e => { if (e.target === box) close(); });
+    addEventListener("keydown", e => {
+      if (box.hidden) return;
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") step(1);
+      if (e.key === "ArrowLeft") step(-1);
     });
   }
 

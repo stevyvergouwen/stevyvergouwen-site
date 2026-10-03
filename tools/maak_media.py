@@ -152,8 +152,7 @@ def main():
         w, h = maat(groot)
         photos.append({**info, "src": f"media/photos/{naam}.jpg", "small": f"media/photos/{naam}-s.jpg", "w": w, "h": h})
 
-    # the night by the hour: from the early evening round to the morning
-    photos.sort(key=lambda p: ((int(p["time"][:2]) - 12) % 24, p["time"]))
+    photos.sort(key=lambda p: p["date"], reverse=True)
     data = {
         "categories": [
             {"id": "events", "name": "Events", "folder": "01_EVENTS"},

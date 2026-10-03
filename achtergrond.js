@@ -41,7 +41,16 @@
     next.el.classList.add("is-on");
     if (v) {
       next.el.classList.remove("is-still");
-      setTimeout(() => { if (next.el.classList.contains("is-on") && v.paused && !v.ended) next.el.classList.add("is-still"); }, 1400);
+      setTimeout(() => {
+        if (!(next.el.classList.contains("is-on") && v.paused && !v.ended)) return;
+        // the browser refuses video (iPhone Low Power Mode): play the animated version instead
+        if (next.anim) {
+          const old = next.el.querySelector("img.anim"); if (old) old.remove();
+          const g = new Image(); g.className = "anim"; g.alt = "";
+          g.onload = () => { if (next.el.classList.contains("is-on")) next.el.appendChild(g); };
+          g.src = next.anim;
+        } else next.el.classList.add("is-still");
+      }, 1400);
     }
     const old = slides[cur];
     if (old && old !== next) {

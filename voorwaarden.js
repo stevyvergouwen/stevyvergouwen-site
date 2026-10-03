@@ -17,14 +17,15 @@
     panel.setAttribute("data-lenis-prevent", "");
     panel.innerHTML = `
       <div class="vw-bar">
-        <div class="vw-title">Stevy Vergouwen<span>Version October 2026</span></div>
-        <div class="vw-actions"><span class="vw-lang" role="group" aria-label="Language of the text"><button type="button" data-vw-lang="en">EN</button><i>/</i><button type="button" data-vw-lang="nl">NL</button></span><button type="button" data-vw-print>Pdf</button><button type="button" data-vw-close>Close</button></div>
+        <div class="vw-title">Stevy Vergouwen<span data-i18n="vwVersion">Version October 2026</span></div>
+        <div class="vw-actions"><span class="vw-lang" role="group" aria-label="Language of the text"><button type="button" data-vw-lang="en">EN</button><i>/</i><button type="button" data-vw-lang="nl">NL</button></span><button type="button" data-vw-print data-i18n="pdf">Pdf</button><button type="button" data-vw-close data-i18n="close">Close</button></div>
       </div>
       <div class="vw-scroll" data-vw-scroll><div class="vw-wrap">
-        <div class="vw-head"><h2>Terms &amp;<br>conditions</h2></div>
+        <div class="vw-head"><h2 data-i18n="vwHead">Terms &amp;<br>conditions</h2></div>
         <div class="vw-body" data-vw-body></div>
       </div></div>`;
     document.body.appendChild(panel);
+    window.taal?.apply(panel);
     const mark = () => panel.querySelectorAll("[data-vw-lang]").forEach(b => b.classList.toggle("is-on", b.dataset.vwLang === L()));
     panel.querySelectorAll("[data-vw-lang]").forEach(b => b.addEventListener("click", () => window.taal?.set(b.dataset.vwLang)));
     addEventListener("taalchange", mark); mark();

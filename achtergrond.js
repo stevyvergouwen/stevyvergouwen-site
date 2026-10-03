@@ -63,6 +63,9 @@
         if (k > -1) [slides[i], slides[k]] = [slides[k], slides[i]];
       }
     }
+    // open on the opener (LOU'D), whichever piece of it
+    const op = slides.map((x, n) => (x.opener ? n : -1)).filter(n => n > -1);
+    if (op.length) { const k = op[Math.floor(Math.random() * op.length)]; [slides[0], slides[k]] = [slides[k], slides[0]]; }
     document.body.classList.add("has-bg");
     show(0);
     start();

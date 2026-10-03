@@ -42,7 +42,7 @@
     if (v) {
       next.el.classList.remove("is-still");
       setTimeout(() => {
-        if (!(next.el.classList.contains("is-on") && v.paused && !v.ended)) return;
+        if (!(next.el.classList.contains("is-on") && v.paused && !v.ended && v.currentTime < 0.05)) return;  // really not playing: never started
         // the browser refuses video (iPhone Low Power Mode): play the animated version instead
         if (next.anim) {
           const old = next.el.querySelector("img.anim"); if (old) old.remove();
@@ -50,7 +50,7 @@
           g.onload = () => { if (next.el.classList.contains("is-on")) next.el.appendChild(g); };
           g.src = next.anim;
         } else next.el.classList.add("is-still");
-      }, 1400);
+      }, 2200);
     }
     const old = slides[cur];
     if (old && old !== next) {

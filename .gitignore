@@ -1,2 +1,9 @@
 .DS_Store
 __pycache__/
+ontwerp.html
+css/
+js/
+data/
+media/
+tools/
+serve.py

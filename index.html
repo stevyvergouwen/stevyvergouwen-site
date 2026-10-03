@@ -5,124 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stevy Vergouwen</title>
 <meta name="description" content="Made for the night. Built for the brand. Visuals for artists, events and brands - Stevy Vergouwen, Breda.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css">
+<style>
+  :root { --ink:#08080a; --paper:#ebe7e0; --dim:#8b8880; --blue:#5b84ff; }
+  * { box-sizing: border-box; }
+  html { background: var(--ink); color-scheme: dark; }
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; justify-content:space-between; padding:clamp(20px,4vw,48px);
+    background:var(--ink); color:var(--paper); font:13px/1.6 ui-monospace,Menlo,monospace; letter-spacing:.02em; }
+  a { color:inherit; text-decoration:none; }
+  a:hover { color:var(--blue); }
+  .top, .foot { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .top { color:var(--dim); }
+  h1 { margin:0; font:700 clamp(2.8rem,9vw,8rem)/.98 "Helvetica Neue",Helvetica,Arial,sans-serif; letter-spacing:-.04em; }
+  h1 span { color:var(--dim); }
+  p { margin:24px 0 0; color:var(--dim); }
+  .foot { color:var(--dim); }
+</style>
 </head>
-<body class="is-loading">
-
-<div class="grain" aria-hidden="true"></div>
-<div class="cursor" aria-hidden="true"><span class="cursor-label"></span></div>
-
-<!-- intro: a timecode runs while the first pictures load -->
-<div class="intro" aria-hidden="true">
-  <div class="intro-tc"><span class="intro-num">00:00:00:00</span></div>
-  <div class="intro-mark">STEVY VERGOUWEN</div>
-</div>
-
-<header class="top">
-  <a href="#top" class="logo">STEVY VERGOUWEN</a>
-  <nav class="nav">
-    <a href="#work">Work</a>
-    <a href="#photo">Photo</a>
-    <a href="#shop">Shop</a>
-    <a href="#about">About</a>
-  </nav>
-  <div class="top-right"><span class="clock" data-clock>BREDA --:--</span><a class="book" href="mailto:info@shotbystevy.com?subject=Booking" data-cursor="Mail">Book</a></div>
-</header>
-
-<main id="top">
-
-  <section class="hero">
-    <div class="hero-media">
-      <video class="hero-video" muted playsinline autoplay></video>
-      <img class="hero-photo" alt="">
-    </div>
-    <div class="hero-shade"></div>
-    <h1 class="hero-title"><span class="line"><span>Stevy</span></span><span class="line"><span>Vergouwen</span></span></h1>
-    <div class="hero-foot">
-      <span class="hero-tc" data-hero-tc>TC 00:00:00:00</span>
-      <span class="hero-now" data-hero-now></span>
-      <span class="hero-scroll">Scroll</span>
-    </div>
-  </section>
-
-  <section class="work" id="work">
-    <div class="section-head">
-      <h2 class="section-title">Work <sup data-count></sup></h2>
-      <div class="work-tools">
-        <div class="filters" data-filters></div>
-        <div class="views">
-          <button class="view is-on" data-view="grid">Grid</button>
-          <button class="view" data-view="folders">Folders</button>
-        </div>
-      </div>
-    </div>
-    <div class="grid" data-grid></div>
-    <div class="folders" data-folders hidden></div>
-    <div class="folder-preview" aria-hidden="true"><video muted loop playsinline></video></div>
-  </section>
-
-  <section class="photo" id="photo">
-    <div class="section-head"><h2 class="section-title">Photo <sup data-photo-count></sup></h2></div>
-    <div class="photo-grid" data-photo-grid></div>
-  </section>
-
-  <section class="shop" id="shop">
-    <div class="section-head"><h2 class="section-title">Shop</h2><span class="soon">Soon</span></div>
-    <div class="shop-row">
-      <div class="shop-item"><span class="shop-no">01</span><span class="shop-name">Prints</span><span class="shop-what">Photographs on paper</span></div>
-      <div class="shop-item"><span class="shop-no">02</span><span class="shop-name">LUTs</span><span class="shop-what">The grade from these films</span></div>
-      <div class="shop-item"><span class="shop-no">03</span><span class="shop-name">Presets</span><span class="shop-what">Lightroom, for the night</span></div>
-      <div class="shop-item"><span class="shop-no">04</span><span class="shop-name">Tutorials</span><span class="shop-what">Shooting and cutting events</span></div>
-      <div class="shop-item"><span class="shop-no">05</span><span class="shop-name">Tools</span><span class="shop-what">Made for the edit</span></div>
-    </div>
-  </section>
-
-  <section class="about" id="about">
-    <p class="about-text">Made for the night.<br>Built for the brand.</p>
-    <a class="book-big" href="mailto:info@shotbystevy.com?subject=Booking" data-cursor="Mail">Book a night, a shoot, a video <span>→</span></a>
-    <div class="about-links">
-      <a href="mailto:info@shotbystevy.com" data-cursor="Mail">info@shotbystevy.com</a>
-      <a href="https://www.instagram.com/stevyvergouwen" target="_blank" rel="noopener" data-cursor="Open">@stevyvergouwen ↗</a>
-    </div>
-  </section>
-
+<body>
+<div class="top"><span>STEVY VERGOUWEN</span><span>BREDA</span></div>
+<main>
+  <h1>Made for the night.<br><span>Built for the brand.</span></h1>
+  <p>Visuals for artists, events and brands. Portfolio coming soon.</p>
+  <p><a href="mailto:info@shotbystevy.com">info@shotbystevy.com</a> &nbsp;·&nbsp; <a href="https://www.instagram.com/stevyvergouwen" target="_blank" rel="noopener">@stevyvergouwen ↗</a></p>
 </main>
-
-<footer class="foot">
-  <span>© <span data-year></span> Stevy Vergouwen</span>
-  <span>Visuals for artists, events and brands · Breda</span>
-  <a href="algemene-voorwaarden/">Algemene voorwaarden</a>
-</footer>
-
-<!-- the player: a job's clips, full screen, with sound -->
-<div class="player" data-player hidden>
-  <div class="player-top">
-    <span class="player-title" data-player-title></span>
-    <button class="player-close" data-player-close aria-label="Close">Close</button>
-  </div>
-  <video class="player-video" data-player-video playsinline controls></video>
-  <div class="player-bottom">
-    <button class="player-step" data-player-prev aria-label="Previous clip">←</button>
-    <span class="player-count" data-player-count></span>
-    <button class="player-step" data-player-next aria-label="Next clip">→</button>
-  </div>
-</div>
-
-<!-- a photo, big -->
-<div class="lightbox" data-lightbox hidden>
-  <img class="lightbox-img" data-lightbox-img alt="">
-  <button class="lightbox-close" data-lightbox-close aria-label="Close">Close</button>
-  <button class="lightbox-step is-prev" data-lightbox-prev aria-label="Previous photo">←</button>
-  <button class="lightbox-step is-next" data-lightbox-next aria-label="Next photo">→</button>
-  <span class="lightbox-count" data-lightbox-count></span>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
-<script src="js/site.js"></script>
+<div class="foot"><span>© <script>document.write(new Date().getFullYear())</script> Stevy Vergouwen</span><a href="algemene-voorwaarden/">Algemene voorwaarden</a></div>
 </body>
 </html>

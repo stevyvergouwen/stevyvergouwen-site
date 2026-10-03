@@ -82,15 +82,22 @@
   fetch("media/bg/bg.json").then(r => (r.ok ? r.json() : [])).then(list => {
     slides = list.filter(s => s && s.src);
     if (!slides.length) return;
-    // shuffle the order once so it is not the same every visit
-    for (let i = slides.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [slides[i], slides[j]] = [slides[j], slides[i]]; }
-    // never two pieces of the same clip in a row
-    for (let i = 1; i < slides.length; i++) {
-      if (slides[i].group === slides[i - 1].group) {
-        const k = slides.findIndex((x, n) => n > i && x.group !== slides[i - 1].group && x.group !== (slides[i + 1] || {}).group);
-        if (k > -1) [slides[i], slides[k]] = [slides[k], slides[i]];
-      }
+    // shuffle, then mix photos and video: the photos are spread evenly between the video pieces
+    const shuf = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+    const vids = shuf(slides.filter(x => x.type === "video")), fotos = shuf(slides.filter(x => x.type !== "video"));
+    // never two pieces of the same clip in a row (greedy)
+    const ordered = [];
+    while (vids.length) {
+      const last = ordered.filter(x => x.type === "video").slice(-1)[0];
+      let k = vids.findIndex(x => !last || x.group !== last.group);
+      if (k < 0) k = 0;
+      ordered.push(vids.splice(k, 1)[0]);
     }
+    const N = ordered.length + fotos.length, mixed = [];
+    const slots = new Set(fotos.map((_, i) => Math.min(N - 1, Math.floor((i + 0.5) * N / fotos.length))));
+    let vi = 0, fi = 0;
+    for (let n = 0; n < N; n++) mixed.push(slots.has(n) && fi < fotos.length ? fotos[fi++] : ordered[vi++] || fotos[fi++]);
+    slides = mixed.filter(Boolean);
     // open on the opener (LOU'D), whichever piece of it
     const op = slides.map((x, n) => (x.opener ? n : -1)).filter(n => n > -1);
     if (op.length) { const k = op[Math.floor(Math.random() * op.length)]; [slides[0], slides[k]] = [slides[k], slides[0]]; }

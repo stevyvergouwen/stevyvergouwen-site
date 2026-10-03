@@ -1,0 +1,61 @@
+/* Algemene voorwaarden - a panel over the page, in the site's own look. */
+.vw { position: fixed; inset: 0; z-index: 120; background: #08080a; color: #ebe7e0;
+  font: 12px/1.7 "JetBrains Mono", ui-monospace, Menlo, monospace; letter-spacing: .02em;
+  display: flex; flex-direction: column; opacity: 0; visibility: hidden; transform: translateY(24px);
+  transition: opacity .45s cubic-bezier(.2,.7,.1,1), transform .45s cubic-bezier(.2,.7,.1,1), visibility 0s .45s; }
+.vw.is-open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+body.vw-open { overflow: hidden; }
+.vw a { color: inherit; text-decoration: none; }
+.vw button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.vw :focus-visible { outline: 1px solid #5b84ff; outline-offset: 4px; }
+
+.vw-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: clamp(16px, 3vw, 40px); border-bottom: 1px solid #2c2b29; }
+.vw-title { text-transform: uppercase; letter-spacing: .14em; }
+.vw-title span { color: #8b8880; margin-left: 14px; }
+.vw-actions { display: flex; gap: 24px; text-transform: uppercase; letter-spacing: .14em; color: #8b8880; }
+.vw-actions button:hover { color: #ebe7e0; }
+
+.vw-scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 0 clamp(16px, 3vw, 40px) 120px; }
+.vw-wrap { max-width: 1200px; margin: 0 auto; }
+.vw-head { padding: clamp(40px, 8vw, 110px) 0 clamp(32px, 5vw, 64px); }
+.vw-head h2 { margin: 0; font: 700 clamp(2.6rem, 8vw, 7rem)/.98 "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: -.04em; }
+.vw-body { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); }
+
+.vw-toc { position: sticky; top: 24px; align-self: start; }
+.vw-toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid #2c2b29; }
+.vw-toc a { display: grid; grid-template-columns: 2rem 1fr; padding: 6px 0 6px 14px; margin-left: -1px;
+  border-left: 1px solid transparent; color: #8b8880; line-height: 1.4; }
+.vw-toc a:hover, .vw-toc a[aria-current="true"] { color: #ebe7e0; }
+.vw-toc a[aria-current="true"] { border-left-color: #5b84ff; }
+
+.vw-intro { margin: 0 0 40px; max-width: 62ch; color: #8b8880; }
+.vw .article { padding: 0 0 44px; }
+.vw .article + .article { border-top: 1px solid #2c2b29; padding-top: 44px; }
+.vw .article h2 { margin: 0 0 24px; font: 700 clamp(1.4rem, 2.6vw, 2rem)/1.15 "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: -.02em; }
+.vw .article h2 .num { color: #5b84ff; margin-right: 8px; }
+.vw .clause { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); margin: 0 0 12px; }
+.vw .clause .nr { color: #8b8880; }
+.vw .clause .tx { max-width: 68ch; }
+.vw-contact { display: block; font-style: normal; margin-top: 8px; padding: 28px 0 0; border-top: 1px solid #2c2b29; color: #8b8880; }
+.vw-contact strong { display: block; margin-bottom: 8px; color: #ebe7e0; text-transform: uppercase; letter-spacing: .14em; font-weight: 400; }
+.vw-contact a:hover { color: #5b84ff; }
+
+@media (max-width: 800px) {
+  .vw-body { grid-template-columns: 1fr; }
+  .vw-toc { display: none; }
+  .vw .clause { grid-template-columns: 2.6rem minmax(0, 1fr); }
+  .vw-title span { display: none; }
+}
+@media print {
+  body.vw-open > *:not(.vw) { display: none !important; }
+  .vw { position: static; display: block; opacity: 1; visibility: visible; transform: none; background: #fff; color: #111; }
+  .vw-actions, .vw-toc { display: none; }
+  .vw-scroll { overflow: visible; padding: 0; }
+  .vw-body { display: block; }
+  .vw .article { break-inside: avoid-page; }
+  .vw-head h2 { font-size: 26pt; }
+  .vw-intro, .vw .clause .nr, .vw-contact { color: #444; }
+  .vw-contact strong { color: #111; }
+  .vw .article + .article, .vw-bar, .vw-contact { border-color: #ccc; }
+}

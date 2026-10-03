@@ -26,7 +26,7 @@
     close: 'Sluiten', view: 'Bekijk', noMedia: 'Nog geen media - draai tools/maak_media.py', prevClip: 'Vorige clip', nextClip: 'Volgende clip', prevPhoto: 'Vorige foto', nextPhoto: 'Volgende foto', prev: 'Vorig', next: 'Volgend',
     events: 'Events', 'commercial & brands': 'Commercieel & merken', 'portraits & presskits': "Portretten & presskits",
     // terms panel
-    vwTitle: 'Algemene voorwaarden', vwHead: 'Algemene<br>voorwaarden', vwVersion: 'Versie 3 oktober 2026', pdf: 'Pdf'
+    vwTitle: 'Algemene voorwaarden', vwHead: 'Algemene<br>voorwaarden', vwVersion: 'Versie oktober 2026', pdf: 'Pdf'
   };
   const saved = (() => { try { return localStorage.getItem("taal"); } catch (e) { return null; } })();
   let lang = saved || ((navigator.language || "en").toLowerCase().startsWith("nl") ? "nl" : "en");

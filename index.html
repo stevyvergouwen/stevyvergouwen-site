@@ -9,7 +9,7 @@
   :root { --ink:#08080a; --paper:#ebe7e0; --dim:#8b8880; --blue:#5b84ff; }
   * { box-sizing: border-box; }
   html { background: var(--ink); color-scheme: dark; }
-  body { margin:0; min-height:100vh; display:flex; flex-direction:column; justify-content:space-between; padding:clamp(20px,4vw,48px);
+  body { margin:0; min-height:100vh; min-height:100svh; display:flex; flex-direction:column; justify-content:space-between; padding:clamp(20px,4vw,48px);
     background:transparent; color:var(--paper); font:13px/1.6 ui-monospace,Menlo,monospace; letter-spacing:.02em; }
   [data-bg] { position: fixed; inset: 0; z-index: -1; background: var(--ink); overflow: hidden; }
   .bg-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.6s ease; }
@@ -26,9 +26,9 @@
   h1 { margin:0; font:700 clamp(2.8rem,9vw,8rem)/.98 "Helvetica Neue",Helvetica,Arial,sans-serif; letter-spacing:-.04em; }
 
   h1 { position: relative; }
-  h1 span.ln { display: block; overflow: hidden; padding: .06em 0 .14em; margin-bottom: -.12em; }
+  h1 span.ln { display: block; overflow: hidden; padding: .06em 0 .14em; margin-bottom: -.12em; contain: paint; }
   h1 .dim { color: var(--dim); }
-  h1 .in { display: block; will-change: transform; animation: slide 1.25s cubic-bezier(.16,1,.3,1) forwards; }
+  h1 .in { display: block; will-change: transform, opacity; backface-visibility: hidden; animation: slide 1.25s cubic-bezier(.16,1,.3,1) forwards; }
   h1 .l1 .in { opacity: 0; transform: translateX(-108%); animation-delay: .5s; }
   h1 .l2 .in { opacity: 0; transform: translateX(108%); animation-delay: .72s; }
   @keyframes slide { 0% { opacity: 0; } 65% { opacity: 1; } 100% { opacity: 1; transform: none; } }

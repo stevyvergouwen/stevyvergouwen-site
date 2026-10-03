@@ -60,6 +60,20 @@
     if (v && v.paused) v.play().catch(() => {});
   }, { passive: true, once: false }));
   const wait = () => ((slides[cur] && slides[cur].dur) ? slides[cur].dur * 1000 : HOLD);
+
+  // ?debug shows what the current video is doing - for finding out why autoplay is blocked
+  if (/[?&]debug\b/.test(location.search)) {
+    const box = document.createElement("pre");
+    box.style.cssText = "position:fixed;left:8px;bottom:8px;z-index:99;margin:0;padding:8px 10px;background:rgba(0,0,0,.75);color:#9f9;font:11px/1.4 monospace;max-width:92vw;white-space:pre-wrap;pointer-events:none";
+    document.body.appendChild(box);
+    window.__bgErr = "";
+    setInterval(() => {
+      const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
+      box.textContent = "slide " + cur + "/" + slides.length + (s ? " " + s.type : "") + "\n" +
+        (v ? "paused=" + v.paused + " t=" + v.currentTime.toFixed(1) + " ready=" + v.readyState + " net=" + v.networkState + " err=" + (v.error ? v.error.code : "-") + " muted=" + v.muted + "\nplay(): " + window.__bgErr : "photo") +
+        "\nreduceMotion=" + calm + " hidden=" + document.hidden + "\n" + navigator.userAgent.slice(0, 90);
+    }, 400);
+  }
   const tick = () => { show((cur + 1) % slides.length); timer = setTimeout(tick, wait()); };
   const start = () => { if (!timer && slides.length > 1 && !calm) timer = setTimeout(tick, wait()); };
   const stop = () => { clearTimeout(timer); timer = null; };

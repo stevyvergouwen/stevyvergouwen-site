@@ -13,10 +13,10 @@
     el.className = "bg-slide";
     if (s.type === "video") {
       const v = document.createElement("video");
-      v.muted = true; v.defaultMuted = true; v.loop = false; v.playsInline = true; v.preload = "auto"; v.autoplay = true;
+      v.muted = true; v.defaultMuted = true; v.loop = false; v.playsInline = true; v.preload = "auto"; v.autoplay = !calm;
       v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("autoplay", "");
       // play as soon as it can, if it is the slide on screen (autoplay can need a second try)
-      const go = () => { if (el.classList.contains("is-on") && v.paused) v.play().catch(() => {}); };
+      const go = () => { if (!calm && el.classList.contains("is-on") && v.paused) v.play().catch(() => {}); };
       v.addEventListener("loadeddata", go); v.addEventListener("canplay", go);
       if (s.poster) { v.poster = s.poster; el.style.background = "url(" + s.poster + ") center / cover no-repeat"; }
       v.controls = false; v.disablePictureInPicture = true;
@@ -37,9 +37,9 @@
     const next = slides[n];
     if (!next.el) { next.el = make(next); root.appendChild(next.el); }
     const v = next.el.querySelector("video");
-    if (v) { try { if (v.readyState > 0) v.currentTime = 0; } catch (e) {} v.play().catch(() => {}); }
+    if (v && !calm) { try { if (v.readyState > 0) v.currentTime = 0; } catch (e) {} v.play().catch(() => {}); }
     next.el.classList.add("is-on");
-    if (v) {
+    if (v && !calm) {
       next.el.classList.remove("is-still");
       setTimeout(() => {
         if (!(next.el.classList.contains("is-on") && v.paused && !v.ended && v.currentTime < 0.05)) return;  // really not playing: never started
@@ -67,12 +67,12 @@
   // a second chance every second: the slide on screen should be playing
   setInterval(() => {
     const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
-    if (v && v.paused && !v.ended && !document.hidden) v.play().catch(() => {});
+    if (!calm && v && v.paused && !v.ended && !document.hidden) v.play().catch(() => {});
   }, 1000);
   // some browsers only allow autoplay after a first touch or click
   ["pointerdown", "keydown", "touchstart"].forEach(ev => addEventListener(ev, () => {
     const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
-    if (v && v.paused && !v.ended) v.play().catch(() => {});
+    if (!calm && v && v.paused && !v.ended) v.play().catch(() => {});
   }, { passive: true, once: false }));
   const wait = () => ((slides[cur] && slides[cur].dur) ? Math.max(3000, slides[cur].dur * 1000 - 400) : HOLD);
 
@@ -92,7 +92,7 @@
   const tick = () => { show((cur + 1) % slides.length); timer = setTimeout(tick, wait()); };
   const start = () => { if (!timer && slides.length > 1 && !calm) timer = setTimeout(tick, wait()); };
   const stop = () => { clearTimeout(timer); timer = null; };
-  addEventListener("pageshow", () => { const s = slides[cur]; const v = s && s.el && s.el.querySelector("video"); if (v && v.paused && !v.ended) v.play().catch(() => {}); });
+  addEventListener("pageshow", () => { const s = slides[cur]; const v = s && s.el && s.el.querySelector("video"); if (!calm && v && v.paused && !v.ended) v.play().catch(() => {}); });
   document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
 
   fetch("media/bg/bg.json?v=" + Date.now(), { cache: "no-store" }).then(r => (r.ok ? r.json() : [])).then(list => {

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<!--
+  Algemene voorwaarden - Stevy Vergouwen (Shot by Stevy)
+  Eén bestand, zonder externe afhankelijkheden. Upload het naar je website, bijvoorbeeld als /algemene-voorwaarden/index.html.
+
+  VOOR JE LIVE GAAT
+  1. Alle waarden zijn ingevuld. Laat de tekst nog één keer nakijken door een jurist of leg hem naast voorwaarden van een branchevereniging.
+  2. Waarden die in de toekomst nog open staan, zet je in een <mark class="keuze">-tag. Op de pagina staan ze dan in blauw.
+  3. Pas de datum bij "Versie" aan zodra je iets wijzigt, en bewaar elke oude versie.
+-->
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Algemene voorwaarden - Stevy Vergouwen (Shot by Stevy)</title>
+<meta name="description" content="Algemene voorwaarden voor foto- en video-opdrachten van Stevy Vergouwen, handelend onder de naam Shot by Stevy.">
+<style>
+  :root {
+    --bg: #0b1020;
+    --panel: #121935;
+    --line: #232c52;
+    --text: #e6e9f4;
+    --muted: #98a1bf;
+    --accent: #8196ff;
+        --font: "Helvetica Neue", Helvetica, Arial, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 96px; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 17px/1.65 var(--font);
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .skip {
+    position: absolute; left: 16px; top: -48px;
+    background: var(--accent); color: #0b1020; padding: 10px 16px; border-radius: 6px;
+    font-weight: 600; text-decoration: none; z-index: 10;
+  }
+  .skip:focus { top: 16px; }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    max-width: 1120px; margin: 0 auto; padding: 28px 28px 0;
+  }
+  .brand { font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
+  .brand span { display: block; font-weight: 400; font-size: 14px; color: var(--muted); letter-spacing: 0; }
+  .print {
+    font: 500 15px var(--font); color: var(--text);
+    background: transparent; border: 1px solid var(--line); border-radius: 999px;
+    padding: 9px 18px; cursor: pointer; white-space: nowrap;
+  }
+  .print:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero { max-width: 1120px; margin: 0 auto; padding: 72px 28px 56px; }
+  .hero h1 {
+    margin: 0; font-weight: 700; font-size: clamp(2.6rem, 7vw, 5.2rem);
+    line-height: 1.02; letter-spacing: -0.035em;
+  }
+  .hero p { margin: 22px 0 0; max-width: 56ch; color: var(--muted); font-size: 19px; line-height: 1.55; }
+  .hero .versie { margin-top: 18px; font-size: 15px; color: var(--accent); }
+
+  .layout {
+    display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 72px;
+    max-width: 1120px; margin: 0 auto; padding: 0 28px 96px;
+  }
+
+  .toc { position: sticky; top: 28px; align-self: start; }
+  .toc summary { display: none; }
+  .toc ol { list-style: none; margin: 0; padding: 0 0 0 0; border-left: 1px solid var(--line); }
+  .toc li { margin: 0; }
+  .toc a {
+    display: grid; grid-template-columns: 2rem 1fr; gap: 4px;
+    padding: 7px 0 7px 16px; margin-left: -1px; border-left: 2px solid transparent;
+    color: var(--muted); text-decoration: none; font-size: 15px; line-height: 1.35;
+  }
+  .toc a:hover { color: var(--text); }
+  .toc a[aria-current="true"] { color: var(--text); border-left-color: var(--accent); }
+  .toc a[aria-current="true"] .n { color: var(--accent); }
+  .toc .n { color: #6a74a0; }
+
+  .content { min-width: 0; }
+  .article { padding: 8px 0 44px; }
+  .article + .article { border-top: 1px solid var(--line); padding-top: 44px; }
+  .article h2 {
+    margin: 0 0 22px; font-size: clamp(1.45rem, 2.6vw, 1.9rem); line-height: 1.2;
+    font-weight: 700; letter-spacing: -0.02em;
+  }
+  .article h2 .num { color: var(--accent); margin-right: 6px; }
+  .clause {
+    display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); margin: 0 0 14px;
+  }
+  .clause .nr { color: var(--muted); font-size: 15px; padding-top: 2px; }
+  .clause .tx { max-width: 66ch; }
+
+  mark.keuze {
+    background: rgba(129, 150, 255, 0.16); color: #aebbff;
+    padding: 0 .28em; border-radius: 3px; font-weight: 600;
+  }
+
+  .contact {
+    margin-top: 8px; padding: 28px 32px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 10px; font-style: normal;
+  }
+  .contact strong { display: block; margin-bottom: 8px; font-size: 18px; }
+  .contact a { text-decoration: none; }
+  .contact a:hover { text-decoration: underline; }
+
+  @media (max-width: 900px) {
+    .hero { padding-top: 48px; }
+    .layout { grid-template-columns: 1fr; gap: 28px; }
+    .toc { position: static; }
+    .toc summary {
+      display: block; cursor: pointer; padding: 14px 18px; list-style: none;
+      border: 1px solid var(--line); border-radius: 10px; background: var(--panel); font-weight: 600;
+    }
+    .toc summary::-webkit-details-marker { display: none; }
+    .toc ol { margin-top: 10px; }
+    .clause { grid-template-columns: 2.8rem minmax(0, 1fr); }
+  }
+
+  @media print {
+    :root { --bg: #fff; --panel: #fff; --line: #cfcfcf; --text: #111; --muted: #555; --accent: #111; }
+    body { font-size: 11pt; background: #fff; color: #111; }
+    .skip, .toc, .print { display: none !important; }
+    .topbar, .hero, .layout { max-width: none; padding-left: 0; padding-right: 0; }
+    .hero { padding-top: 20pt; padding-bottom: 14pt; }
+    .hero h1 { font-size: 26pt; }
+    .layout { display: block; padding-bottom: 0; }
+    .article { break-inside: avoid-page; padding-bottom: 18pt; }
+    mark.keuze { background: none; color: #111; font-weight: 700; }
+    .contact { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#inhoud">Direct naar de voorwaarden</a>
+
+<header class="topbar">
+  <div class="brand">Stevy Vergouwen<span>Shot by Stevy</span></div>
+  <button class="print" type="button" id="print">Opslaan als pdf</button>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Algemene voorwaarden</h1>
+    <p>Voor alle offertes en opdrachten van Stevy Vergouwen, handelend onder de naam Shot by Stevy. Lees ze rustig door en bewaar ze voor later.</p>
+    <p class="versie">Versie oktober 2026</p>
+  </div>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Inhoud">
+      <details open>
+        <summary>Inhoud</summary>
+        <ol>
+      <li><a href="#artikel-1"><span class="n">1</span><span class="t">Toepasselijkheid</span></a></li>
+      <li><a href="#artikel-2"><span class="n">2</span><span class="t">Offerte en overeenkomst</span></a></li>
+      <li><a href="#artikel-3"><span class="n">3</span><span class="t">Prijzen en betaling</span></a></li>
+      <li><a href="#artikel-4"><span class="n">4</span><span class="t">Reiskosten en meerwerk</span></a></li>
+      <li><a href="#artikel-5"><span class="n">5</span><span class="t">Uitvoering en planning</span></a></li>
+      <li><a href="#artikel-6"><span class="n">6</span><span class="t">Oplevering, correcties en bewaren</span></a></li>
+      <li><a href="#artikel-7"><span class="n">7</span><span class="t">Auteursrecht en gebruik</span></a></li>
+      <li><a href="#artikel-8"><span class="n">8</span><span class="t">Originele bestanden</span></a></li>
+      <li><a href="#artikel-9"><span class="n">9</span><span class="t">Locatie, veiligheid en personen in beeld</span></a></li>
+      <li><a href="#artikel-10"><span class="n">10</span><span class="t">Annuleren en verplaatsen</span></a></li>
+      <li><a href="#artikel-11"><span class="n">11</span><span class="t">Aansprakelijkheid en overmacht</span></a></li>
+      <li><a href="#artikel-12"><span class="n">12</span><span class="t">Klachten</span></a></li>
+      <li><a href="#artikel-13"><span class="n">13</span><span class="t">Slotbepalingen</span></a></li>
+        </ol>
+      </details>
+    </nav>
+
+    <div class="content" id="inhoud">
+    <section class="article" id="artikel-1" aria-labelledby="h-1">
+      <h2 id="h-1"><span class="num">1.</span> Toepasselijkheid</h2>
+        <p class="clause"><span class="nr">1.1</span><span class="tx">Deze voorwaarden gelden voor alle offertes en overeenkomsten van Stevy Vergouwen, handelend onder de naam Shot by Stevy (KvK 91512840), hierna Opdrachtnemer.</span></p>
+        <p class="clause"><span class="nr">1.2</span><span class="tx">Opdrachtgever is degene die een opdracht aan Opdrachtnemer geeft.</span></p>
+        <p class="clause"><span class="nr">1.3</span><span class="tx">Afwijkingen gelden alleen als ze schriftelijk zijn afgesproken. Inkoop- of andere voorwaarden van Opdrachtgever zijn niet van toepassing.</span></p>
+        <p class="clause"><span class="nr">1.4</span><span class="tx">Opdrachtnemer mag andere creatieven inschakelen, zoals fotografen of assistenten. Deze voorwaarden gelden ook voor hen.</span></p>
+    </section>
+    <section class="article" id="artikel-2" aria-labelledby="h-2">
+      <h2 id="h-2"><span class="num">2.</span> Offerte en overeenkomst</h2>
+        <p class="clause"><span class="nr">2.1</span><span class="tx">Een offerte is 30 dagen geldig.</span></p>
+        <p class="clause"><span class="nr">2.2</span><span class="tx">De overeenkomst ontstaat zodra Opdrachtgever de offerte accepteert, schriftelijk of per e-mail, of de opdracht laat beginnen.</span></p>
+        <p class="clause"><span class="nr">2.3</span><span class="tx">Opdrachtnemer stuurt deze voorwaarden mee met de offerte. Door akkoord te geven bevestigt Opdrachtgever dat hij ze heeft ontvangen.</span></p>
+        <p class="clause"><span class="nr">2.4</span><span class="tx">Wijzigingen in de opdracht gelden als meerwerk en worden pas uitgevoerd na akkoord van beide partijen.</span></p>
+    </section>
+    <section class="article" id="artikel-3" aria-labelledby="h-3">
+      <h2 id="h-3"><span class="num">3.</span> Prijzen en betaling</h2>
+        <p class="clause"><span class="nr">3.1</span><span class="tx">Alle prijzen zijn exclusief btw en exclusief reiskosten, tenzij er anders staat.</span></p>
+        <p class="clause"><span class="nr">3.2</span><span class="tx">Bij een vaste prijs mag Opdrachtnemer 50% bij akkoord factureren en de rest bij oplevering.</span></p>
+        <p class="clause"><span class="nr">3.3</span><span class="tx">Opdrachtgever betaalt binnen 14 dagen na factuurdatum, zonder korting of verrekening.</span></p>
+        <p class="clause"><span class="nr">3.4</span><span class="tx">Na die termijn is Opdrachtgever zonder aanmaning in verzuim. Dan is de wettelijke handelsrente verschuldigd, plus de redelijke kosten van invordering.</span></p>
+        <p class="clause"><span class="nr">3.5</span><span class="tx">Bij uitblijvende betaling mag Opdrachtnemer het werk opschorten.</span></p>
+    </section>
+    <section class="article" id="artikel-4" aria-labelledby="h-4">
+      <h2 id="h-4"><span class="num">4.</span> Reiskosten en meerwerk</h2>
+        <p class="clause"><span class="nr">4.1</span><span class="tx">Reiskosten rekent Opdrachtnemer door tegen € 0,30 per gereden kilometer, per persoon, heen en terug per werkdag.</span></p>
+        <p class="clause"><span class="nr">4.2</span><span class="tx">Parkeerkosten en andere noodzakelijke kosten worden doorberekend, na overleg vooraf.</span></p>
+        <p class="clause"><span class="nr">4.3</span><span class="tx">Werk buiten de offerte, zoals extra opnames of extra reels, wordt berekend tegen de prijzen in de offerte of tegen € 90 per uur, na akkoord vooraf.</span></p>
+    </section>
+    <section class="article" id="artikel-5" aria-labelledby="h-5">
+      <h2 id="h-5"><span class="num">5.</span> Uitvoering en planning</h2>
+        <p class="clause"><span class="nr">5.1</span><span class="tx">Opdrachtnemer voert de opdracht naar beste vermogen uit. Creatieve en technische keuzes liggen bij Opdrachtnemer, binnen wat is afgesproken.</span></p>
+        <p class="clause"><span class="nr">5.2</span><span class="tx">Opnamedagen worden in overleg gepland. Opdrachtgever zorgt op tijd voor toegang, informatie en materiaal. Loopt de opdracht daardoor vertraging op, dan schuiven de data mee.</span></p>
+        <p class="clause"><span class="nr">5.3</span><span class="tx">Levertijden zijn streefdata en geen vaste termijnen. Bij overschrijding krijgt Opdrachtnemer eerst schriftelijk een redelijke termijn om alsnog te leveren.</span></p>
+    </section>
+    <section class="article" id="artikel-6" aria-labelledby="h-6">
+      <h2 id="h-6"><span class="num">6.</span> Oplevering, correcties en bewaren</h2>
+        <p class="clause"><span class="nr">6.1</span><span class="tx">Opdrachtnemer levert via een downloadlink. De eerste versie volgt binnen 2 weken na de laatste opnamedag.</span></p>
+        <p class="clause"><span class="nr">6.2</span><span class="tx">Twee correctierondes zijn inbegrepen, met feedback gebundeld per ronde. Een extra ronde is meerwerk.</span></p>
+        <p class="clause"><span class="nr">6.3</span><span class="tx">Opdrachtnemer bewaart de bestanden 60 dagen na oplevering. Daarna mogen ze worden verwijderd. Opdrachtgever zorgt zelf voor een back-up.</span></p>
+    </section>
+    <section class="article" id="artikel-7" aria-labelledby="h-7">
+      <h2 id="h-7"><span class="num">7.</span> Auteursrecht en gebruik</h2>
+        <p class="clause"><span class="nr">7.1</span><span class="tx">Het auteursrecht op alle foto’s, opnames en montages blijft bij Opdrachtnemer, tenzij schriftelijk anders is afgesproken.</span></p>
+        <p class="clause"><span class="nr">7.2</span><span class="tx">Na volledige betaling krijgt Opdrachtgever een gebruiksrecht van 3 jaar voor online publicatie, social media en de eigen website. Betaalde advertenties zijn niet inbegrepen en worden apart afgesproken. Ander gebruik, zoals drukwerk, televisie of reclame door derden, vraagt vooraf schriftelijk akkoord en kan extra kosten hebben.</span></p>
+        <p class="clause"><span class="nr">7.3</span><span class="tx">Opdrachtgever mag het werk niet doorverkopen, overdragen of in licentie geven aan derden, en niet gebruiken om AI-systemen mee te trainen.</span></p>
+        <p class="clause"><span class="nr">7.4</span><span class="tx">Opdrachtnemer mag het werk tonen in zijn portfolio, op zijn website en op social media, in overleg met Opdrachtgever en zonder vertrouwelijke informatie.</span></p>
+        <p class="clause"><span class="nr">7.5</span><span class="tx">Het is gewenst, maar niet verplicht, dat Opdrachtgever bij publicatie © @stevyvergouwen vermeldt.</span></p>
+        <p class="clause"><span class="nr">7.6</span><span class="tx">Bij gebruik buiten de afspraak is Opdrachtgever een vergoeding verschuldigd van 2 keer het gebruikelijke tarief voor dat gebruik. Opdrachtnemer houdt het recht op volledige schadevergoeding.</span></p>
+    </section>
+    <section class="article" id="artikel-8" aria-labelledby="h-8">
+      <h2 id="h-8"><span class="num">8.</span> Originele bestanden</h2>
+        <p class="clause"><span class="nr">8.1</span><span class="tx">Originele opnames (RAW-bestanden) worden alleen geleverd als dat in de offerte staat, of tegen een aparte vergoeding.</span></p>
+        <p class="clause"><span class="nr">8.2</span><span class="tx">Opdrachtgever mag het werk aanpassen voor het afgesproken gebruik, zoals bijsnijden of inkorten. Een ingrijpende bewerking vraagt vooraf akkoord van Opdrachtnemer.</span></p>
+    </section>
+    <section class="article" id="artikel-9" aria-labelledby="h-9">
+      <h2 id="h-9"><span class="num">9.</span> Locatie, veiligheid en personen in beeld</h2>
+        <p class="clause"><span class="nr">9.1</span><span class="tx">Opdrachtgever zorgt voor veilige toegang tot de locatie en meldt vooraf welke veiligheidsregels gelden, zoals verplichte beschermingsmiddelen. Opdrachtnemer volgt die regels op. Veiligheid gaat voor het beeld.</span></p>
+        <p class="clause"><span class="nr">9.2</span><span class="tx">Opdrachtgever zorgt voor toestemming van herkenbare personen die in beeld komen, en geeft aan wat niet zichtbaar of leesbaar mag zijn, zoals tekeningen en schermen.</span></p>
+        <p class="clause"><span class="nr">9.3</span><span class="tx">Claims van derden, zoals afgebeelde personen, over het gebruik van het werk door Opdrachtgever komen voor rekening van Opdrachtgever. Opdrachtgever vrijwaart Opdrachtnemer, behalve bij opzet of grove schuld.</span></p>
+    </section>
+    <section class="article" id="artikel-10" aria-labelledby="h-10">
+      <h2 id="h-10"><span class="num">10.</span> Annuleren en verplaatsen</h2>
+        <p class="clause"><span class="nr">10.1</span><span class="tx">Annuleren of verplaatsen kan alleen schriftelijk. Een e-mail is voldoende.</span></p>
+        <p class="clause"><span class="nr">10.2</span><span class="tx">Bij annuleren of verplaatsen van een opnamedag geldt: meer dan 14 dagen vooraf kosteloos. Binnen 14 dagen is 50% van de prijs van die dag verschuldigd. Binnen 48 uur is 75% verschuldigd.</span></p>
+        <p class="clause"><span class="nr">10.3</span><span class="tx">Moet een dag verschuiven door de bouwvoortgang of het weer, dan plannen we in overleg een nieuwe datum. Annuleringskosten gelden dan niet, mits dit 48 uur vooraf wordt gemeld.</span></p>
+        <p class="clause"><span class="nr">10.4</span><span class="tx">Zegt Opdrachtgever de opdracht op terwijl die loopt, dan betaalt hij het werk dat al is gedaan en de kosten die al zijn gemaakt.</span></p>
+    </section>
+    <section class="article" id="artikel-11" aria-labelledby="h-11">
+      <h2 id="h-11"><span class="num">11.</span> Aansprakelijkheid en overmacht</h2>
+        <p class="clause"><span class="nr">11.1</span><span class="tx">Opdrachtnemer is alleen aansprakelijk voor directe schade die komt door een tekortkoming die hem te verwijten valt.</span></p>
+        <p class="clause"><span class="nr">11.2</span><span class="tx">De aansprakelijkheid is beperkt tot het factuurbedrag van de betreffende opdracht.</span></p>
+        <p class="clause"><span class="nr">11.3</span><span class="tx">Opdrachtnemer is niet aansprakelijk voor gevolgschade, zoals gemiste omzet, en niet voor schade door gebruik van het werk buiten de afspraak.</span></p>
+        <p class="clause"><span class="nr">11.4</span><span class="tx">Deze beperkingen gelden niet bij opzet of bewuste roekeloosheid.</span></p>
+        <p class="clause"><span class="nr">11.5</span><span class="tx">Bij omstandigheden buiten de macht van Opdrachtnemer, zoals ziekte, storing, extreem weer of een niet toegankelijke bouwplaats, mag Opdrachtnemer de opdracht opschorten of nieuwe data voorstellen, zonder schadevergoeding. Duurt dit langer dan 30 dagen, dan mag elke partij ontbinden en wordt het uitgevoerde werk betaald.</span></p>
+    </section>
+    <section class="article" id="artikel-12" aria-labelledby="h-12">
+      <h2 id="h-12"><span class="num">12.</span> Klachten</h2>
+        <p class="clause"><span class="nr">12.1</span><span class="tx">Opdrachtgever meldt een klacht over het werk of de factuur schriftelijk en met omschrijving binnen 14 dagen na oplevering of factuurdatum. Daarna geldt het werk als goedgekeurd.</span></p>
+        <p class="clause"><span class="nr">12.2</span><span class="tx">Een klacht schort de betaling niet op.</span></p>
+        <p class="clause"><span class="nr">12.3</span><span class="tx">Is de klacht terecht, dan herstelt of vervangt Opdrachtnemer het werk binnen een redelijke termijn. Lukt dat niet, dan volgt een evenredige korting.</span></p>
+    </section>
+    <section class="article" id="artikel-13" aria-labelledby="h-13">
+      <h2 id="h-13"><span class="num">13.</span> Slotbepalingen</h2>
+        <p class="clause"><span class="nr">13.1</span><span class="tx">Nederlands recht is van toepassing. Geschillen gaan naar de bevoegde rechter in het arrondissement waar Opdrachtnemer is gevestigd, nu de rechtbank Zeeland-West-Brabant.</span></p>
+        <p class="clause"><span class="nr">13.2</span><span class="tx">Is een bepaling nietig of vernietigd, dan blijven de andere bepalingen gelden. Partijen vervangen de bepaling dan door een geldige die er zo dicht mogelijk bij komt.</span></p>
+        <p class="clause"><span class="nr">13.3</span><span class="tx">Onder schriftelijk valt ook e-mail.</span></p>
+    </section>
+
+      <address class="contact">
+        <strong>Contact</strong>
+        Stevy Vergouwen, handelend onder Shot by Stevy<br>
+        Haagweg 29A, 4814 GB Breda<br>
+        <a href="mailto:info@shotbystevy.com">info@shotbystevy.com</a>, <a href="tel:+31610172579">+31 610172579</a><br>
+        KvK 91512840, btw-id NL004384784B12
+      </address>
+    </div>
+  </div>
+</main>
+
+<script>
+  document.getElementById('print').addEventListener('click', function () { window.print(); });
+
+  // Op mobiel start de inhoudsopgave ingeklapt.
+  var toc = document.querySelector('.toc details');
+  if (toc && window.matchMedia('(max-width: 900px)').matches) { toc.removeAttribute('open'); }
+
+  // Markeer in de inhoudsopgave het artikel dat je op dat moment leest.
+  var links = document.querySelectorAll('.toc a');
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          links.forEach(function (a) { a.removeAttribute('aria-current'); });
+          var a = byId[e.target.id];
+          if (a) a.setAttribute('aria-current', 'true');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    document.querySelectorAll('.article').forEach(function (s) { io.observe(s); });
+  }
+</script>
+</body>
+</html>

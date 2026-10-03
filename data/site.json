@@ -12,23 +12,8 @@
   },
   {
    "id": "portraits",
-   "name": "Portraits",
+   "name": "Portraits & Presskits",
    "folder": "03_PORTRAITS"
-  },
-  {
-   "id": "travel",
-   "name": "Travel",
-   "folder": "04_TRAVEL"
-  },
-  {
-   "id": "minidv",
-   "name": "MiniDV",
-   "folder": "05_MINIDV"
-  },
-  {
-   "id": "bts",
-   "name": "BTS",
-   "folder": "08_BTS"
   }
  ],
  "jobs": [

@@ -157,10 +157,7 @@ def main():
         "categories": [
             {"id": "events", "name": "Events", "folder": "01_EVENTS"},
             {"id": "brands", "name": "Commercial & Brands", "folder": "02_COMMERCIAL&BRANDS"},
-            {"id": "portraits", "name": "Portraits", "folder": "03_PORTRAITS"},
-            {"id": "travel", "name": "Travel", "folder": "04_TRAVEL"},
-            {"id": "minidv", "name": "MiniDV", "folder": "05_MINIDV"},
-            {"id": "bts", "name": "BTS", "folder": "08_BTS"},
+            {"id": "portraits", "name": "Portraits & Presskits", "folder": "03_PORTRAITS"},
         ],
         "jobs": sorted(jobs, key=lambda j: j["date"], reverse=True),
         "photos": photos,

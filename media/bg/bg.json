@@ -9,6 +9,41 @@
  },
  {
   "type": "photo",
+  "src": "media/bg/20260712-2028-verknipt-bm-stevyvergouwen-09006.jpg",
+  "group": "20260712-2028-verknipt-bm-stevyvergouwen-09006",
+  "dur": 5,
+  "pos": "50% 50%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/20260812-2102-glitch-stevyvergouwen-09209.jpg",
+  "group": "20260812-2102-glitch-stevyvergouwen-09209",
+  "dur": 5,
+  "pos": "50% 50%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/20260812-2255-glitch-stevyvergouwen-01297.jpg",
+  "group": "20260812-2255-glitch-stevyvergouwen-01297",
+  "dur": 5,
+  "pos": "50% 50%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/20260829-2000-rr26-stevyvergouwen-07851.jpg",
+  "group": "20260829-2000-rr26-stevyvergouwen-07851",
+  "dur": 5,
+  "pos": "50% 50%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/20260829-2109-rr26-stevyvergouwen-09322.jpg",
+  "group": "20260829-2109-rr26-stevyvergouwen-09322",
+  "dur": 5,
+  "pos": "50% 50%"
+ },
+ {
+  "type": "photo",
   "src": "media/bg/250505-2236-yousuke-stevyvergouwen-0134.jpg",
   "group": "250505-2236-yousuke-stevyvergouwen-0134",
   "dur": 5,

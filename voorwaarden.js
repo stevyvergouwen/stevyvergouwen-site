@@ -13,7 +13,7 @@
     panel.setAttribute("data-lenis-prevent", "");
     panel.innerHTML = `
       <div class="vw-bar">
-        <div class="vw-title">Stevy Vergouwen<span>Versie oktober 2026</span></div>
+        <div class="vw-title">Stevy Vergouwen<span>Versie 3 oktober 2026</span></div>
         <div class="vw-actions"><button type="button" data-vw-print>Pdf</button><button type="button" data-vw-close>Close</button></div>
       </div>
       <div class="vw-scroll" data-vw-scroll><div class="vw-wrap">

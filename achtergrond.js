@@ -13,8 +13,11 @@
     el.className = "bg-slide";
     if (s.type === "video") {
       const v = document.createElement("video");
-      v.muted = true; v.loop = true; v.playsInline = true; v.preload = "auto";
-      v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
+      v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true; v.preload = "auto"; v.autoplay = true;
+      v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("autoplay", "");
+      // play as soon as it can, if it is the slide on screen (autoplay can need a second try)
+      const go = () => { if (el.classList.contains("is-on") && v.paused) v.play().catch(() => {}); };
+      v.addEventListener("loadeddata", go); v.addEventListener("canplay", go);
       if (s.poster) v.poster = s.poster;
       v.src = s.src;
       el.appendChild(v);
@@ -31,7 +34,7 @@
     const next = slides[n];
     if (!next.el) { next.el = make(next); root.appendChild(next.el); }
     const v = next.el.querySelector("video");
-    if (v) { v.currentTime = 0; v.play().catch(() => {}); }
+    if (v) { try { if (v.readyState > 0) v.currentTime = 0; } catch (e) {} v.play().catch(() => {}); }
     next.el.classList.add("is-on");
     const old = slides[cur];
     if (old && old !== next) {
@@ -45,6 +48,16 @@
     if (!nn.el) { nn.el = make(nn); root.appendChild(nn.el); }
   }
 
+  // a second chance every second: the slide on screen should be playing
+  setInterval(() => {
+    const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
+    if (v && v.paused && !document.hidden) v.play().catch(() => {});
+  }, 1000);
+  // some browsers only allow autoplay after a first touch or click
+  ["pointerdown", "keydown", "touchstart"].forEach(ev => addEventListener(ev, () => {
+    const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
+    if (v && v.paused) v.play().catch(() => {});
+  }, { passive: true, once: false }));
   const wait = () => ((slides[cur] && slides[cur].dur) ? slides[cur].dur * 1000 : HOLD);
   const tick = () => { show((cur + 1) % slides.length); timer = setTimeout(tick, wait()); };
   const start = () => { if (!timer && slides.length > 1 && !calm) timer = setTimeout(tick, wait()); };

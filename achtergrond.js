@@ -18,7 +18,9 @@
       // play as soon as it can, if it is the slide on screen (autoplay can need a second try)
       const go = () => { if (el.classList.contains("is-on") && v.paused) v.play().catch(() => {}); };
       v.addEventListener("loadeddata", go); v.addEventListener("canplay", go);
-      if (s.poster) v.poster = s.poster;
+      if (s.poster) { v.poster = s.poster; el.style.background = "url(" + s.poster + ") center / cover no-repeat"; }
+      v.controls = false; v.disablePictureInPicture = true;
+      v.setAttribute("controlslist", "nodownload nofullscreen noremoteplayback"); v.setAttribute("x-webkit-airplay", "deny");
       v.src = s.src;
       el.appendChild(v);
     } else {
@@ -37,6 +39,10 @@
     const v = next.el.querySelector("video");
     if (v) { try { if (v.readyState > 0) v.currentTime = 0; } catch (e) {} v.play().catch(() => {}); }
     next.el.classList.add("is-on");
+    if (v) {
+      next.el.classList.remove("is-still");
+      setTimeout(() => { if (next.el.classList.contains("is-on") && v.paused && !v.ended) next.el.classList.add("is-still"); }, 1400);
+    }
     const old = slides[cur];
     if (old && old !== next) {
       old.el.classList.remove("is-on");

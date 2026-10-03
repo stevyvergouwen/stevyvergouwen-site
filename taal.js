@@ -23,7 +23,7 @@
     bookBig: 'Boek een nacht, een shoot, een video <span>→</span>',
     aboutText: 'Gemaakt voor de nacht.<br>Gebouwd voor het merk.',
     footer: 'Visuals voor artiesten, events en merken · Breda',
-    close: 'Sluiten', prev: 'Vorig', next: 'Volgend',
+    close: 'Sluiten', view: 'Bekijk', noMedia: 'Nog geen media - draai tools/maak_media.py', prevClip: 'Vorige clip', nextClip: 'Volgende clip', prevPhoto: 'Vorige foto', nextPhoto: 'Volgende foto', prev: 'Vorig', next: 'Volgend',
     events: 'Events', 'commercial & brands': 'Commercieel & merken', 'portraits & presskits': "Portretten & presskits",
     // terms panel
     vwTitle: 'Algemene voorwaarden', vwHead: 'Algemene<br>voorwaarden', vwVersion: 'Versie 3 oktober 2026', pdf: 'Pdf'

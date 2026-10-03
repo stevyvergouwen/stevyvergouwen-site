@@ -13,7 +13,7 @@
     el.className = "bg-slide";
     if (s.type === "video") {
       const v = document.createElement("video");
-      v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true; v.preload = "auto"; v.autoplay = true;
+      v.muted = true; v.defaultMuted = true; v.loop = false; v.playsInline = true; v.preload = "auto"; v.autoplay = true;
       v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("autoplay", "");
       // play as soon as it can, if it is the slide on screen (autoplay can need a second try)
       const go = () => { if (el.classList.contains("is-on") && v.paused) v.play().catch(() => {}); };
@@ -52,14 +52,14 @@
   // a second chance every second: the slide on screen should be playing
   setInterval(() => {
     const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
-    if (v && v.paused && !document.hidden) v.play().catch(() => {});
+    if (v && v.paused && !v.ended && !document.hidden) v.play().catch(() => {});
   }, 1000);
   // some browsers only allow autoplay after a first touch or click
   ["pointerdown", "keydown", "touchstart"].forEach(ev => addEventListener(ev, () => {
     const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
-    if (v && v.paused) v.play().catch(() => {});
+    if (v && v.paused && !v.ended) v.play().catch(() => {});
   }, { passive: true, once: false }));
-  const wait = () => ((slides[cur] && slides[cur].dur) ? slides[cur].dur * 1000 : HOLD);
+  const wait = () => ((slides[cur] && slides[cur].dur) ? Math.max(3000, slides[cur].dur * 1000 - 400) : HOLD);
 
   // ?debug shows what the current video is doing - for finding out why autoplay is blocked
   if (/[?&]debug\b/.test(location.search)) {

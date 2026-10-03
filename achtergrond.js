@@ -25,6 +25,7 @@
       const i = document.createElement("img");
       i.alt = ""; i.src = s.src; i.decoding = "async";
       if (s.pos) i.style.objectPosition = s.pos;
+      if (s.fit) i.className = "fit-" + s.fit;
       el.appendChild(i);
     }
     return el;

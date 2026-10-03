@@ -39,10 +39,19 @@
   [data-bg] { animation: flash 1.6s cubic-bezier(.16,1,.3,1) both; }
   @keyframes flash { 0% { filter: brightness(2.3) contrast(1.15); } 100% { filter: none; } }
   main p, .top, .foot { animation: rise 1s cubic-bezier(.16,1,.3,1) both; }
-  main p:nth-of-type(1) { animation-delay: 1.35s; } main p:nth-of-type(2) { animation-delay: 1.5s; }
-  .top { animation-delay: .1s; } .foot { animation-delay: 1.7s; }
+  main p:nth-of-type(1) { animation-delay: 1.35s; } main p:nth-of-type(2) { animation-delay: 1.5s; } main p:nth-of-type(3) { animation-delay: 1.65s; }
+  .top { animation-delay: .1s; } .foot { animation-delay: 1.9s; }
   @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { h1 .in { transform: none; animation: none; } h1::before, [data-bg], main p, .top, .foot { animation: none; } h1::before { display: none; } }
+  @media (min-aspect-ratio: 1/1) {
+    .bg-slide img.fit-right { object-fit: contain; object-position: 90% 50%; }
+    .bg-slide img.fit-left { object-fit: contain; object-position: 10% 50%; }
+  }
+  .soon { display: inline-flex; align-items: center; gap: 12px; margin: 28px 0 0; padding: 10px 16px 10px 14px; color: var(--paper);
+    border: 1px solid rgba(235,231,224,.35); border-radius: 999px; background: rgba(8,8,10,.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    font-size: 12px; letter-spacing: .22em; text-transform: uppercase; }
+  .soon i { width: 7px; height: 7px; border-radius: 50%; background: var(--paper); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .25; transform: scale(.7); } }
   p { margin:24px 0 0; color:var(--dim); }
   .foot { color:var(--dim); }
 </style>
@@ -53,7 +62,8 @@
 <div class="top"><span>STEVY VERGOUWEN</span></div>
 <main>
   <h1 aria-label="Made for the night. Built for the brand."><span class="ln l1" aria-hidden="true"><span class="in">Made for the night.</span></span><span class="ln l2 dim" aria-hidden="true"><span class="in">Built for the brand.</span></span></h1>
-  <p>Visuals for artists, events and brands. Portfolio coming soon.</p>
+  <p>Visuals for artists, events and brands.</p>
+  <p class="soon"><i aria-hidden="true"></i>Portfolio coming soon</p>
   <p><a href="mailto:info@shotbystevy.com">info@shotbystevy.com</a> &nbsp;·&nbsp; <a href="https://www.instagram.com/stevyvergouwen" target="_blank" rel="noopener" aria-label="Instagram: @stevyvergouwen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b8880" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:8px"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r=".6" fill="#8b8880"/></svg>Instagram @stevyvergouwen ↗</a></p>
 </main>
 <div class="foot"><span>© <script>document.write(new Date().getFullYear())</script> Stevy Vergouwen</span><a href="/terms/" data-voorwaarden>Terms &amp; conditions</a></div>

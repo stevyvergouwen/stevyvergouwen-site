@@ -13,8 +13,8 @@
     el.className = "bg-slide";
     if (s.type === "video") {
       const v = document.createElement("video");
-      v.muted = true; v.defaultMuted = true; v.loop = false; v.playsInline = true; v.preload = "auto"; v.autoplay = !calm;
-      v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("autoplay", "");
+      v.muted = true; v.defaultMuted = true; v.loop = false; v.playsInline = true; v.preload = "auto"; v.autoplay = false;
+      v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
       // play as soon as it can, if it is the slide on screen (autoplay can need a second try)
       const go = () => { if (!calm && el.classList.contains("is-on") && v.paused && !v.ended) v.play().catch(e => refused(s, e)); };
       v.addEventListener("loadeddata", go); v.addEventListener("canplay", go);
@@ -45,20 +45,34 @@
     } else slide.el.classList.add("is-still");
   }
 
-  function show(n) {
+  function show(n, immediate) {
     const next = slides[n];
     if (!next.el) { next.el = make(next); root.appendChild(next.el); }
     const v = next.el.querySelector("video");
-    if (v && !calm) { try { if (v.readyState > 0) v.currentTime = 0; } catch (e) {} v.play().catch(e => refused(next, e)); }
-    next.el.classList.add("is-on");
-    if (v && !calm) next.el.classList.remove("is-still");
-    const old = slides[cur];
-    if (old && old !== next) {
-      old.el.classList.remove("is-on");
-      const ov = old.el.querySelector("video");
-      if (ov) setTimeout(() => { if (!old.el.classList.contains("is-on")) ov.pause(); }, 1600);
-    }
-    cur = n;
+    const prev = cur >= 0 ? slides[cur] : null;
+    cur = n;                       // timers follow the slide being brought in
+    let done = false;
+    const swap = () => {           // the actual switch: the new slide fades in, the old one fades out
+      if (done) return; done = true;
+      if (!v) next.el.classList.add("kb");          // photo: slow zoom starts when it appears
+      next.el.classList.remove("is-still");
+      next.el.classList.add("is-on");
+      if (prev && prev !== next && prev.el) {
+        prev.el.classList.remove("is-on");
+        setTimeout(() => {         // only when it is fully faded out: stop it and reset it
+          if (prev.el.classList.contains("is-on")) return;
+          prev.el.classList.remove("kb");
+          const pv = prev.el.querySelector("video"); if (pv) { pv.pause(); try { pv.currentTime = 0; } catch (e) {} }
+        }, 900);
+      }
+    };
+    if (v && !calm) {
+      try { if (v.readyState > 0 && v.currentTime > 0.05) v.currentTime = 0; } catch (e) {}
+      const p = v.play();
+      const ready = () => (v.requestVideoFrameCallback ? v.requestVideoFrameCallback(() => swap()) : swap());
+      if (p && p.then) p.then(ready).catch(e => { refused(next, e); swap(); }); else ready();
+      if (immediate) swap(); else setTimeout(swap, 1000);   // never wait longer than a second
+    } else swap();
     // warm the next two, so their video is already loading while this one plays
     for (let k = 1; k <= 2; k++) {
       const nn = slides[(n + k) % slides.length];
@@ -76,7 +90,7 @@
     const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
     if (!calm && v && v.paused && !v.ended) v.play().catch(() => {});
   }, { passive: true, once: false }));
-  const wait = () => ((slides[cur] && slides[cur].dur) ? Math.max(3000, slides[cur].dur * 1000 - 400) : HOLD);
+  const wait = () => ((slides[cur] && slides[cur].dur) ? Math.max(3000, slides[cur].dur * 1000 - 600) : HOLD);
 
   // ?debug shows what the current video is doing - for finding out why autoplay is blocked
   if (/[?&]debug\b/.test(location.search)) {
@@ -128,7 +142,7 @@
     const op = slides.map((x, n) => (x.opener ? n : -1)).filter(n => n > -1);
     if (op.length) { const k = op[Math.floor(Math.random() * op.length)]; [slides[0], slides[k]] = [slides[k], slides[0]]; }
     document.body.classList.add("has-bg");
-    show(0);
+    show(0, true);
     start();
   }).catch(() => {});
 })();

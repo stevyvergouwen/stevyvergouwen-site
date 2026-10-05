@@ -16,7 +16,7 @@
       v.muted = true; v.defaultMuted = true; v.loop = false; v.playsInline = true; v.preload = "auto"; v.autoplay = !calm;
       v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("autoplay", "");
       // play as soon as it can, if it is the slide on screen (autoplay can need a second try)
-      const go = () => { if (!calm && el.classList.contains("is-on") && v.paused) v.play().catch(() => {}); };
+      const go = () => { if (!calm && el.classList.contains("is-on") && v.paused && !v.ended) v.play().catch(e => refused(s, e)); };
       v.addEventListener("loadeddata", go); v.addEventListener("canplay", go);
       if (s.poster) { v.poster = s.poster; el.style.background = "url(" + s.poster + ") center / cover no-repeat"; }
       v.controls = false; v.disablePictureInPicture = true;
@@ -33,25 +33,24 @@
     return el;
   };
 
+  // the browser refuses video outright (iPhone Low Power Mode, a strict autoplay policy): use the animated copy
+  function refused(slide, e) {
+    if (!e || e.name !== "NotAllowedError" || !slide.el) return;
+    if (slide.anim) {
+      const old = slide.el.querySelector("img.anim"); if (old) old.remove();
+      const g = new Image(); g.className = "anim"; g.alt = "";
+      g.onload = () => { if (slide.el.classList.contains("is-on")) slide.el.appendChild(g); };
+      g.src = slide.anim;
+    } else slide.el.classList.add("is-still");
+  }
+
   function show(n) {
     const next = slides[n];
     if (!next.el) { next.el = make(next); root.appendChild(next.el); }
     const v = next.el.querySelector("video");
-    if (v && !calm) { try { if (v.readyState > 0) v.currentTime = 0; } catch (e) {} v.play().catch(() => {}); }
+    if (v && !calm) { try { if (v.readyState > 0) v.currentTime = 0; } catch (e) {} v.play().catch(e => refused(next, e)); }
     next.el.classList.add("is-on");
-    if (v && !calm) {
-      next.el.classList.remove("is-still");
-      setTimeout(() => {
-        if (!(next.el.classList.contains("is-on") && v.paused && !v.ended && v.currentTime < 0.05)) return;  // really not playing: never started
-        // the browser refuses video (iPhone Low Power Mode): play the animated version instead
-        if (next.anim) {
-          const old = next.el.querySelector("img.anim"); if (old) old.remove();
-          const g = new Image(); g.className = "anim"; g.alt = "";
-          g.onload = () => { if (next.el.classList.contains("is-on")) next.el.appendChild(g); };
-          g.src = next.anim;
-        } else next.el.classList.add("is-still");
-      }, 2200);
-    }
+    if (v && !calm) next.el.classList.remove("is-still");
     const old = slides[cur];
     if (old && old !== next) {
       old.el.classList.remove("is-on");
@@ -59,9 +58,11 @@
       if (ov) setTimeout(() => { if (!old.el.classList.contains("is-on")) ov.pause(); }, 1600);
     }
     cur = n;
-    // warm the next one
-    const nn = slides[(n + 1) % slides.length];
-    if (!nn.el) { nn.el = make(nn); root.appendChild(nn.el); }
+    // warm the next two, so their video is already loading while this one plays
+    for (let k = 1; k <= 2; k++) {
+      const nn = slides[(n + k) % slides.length];
+      if (!nn.el) { nn.el = make(nn); root.appendChild(nn.el); }
+    }
   }
 
   // a second chance every second: the slide on screen should be playing
@@ -89,8 +90,16 @@
         "\nreduceMotion=" + calm + " hidden=" + document.hidden + "\n" + navigator.userAgent.slice(0, 90);
     }, 400);
   }
-  const tick = () => { show((cur + 1) % slides.length); timer = setTimeout(tick, wait()); };
-  const start = () => { if (!timer && slides.length > 1 && !calm) timer = setTimeout(tick, wait()); };
+  // move on only when the next video is ready (or after 3 s), so a slow download never shows as a still image
+  const advance = tries => {
+    const i = (cur + 1) % slides.length, nx = slides[i];
+    if (!nx.el) { nx.el = make(nx); root.appendChild(nx.el); }
+    const nv = nx.el.querySelector("video");
+    if (nv && !calm && nv.readyState < 3 && tries < 12) { timer = setTimeout(() => advance(tries + 1), 250); return; }
+    show(i);
+    timer = setTimeout(() => advance(0), wait());
+  };
+  const start = () => { if (!timer && slides.length > 1 && !calm) timer = setTimeout(() => advance(0), wait()); };
   const stop = () => { clearTimeout(timer); timer = null; };
   addEventListener("pageshow", () => { const s = slides[cur]; const v = s && s.el && s.el.querySelector("video"); if (!calm && v && v.paused && !v.ended) v.play().catch(() => {}); });
   document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));

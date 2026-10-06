@@ -125,11 +125,11 @@
     // shuffle, then mix photos and video: the photos are spread evenly between the video pieces
     const shuf = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
     const vids = shuf(slides.filter(x => x.type === "video")), fotos = shuf(slides.filter(x => x.type !== "video"));
-    // never two pieces of the same clip in a row (greedy)
+    // pieces of the same artist/set stay at least 4 slides apart (greedy)
     const ordered = [];
     while (vids.length) {
-      const last = ordered.filter(x => x.type === "video").slice(-1)[0];
-      let k = vids.findIndex(x => !last || x.group !== last.group);
+      const recent = ordered.slice(-4).map(x => x.group);
+      let k = vids.findIndex(x => !recent.includes(x.group));
       if (k < 0) k = 0;
       ordered.push(vids.splice(k, 1)[0]);
     }

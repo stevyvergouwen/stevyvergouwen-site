@@ -56,15 +56,6 @@
  },
  {
   "type": "video",
-  "src": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-b.mp4",
-  "poster": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-b.jpg",
-  "anim": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-b.gif",
-  "group": "gyra-oranjezoet",
-  "dur": 4.5,
-  "opener": false
- },
- {
-  "type": "video",
   "src": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-a.mp4",
   "poster": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-a.jpg",
   "anim": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-a.gif",

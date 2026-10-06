@@ -33,7 +33,16 @@
   "poster": "media/bg/alois-groovebox-stevyvergouwen-16x9-hd-15-a.jpg",
   "anim": "media/bg/alois-groovebox-stevyvergouwen-16x9-hd-15-a.gif",
   "group": "alois-groovebox-stevyvergouwen-16x9-hd-15",
-  "dur": 4.6,
+  "dur": 4.5,
+  "opener": false
+ },
+ {
+  "type": "video",
+  "src": "media/bg/alois-groovebox-stevyvergouwen-16x9-hd-15-b.mp4",
+  "poster": "media/bg/alois-groovebox-stevyvergouwen-16x9-hd-15-b.jpg",
+  "anim": "media/bg/alois-groovebox-stevyvergouwen-16x9-hd-15-b.gif",
+  "group": "alois-groovebox-stevyvergouwen-16x9-hd-15",
+  "dur": 4.5,
   "opener": false
  },
  {
@@ -42,7 +51,16 @@
   "poster": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-a.jpg",
   "anim": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-a.gif",
   "group": "gyra-oranjezoet-stevyvergouwen-16x9-9",
-  "dur": 2.72,
+  "dur": 3.52,
+  "opener": false
+ },
+ {
+  "type": "video",
+  "src": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-b.mp4",
+  "poster": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-b.jpg",
+  "anim": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-b.gif",
+  "group": "gyra-oranjezoet-stevyvergouwen-16x9-9",
+  "dur": 4.5,
   "opener": false
  },
  {
@@ -51,7 +69,7 @@
   "poster": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-a.jpg",
   "anim": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-a.gif",
   "group": "hazel-zeevonq-stevyvergouwen-16x9-hd-09",
-  "dur": 2.8,
+  "dur": 3.47,
   "opener": false
  },
  {
@@ -60,16 +78,7 @@
   "poster": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-b.jpg",
   "anim": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-b.gif",
   "group": "hazel-zeevonq-stevyvergouwen-16x9-hd-09",
-  "dur": 2.0,
-  "opener": false
- },
- {
-  "type": "video",
-  "src": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-c.mp4",
-  "poster": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-c.jpg",
-  "anim": "media/bg/hazel-zeevonq-stevyvergouwen-16x9-hd-09-c.gif",
-  "group": "hazel-zeevonq-stevyvergouwen-16x9-hd-09",
-  "dur": 2.6,
+  "dur": 3.22,
   "opener": false
  },
  {
@@ -78,7 +87,16 @@
   "poster": "media/bg/locus-error-awakenings-16x9-hd-18-a.jpg",
   "anim": "media/bg/locus-error-awakenings-16x9-hd-18-a.gif",
   "group": "locus-error-awakenings-16x9-hd-18",
-  "dur": 4.6,
+  "dur": 3.4,
+  "opener": false
+ },
+ {
+  "type": "video",
+  "src": "media/bg/locus-error-awakenings-16x9-hd-18-b.mp4",
+  "poster": "media/bg/locus-error-awakenings-16x9-hd-18-b.jpg",
+  "anim": "media/bg/locus-error-awakenings-16x9-hd-18-b.gif",
+  "group": "locus-error-awakenings-16x9-hd-18",
+  "dur": 4.5,
   "opener": false
  },
  {
@@ -87,7 +105,16 @@
   "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10-a.jpg",
   "anim": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10-a.gif",
   "group": "lou-d-solar-stevyvergouwen-16x9-hd-10",
-  "dur": 2.26,
+  "dur": 3.58,
+  "opener": true
+ },
+ {
+  "type": "video",
+  "src": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10-b.mp4",
+  "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10-b.jpg",
+  "anim": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-10-b.gif",
+  "group": "lou-d-solar-stevyvergouwen-16x9-hd-10",
+  "dur": 4.26,
   "opener": true
  },
  {
@@ -96,7 +123,7 @@
   "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13-a.jpg",
   "anim": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13-a.gif",
   "group": "lou-d-solar-stevyvergouwen-16x9-hd-13",
-  "dur": 3.0,
+  "dur": 3.04,
   "opener": true
  },
  {
@@ -105,7 +132,7 @@
   "poster": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13-b.jpg",
   "anim": "media/bg/lou-d-solar-stevyvergouwen-16x9-hd-13-b.gif",
   "group": "lou-d-solar-stevyvergouwen-16x9-hd-13",
-  "dur": 2.98,
+  "dur": 3.1,
   "opener": true
  },
  {
@@ -114,7 +141,7 @@
   "poster": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-a.jpg",
   "anim": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-a.gif",
   "group": "rasa-sol-oranjezoet-stevyvergouwen-16x9-8",
-  "dur": 3.7,
+  "dur": 4.5,
   "opener": false
  },
  {
@@ -123,16 +150,7 @@
   "poster": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-b.jpg",
   "anim": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-b.gif",
   "group": "rasa-sol-oranjezoet-stevyvergouwen-16x9-8",
-  "dur": 2.5,
-  "opener": false
- },
- {
-  "type": "video",
-  "src": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-c.mp4",
-  "poster": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-c.jpg",
-  "anim": "media/bg/rasa-sol-oranjezoet-stevyvergouwen-16x9-8-c.gif",
-  "group": "rasa-sol-oranjezoet-stevyvergouwen-16x9-8",
-  "dur": 4.6,
+  "dur": 4.5,
   "opener": false
  },
  {
@@ -141,7 +159,7 @@
   "poster": "media/bg/spanishheat-tstyle-stevyvergouwen-16x9-hd-16-a.jpg",
   "anim": "media/bg/spanishheat-tstyle-stevyvergouwen-16x9-hd-16-a.gif",
   "group": "spanishheat-tstyle-stevyvergouwen-16x9-hd-16",
-  "dur": 4.6,
+  "dur": 4.5,
   "opener": false
  },
  {
@@ -150,7 +168,7 @@
   "poster": "media/bg/spanishheat-tstyle-stevyvergouwen-16x9-hd-16-b.jpg",
   "anim": "media/bg/spanishheat-tstyle-stevyvergouwen-16x9-hd-16-b.gif",
   "group": "spanishheat-tstyle-stevyvergouwen-16x9-hd-16",
-  "dur": 4.47,
+  "dur": 3.0,
   "opener": false
  }
 ]

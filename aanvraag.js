@@ -2,7 +2,7 @@
    Sends the request as JSON to the Worker (see worker/). No keys live in this file. */
 (() => {
   // The address of the Worker that mails the request to Stevy. Set after the Worker is deployed.
-  const ENDPOINT = "";
+  const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
   const FALLBACK_MAIL = "info@shotbystevy.com";
 
   const $ = (s, el = document) => el.querySelector(s);

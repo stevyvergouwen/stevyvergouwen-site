@@ -101,13 +101,15 @@
 
   // artists: the time is optional (a presskit has none, and some do not know it yet)
   const timeNeeded = () => form.elements.type.value !== "artist";
+  // artist asking only for a presskit: it is shot at Studio Brada, so no location is needed
+  const presskitOnly = () => { const n = $$('input[name="needs"]:checked', form).map(i => i.value); return form.elements.type.value === "artist" && n.length === 1 && n[0] === "presskit"; };
   const nowHM = () => { const n = new Date(); return `${pad(n.getHours())}:${pad(n.getMinutes())}`; };
   const check = {
     name: v => v.trim().length >= 2,
     email: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),
     instagram: v => cleanHandle(v) === "" || /^[A-Za-z0-9._]{1,30}$/.test(cleanHandle(v)),
     date: v => /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= today && v <= maxDay,
-    location: v => v.trim().length >= 2,
+    location: v => v.trim().length >= 2 || presskitOnly(),
     start: v => v === "" ? !timeNeeded() : /^([01]\d|2[0-3]):[0-5]\d$/.test(v) && !(form.elements.date.value === today && v < nowHM()),
     end: v => /^([01]\d|2[0-3]):[0-5]\d$/.test(v)
   };
@@ -131,6 +133,18 @@
     el.addEventListener("input", () => { if (el.closest(".field").classList.contains("bad")) validateOne(name); });
   });
   form.elements.date.addEventListener("change", () => { if (form.elements.start && form.elements.start.value) validateOne("start"); });
+  // adapt the time label and the location field to what is picked
+  const timeLabel = $('label[for="f-start"]', form), locIn = form.elements.location;
+  const locPlaceholder = locIn.placeholder;
+  const syncNeeds = () => {
+    if (timeLabel && form.elements.type.value === "artist") {
+      const multi = !!$('input[name="needs"][value="live registration"]:checked', form);
+      timeLabel.textContent = multi ? "What time are you on? I plan the cameras around it. Not sure yet? Leave it open." : "Time you are on, if you know. Not sure yet? Leave it open.";
+    }
+    locIn.placeholder = presskitOnly() ? "Not needed: presskits are shot at Studio Brada" : locPlaceholder;
+    if (presskitOnly()) setErr("location", "");
+  };
+  $$('input[name="needs"]', form).forEach(i => i.addEventListener("change", syncNeeds));
   // tidy the handle when the field is left
   form.elements.instagram.addEventListener("blur", e => { const h = cleanHandle(e.target.value); if (h && /^[A-Za-z0-9._]{1,30}$/.test(h)) e.target.value = "@" + h; });
 
@@ -212,7 +226,7 @@
   const mailto = payload => {
     const body = [
       `Type: ${payload.type}`, `Name: ${payload.name}`, `Email: ${payload.email}`, `Instagram: ${payload.instagram || "-"}`,
-      `Date: ${payload.date}`, `Time: ${payload.start || "-"}${payload.end ? " - " + payload.end : ""}`, `Location: ${payload.location}`, `Address: ${payload.place ? payload.place.label : "(typed by hand)"}`, `Needs: ${payload.needs.join(", ") || "-"}`, `Notes: ${payload.notes || "-"}`, `Source: ${payload.src}`
+      `Date: ${payload.date}`, `Time: ${payload.start || "-"}${payload.end ? " - " + payload.end : ""}`, `Location: ${payload.location || "Studio Brada (presskit shoot)"}`, `Address: ${payload.place ? payload.place.label : "(typed by hand)"}`, `Needs: ${payload.needs.join(", ") || "-"}`, `Notes: ${payload.notes || "-"}`, `Source: ${payload.src}`
     ].join("\n");
     return `mailto:${FALLBACK_MAIL}?subject=${encodeURIComponent("Request: " + payload.type)}&body=${encodeURIComponent(body)}`;
   };

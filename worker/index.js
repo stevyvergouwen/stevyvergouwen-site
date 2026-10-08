@@ -40,7 +40,12 @@ export default {
 
     const type = TYPES[d.type] ? d.type : "";
     const name = line(d.name, 80), email = line(d.email, 120), ig = line(d.instagram, 40);
-    const date = line(d.date, 10), location = line(d.location, 240);
+    const date = line(d.date, 10);
+    const needs = (Array.isArray(d.needs) ? d.needs : []).filter(n => NEEDS.includes(n));
+    // an artist who only wants a presskit needs no location: those are shot at Studio Brada
+    const presskitOnly = type === "artist" && needs.length === 1 && needs[0] === "presskit";
+    let location = line(d.location, 240);
+    if (!location && presskitOnly) location = "Studio Brada (presskit shoot)";
     if (!type || name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || (ig && !/^@[A-Za-z0-9._]{1,30}$/.test(ig)) ||
         !/^\d{4}-\d{2}-\d{2}$/.test(date) || location.length < 2) return reply(400, { ok: false, error: "invalid" }, okOrigin);
 
@@ -52,7 +57,6 @@ export default {
     // times: event needs start and end, artist optional, brand none (HH:MM)
     const hm = t => (/^([01]\d|2[0-3]):[0-5]\d$/.test(String(t || "")) ? String(t) : "");
     const start = hm(d.start), end = hm(d.end);
-    const needs = (Array.isArray(d.needs) ? d.needs : []).filter(n => NEEDS.includes(n));
     // artist: the time is optional
     if ((type === "event" && (!start || !end))) return reply(400, { ok: false, error: "time" }, okOrigin);
     const notes = text(d.notes);

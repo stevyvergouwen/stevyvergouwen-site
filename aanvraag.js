@@ -22,6 +22,10 @@
     if (img.complete) check();
   });
 
+  // a hairline under the sticky bar once the page has moved
+  const onScroll = () => document.body.classList.toggle("scrolled", scrollY > 8);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
   const form = $(".form");
   if (!form) return;
   const t0 = Date.now();

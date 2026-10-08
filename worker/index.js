@@ -6,7 +6,7 @@ import { EmailMessage } from "cloudflare:email";
 const ALLOWED_ORIGINS = ["https://stevyvergouwen.com", "https://www.stevyvergouwen.com"];
 const FROM = "aanvraag@stevyvergouwen.com";     // must be an address on a domain with Email Routing
 const TYPES = { event: "Event", brand: "Brand", artist: "Artist" };
-const NEEDS = ["photos", "video", "aftermovie", "brand video", "social content", "presskit", "other"];
+const NEEDS = ["photos", "video", "aftermovie", "brand video", "social content", "presskit", "live registration", "recap", "other"];
 
 const cors = origin => ({
   "Access-Control-Allow-Origin": origin,

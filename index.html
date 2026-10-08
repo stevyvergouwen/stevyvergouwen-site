@@ -57,7 +57,9 @@
   a { color:inherit; text-decoration:none; }
   a:hover { color:var(--blue); }
   .top, .foot { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-  .top { color:var(--dim); }
+  .top { color:var(--dim); align-items:center; }
+  .ask { color:var(--ink); background:var(--paper); padding:12px 22px; border-radius:999px; font-size:12px; letter-spacing:.22em; font-weight:500; min-height:44px; display:inline-flex; align-items:center; }
+  .ask:hover { color:var(--ink); background:#fff; }
   h1 { margin:0; font:700 clamp(2.1rem,7.4vw,6.6rem)/1 "Helvetica Neue",Arimo,Arial,sans-serif; letter-spacing:-.035em; }
 
   html { overflow-anchor: none; -webkit-text-size-adjust: 100%; }
@@ -97,7 +99,7 @@
 </head>
 <body>
 <div data-bg aria-hidden="true"></div>
-<div class="top"><span>STEVY VERGOUWEN</span></div>
+<div class="top"><span>STEVY VERGOUWEN</span><a class="ask" href="/start/">Send a request</a></div>
 <main>
   <h1 aria-label="Made for the night. Built for the brand."><span class="ln l1" aria-hidden="true"><span class="in">Made for the night.</span></span><span class="ln l2 dim" aria-hidden="true"><span class="in">Built for the brand.</span></span></h1>
   <p>Visuals for artists, events and brands.</p>

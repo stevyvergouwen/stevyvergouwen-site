@@ -145,7 +145,7 @@
     if (presskitOnly()) {
       if (!locIn.value.trim() || autoStudio) { locIn.value = "Studio Brada"; autoStudio = true; place = null; closeList(); }
       setErr("location", "");
-      found.textContent = "Presskits are shot at my studio, Studio Brada."; found.hidden = false;
+      found.textContent = "I shoot all presskits in my regular studio, Studio Brada."; found.hidden = false;
     } else if (autoStudio) {
       locIn.value = ""; autoStudio = false; found.hidden = true; found.textContent = "";
     }

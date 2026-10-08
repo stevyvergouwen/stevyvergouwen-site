@@ -57,7 +57,8 @@ export default {
     // times: event needs start and end, artist optional, brand none (HH:MM)
     const hm = t => (/^([01]\d|2[0-3]):[0-5]\d$/.test(String(t || "")) ? String(t) : "");
     const start = hm(d.start), end = hm(d.end);
-    // artist: the time is optional
+    // artist: the time is optional, except for a presskit-only request: a time between 09:00 and 21:00 in the studio
+    if (presskitOnly && (!start || start < "09:00" || start > "21:00")) return reply(400, { ok: false, error: "time" }, okOrigin);
     if ((type === "event" && (!start || !end))) return reply(400, { ok: false, error: "time" }, okOrigin);
     const notes = text(d.notes);
     const src = line(d.src, 40) || "direct";

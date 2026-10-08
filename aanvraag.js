@@ -89,7 +89,8 @@
     location: "Tell me where it will happen.",
     start: "Add a start time.",
     end: "Add an end time.",
-    startPast: "That time has already passed today."
+    startPast: "That time has already passed today.",
+    studioTime: "Pick a time between 09:00 and 21:00."
   };
 
   const cleanHandle = v => {
@@ -110,7 +111,7 @@
     instagram: v => cleanHandle(v) === "" || /^[A-Za-z0-9._]{1,30}$/.test(cleanHandle(v)),
     date: v => /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= today && v <= maxDay,
     location: v => v.trim().length >= 2 || presskitOnly(),
-    start: v => v === "" ? !timeNeeded() : /^([01]\d|2[0-3]):[0-5]\d$/.test(v) && !(form.elements.date.value === today && v < nowHM()),
+    start: v => v === "" ? !(timeNeeded() || presskitOnly()) : /^([01]\d|2[0-3]):[0-5]\d$/.test(v) && !(form.elements.date.value === today && v < nowHM()) && (!presskitOnly() || (v >= "09:00" && v <= "21:00")),
     end: v => /^([01]\d|2[0-3]):[0-5]\d$/.test(v)
   };
 
@@ -123,7 +124,7 @@
   const have = () => Object.keys(check).filter(n => form.elements[n]);
   const validateOne = name => {
     const v = form.elements[name].value, ok = check[name](v);
-    setErr(name, ok ? "" : (name === "date" && v > today ? msg.dateFar : (name === "start" && /^\d/.test(v) ? msg.startPast : msg[name])));
+    setErr(name, ok ? "" : (name === "date" && v > today ? msg.dateFar : (name === "start" && /^\d/.test(v) ? (presskitOnly() && (v < "09:00" || v > "21:00") ? msg.studioTime : msg.startPast) : (name === "start" && presskitOnly() ? msg.studioTime : msg[name]))));
     return ok;
   };
 
@@ -141,11 +142,13 @@
   const syncNeeds = () => {
     if (timeLabel && form.elements.type.value === "artist") {
       const multi = !!$('input[name="needs"][value="live registration"]:checked', form);
-      timeLabel.textContent = presskitOnly() ? "Preferred time, if you have one. Not sure yet? Leave it open."
+      timeLabel.textContent = presskitOnly() ? "What time suits you best? Pick a time between 09:00 and 21:00."
         : multi ? "What time are you on? I plan the cameras around it. Not sure yet? Leave it open."
         : "Time you are on, if you know. Not sure yet? Leave it open.";
+      const st = form.elements.start; st.min = presskitOnly() ? "09:00" : ""; st.max = presskitOnly() ? "21:00" : ""; st.required = presskitOnly();
       dateLabel.textContent = presskitOnly() ? "Preferred date for your presskit shoot" : dateText;
     }
+    if (form.elements.start && form.elements.start.dataset.touched) validateOne("start");
     if (presskitOnly()) {
       if (!locIn.value.trim() || autoStudio) { locIn.value = "Studio Brada"; autoStudio = true; place = null; closeList(); }
       setErr("location", "");

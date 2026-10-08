@@ -1,6 +1,6 @@
 /* Algemene voorwaarden - a panel over the page, in the site's own look. */
 .vw { position: fixed; inset: 0; z-index: 120; background: #08080a; color: #ebe7e0;
-  font: 12px/1.7 "JetBrains Mono", ui-monospace, Menlo, monospace; letter-spacing: .02em;
+  font: 12px/1.7 "IBM Plex Mono",ui-monospace,Menlo,monospace; letter-spacing: .02em;
   display: flex; flex-direction: column; opacity: 0; visibility: hidden; transform: translateY(24px);
   transition: opacity .45s cubic-bezier(.2,.7,.1,1), transform .45s cubic-bezier(.2,.7,.1,1), visibility 0s .45s; }
 .vw.is-open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
@@ -19,7 +19,7 @@ body.vw-open { overflow: hidden; }
 .vw-scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 0 clamp(16px, 3vw, 40px) 120px; }
 .vw-wrap { max-width: 1200px; margin: 0 auto; }
 .vw-head { padding: clamp(40px, 8vw, 110px) 0 clamp(32px, 5vw, 64px); }
-.vw-head h2 { margin: 0; font: 700 clamp(2.6rem, 8vw, 7rem)/.98 "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: -.04em; }
+.vw-head h2 { margin: 0; font: 800 clamp(2.6rem, 8vw, 7rem)/.98 "Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif; letter-spacing: -.04em; }
 .vw-body { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); }
 
 .vw-toc { position: sticky; top: 24px; align-self: start; }
@@ -32,7 +32,7 @@ body.vw-open { overflow: hidden; }
 .vw-intro { margin: 0 0 40px; max-width: 62ch; color: #8b8880; }
 .vw .article { padding: 0 0 44px; }
 .vw .article + .article { border-top: 1px solid #2c2b29; padding-top: 44px; }
-.vw .article h2 { margin: 0 0 24px; font: 700 clamp(1.4rem, 2.6vw, 2rem)/1.15 "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: -.02em; }
+.vw .article h2 { margin: 0 0 24px; font: 700 clamp(1.4rem, 2.6vw, 2rem)/1.15 "Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif; letter-spacing: -.02em; }
 .vw .article h2 .num { color: #5b84ff; margin-right: 8px; }
 .vw .clause { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); margin: 0 0 12px; }
 .vw .clause .nr { color: #8b8880; }

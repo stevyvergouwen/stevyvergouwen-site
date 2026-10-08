@@ -134,8 +134,32 @@
     el.addEventListener("input", () => { if (el.closest(".field").classList.contains("bad")) validateOne(name); });
   });
   form.elements.date.addEventListener("change", () => { if (form.elements.start && form.elements.start.value) validateOne("start"); });
+  // time pickers: an hour and a five-minute step, combined into one hidden value
+  const ALL_HOURS = Array.from({ length: 24 }, (_, h) => String(h).padStart(2, "0"));
+  const restrictHours = studio => $$(".timepick", form).forEach(tp => {
+    if (tp.closest(".field").dataset.time !== "start") return;
+    const hs = $("[data-h]", tp), keep = hs.value;
+    hs.innerHTML = '<option value="">--</option>' + ALL_HOURS.filter(h => !studio || (h >= "09" && h <= "21")).map(h => `<option value="${h}">${h}</option>`).join("");
+    hs.value = [...hs.options].some(o => o.value === keep) ? keep : "";
+    hs.dispatchEvent(new Event("change"));
+  });
+  $$(".timepick", form).forEach(tp => {
+    const hid = tp.parentNode.querySelector('input[type=hidden]'), hs = $("[data-h]", tp), ms = $("[data-m]", tp);
+    const sync = () => {
+      if (hs.value && !ms.value) ms.value = "00";
+      if (!hs.value) ms.value = "";
+      hid.value = hs.value ? hs.value + ":" + ms.value : "";
+      hid.dataset.touched = hid.dataset.touched || (hs.dataset.user ? "1" : "");
+    };
+    [hs, ms].forEach(el => el.addEventListener("change", e => {
+      if (e.isTrusted) hs.dataset.user = "1";
+      sync();
+      if (e.isTrusted || hid.dataset.touched) hid.dispatchEvent(new Event("input"));
+      if (e.isTrusted) validateOne(hid.name);
+    }));
+  });
   // adapt the time label and the location field to what is picked
-  const timeLabel = $('label[for="f-start"]', form), locIn = form.elements.location;
+  const timeLabel = $('label[for="f-start-h"]', form), locIn = form.elements.location;
   const dateLabel = $('label[for="f-date"]', form), dateText = dateLabel.textContent;
   const notesIn = form.elements.notes, notesText = notesIn.placeholder;
   const STUDIO = "Studio Brada, Zijdepark 19, Breda";
@@ -147,11 +171,11 @@
       timeLabel.textContent = presskitOnly() ? "What time suits you best? Pick a time between 09:00 and 21:00."
         : multi ? "What time are you on? I plan the cameras around it. Not sure yet? Leave it open."
         : "Time you are on, if you know. Not sure yet? Leave it open.";
-      const st = form.elements.start; st.min = presskitOnly() ? "09:00" : ""; st.max = presskitOnly() ? "21:00" : ""; st.required = presskitOnly();
+      restrictHours(presskitOnly());
       dateLabel.textContent = presskitOnly() ? "Preferred date for your presskit shoot" : dateText;
     }
     notesIn.placeholder = presskitOnly() ? "Paste a link to your moodboard or references, and tell me your ideas. Anything that helps." : notesText;
-    if (form.elements.start && form.elements.start.dataset.touched) validateOne("start");
+    if (form.elements.start && form.elements.start.value) validateOne("start");
     const combo = locIn.closest(".combo");
     if (presskitOnly()) {
       locIn.value = STUDIO; autoStudio = true; place = null; closeList(); setErr("location", "");
@@ -255,7 +279,7 @@
     const results = have().map(validateOne);
     if (results.includes(false)) {
       const first = have().find(n => form.elements[n].closest(".field").classList.contains("bad"));
-      if (first) form.elements[first].focus();
+      if (first) { const el = form.elements[first]; (el.type === "hidden" ? $("[data-h]", el.parentNode) : el).focus(); }
       return;
     }
     const payload = {

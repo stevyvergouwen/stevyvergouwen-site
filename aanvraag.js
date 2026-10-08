@@ -105,7 +105,7 @@
   const check = {
     name: v => v.trim().length >= 2,
     email: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),
-    instagram: v => /^[A-Za-z0-9._]{1,30}$/.test(cleanHandle(v)),
+    instagram: v => cleanHandle(v) === "" || /^[A-Za-z0-9._]{1,30}$/.test(cleanHandle(v)),
     date: v => /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= today && v <= maxDay,
     location: v => v.trim().length >= 2,
     start: v => v === "" ? !timeNeeded() : /^([01]\d|2[0-3]):[0-5]\d$/.test(v) && !(form.elements.date.value === today && v < nowHM()),
@@ -211,7 +211,7 @@
 
   const mailto = payload => {
     const body = [
-      `Type: ${payload.type}`, `Name: ${payload.name}`, `Email: ${payload.email}`, `Instagram: ${payload.instagram}`,
+      `Type: ${payload.type}`, `Name: ${payload.name}`, `Email: ${payload.email}`, `Instagram: ${payload.instagram || "-"}`,
       `Date: ${payload.date}`, `Time: ${payload.start || "-"}${payload.end ? " - " + payload.end : ""}`, `Location: ${payload.location}`, `Address: ${payload.place ? payload.place.label : "(typed by hand)"}`, `Needs: ${payload.needs.join(", ") || "-"}`, `Notes: ${payload.notes || "-"}`, `Source: ${payload.src}`
     ].join("\n");
     return `mailto:${FALLBACK_MAIL}?subject=${encodeURIComponent("Request: " + payload.type)}&body=${encodeURIComponent(body)}`;
@@ -230,7 +230,7 @@
       type: form.elements.type.value,
       name: form.elements.name.value.trim(),
       email: form.elements.email.value.trim(),
-      instagram: "@" + cleanHandle(form.elements.instagram.value),
+      instagram: cleanHandle(form.elements.instagram.value) ? "@" + cleanHandle(form.elements.instagram.value) : "",
       date: form.elements.date.value,
       start: form.elements.start ? form.elements.start.value : "",
       end: form.elements.end ? form.elements.end.value : "",

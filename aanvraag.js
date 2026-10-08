@@ -133,16 +133,22 @@
     el.addEventListener("input", () => { if (el.closest(".field").classList.contains("bad")) validateOne(name); });
   });
   form.elements.date.addEventListener("change", () => { if (form.elements.start && form.elements.start.value) validateOne("start"); });
+  locIn.addEventListener("input", () => { autoStudio = false; });
   // adapt the time label and the location field to what is picked
   const timeLabel = $('label[for="f-start"]', form), locIn = form.elements.location;
-  const locPlaceholder = locIn.placeholder;
+  let autoStudio = false;
   const syncNeeds = () => {
     if (timeLabel && form.elements.type.value === "artist") {
       const multi = !!$('input[name="needs"][value="live registration"]:checked', form);
       timeLabel.textContent = multi ? "What time are you on? I plan the cameras around it. Not sure yet? Leave it open." : "Time you are on, if you know. Not sure yet? Leave it open.";
     }
-    locIn.placeholder = presskitOnly() ? "Not needed: presskits are shot at Studio Brada" : locPlaceholder;
-    if (presskitOnly()) setErr("location", "");
+    if (presskitOnly()) {
+      if (!locIn.value.trim() || autoStudio) { locIn.value = "Studio Brada"; autoStudio = true; place = null; closeList(); }
+      setErr("location", "");
+      found.textContent = "Presskits are shot at my studio, Studio Brada."; found.hidden = false;
+    } else if (autoStudio) {
+      locIn.value = ""; autoStudio = false; found.hidden = true; found.textContent = "";
+    }
   };
   $$('input[name="needs"]', form).forEach(i => i.addEventListener("change", syncNeeds));
   // tidy the handle when the field is left
@@ -226,7 +232,7 @@
   const mailto = payload => {
     const body = [
       `Type: ${payload.type}`, `Name: ${payload.name}`, `Email: ${payload.email}`, `Instagram: ${payload.instagram || "-"}`,
-      `Date: ${payload.date}`, `Time: ${payload.start || "-"}${payload.end ? " - " + payload.end : ""}`, `Location: ${payload.location || "Studio Brada (presskit shoot)"}`, `Address: ${payload.place ? payload.place.label : "(typed by hand)"}`, `Needs: ${payload.needs.join(", ") || "-"}`, `Notes: ${payload.notes || "-"}`, `Source: ${payload.src}`
+      `Date: ${payload.date}`, `Time: ${payload.start || "-"}${payload.end ? " - " + payload.end : ""}`, `Location: ${payload.location}`, `Address: ${payload.place ? payload.place.label : "(typed by hand)"}`, `Needs: ${payload.needs.join(", ") || "-"}`, `Notes: ${payload.notes || "-"}`, `Source: ${payload.src}`
     ].join("\n");
     return `mailto:${FALLBACK_MAIL}?subject=${encodeURIComponent("Request: " + payload.type)}&body=${encodeURIComponent(body)}`;
   };

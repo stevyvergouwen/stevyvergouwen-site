@@ -138,6 +138,7 @@
   const timeLabel = $('label[for="f-start"]', form), locIn = form.elements.location;
   const dateLabel = $('label[for="f-date"]', form), dateText = dateLabel.textContent;
   const notesIn = form.elements.notes, notesText = notesIn.placeholder;
+  const STUDIO = "Studio Brada, Zijdepark 19, Breda";
   let autoStudio = false;
   locIn.addEventListener("input", () => { autoStudio = false; });
   const syncNeeds = () => {
@@ -151,12 +152,14 @@
     }
     notesIn.placeholder = presskitOnly() ? "Paste a link to your moodboard or references, and tell me your ideas. Anything that helps." : notesText;
     if (form.elements.start && form.elements.start.dataset.touched) validateOne("start");
+    const combo = locIn.closest(".combo");
     if (presskitOnly()) {
-      if (!locIn.value.trim() || autoStudio) { locIn.value = "Studio Brada"; autoStudio = true; place = null; closeList(); }
-      setErr("location", "");
-      found.textContent = "I shoot all presskits in my regular studio, Studio Brada."; found.hidden = false;
-    } else if (autoStudio) {
-      locIn.value = ""; autoStudio = false; found.hidden = true; found.textContent = "";
+      locIn.value = STUDIO; autoStudio = true; place = null; closeList(); setErr("location", "");
+      combo.hidden = true;
+      found.textContent = "I shoot all presskits in my regular studio: " + STUDIO + "."; found.hidden = false;
+    } else {
+      combo.hidden = false;
+      if (autoStudio) { locIn.value = ""; autoStudio = false; found.hidden = true; found.textContent = ""; }
     }
   };
   $$('input[name="needs"]', form).forEach(i => i.addEventListener("change", syncNeeds));

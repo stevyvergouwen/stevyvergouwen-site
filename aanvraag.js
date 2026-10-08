@@ -162,7 +162,7 @@
   const timeLabel = $('label[for="f-start-h"]', form), locIn = form.elements.location;
   const dateLabel = $('label[for="f-date"]', form), dateText = dateLabel.textContent;
   const notesIn = form.elements.notes, notesText = notesIn.placeholder;
-  const STUDIO = "Studio Brada, Zijdepark 19, Breda";
+  const STUDIO = "Studio Brada, Zijdepark 19, Oudekerk aan den IJssel";
   let autoStudio = false;
   locIn.addEventListener("input", () => { autoStudio = false; });
   const syncNeeds = () => {

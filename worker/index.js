@@ -45,7 +45,7 @@ export default {
     // an artist who only wants a presskit needs no location: those are shot at Studio Brada
     const presskitOnly = type === "artist" && needs.length === 1 && needs[0] === "presskit";
     let location = line(d.location, 240);
-    if (presskitOnly) location = "Studio Brada, Zijdepark 19, Breda";   // presskits are always shot in the studio
+    if (presskitOnly) location = "Studio Brada, Zijdepark 19, Oudekerk aan den IJssel";   // presskits are always shot in the studio
     if (!type || name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || (ig && !/^@[A-Za-z0-9._]{1,30}$/.test(ig)) ||
         !/^\d{4}-\d{2}-\d{2}$/.test(date) || location.length < 2) return reply(400, { ok: false, error: "invalid" }, okOrigin);
 

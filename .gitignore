@@ -6,5 +6,6 @@ js/
 data/
 media/*
 !media/bg/
+!media/pages/
 tools/
 serve.py

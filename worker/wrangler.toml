@@ -1,0 +1,6 @@
+name = "aanvraag-stevyvergouwen"
+main = "index.js"
+compatibility_date = "2024-09-01"
+
+# the mail goes to this address; it must be a verified destination address in Cloudflare Email Routing
+send_email = [{ name = "MAIL", destination_address = "info@shotbystevy.com" }]

@@ -23,16 +23,41 @@
     if (img.complete) check();
   });
 
-  // hero: the muted video loop behind the top block. Not under reduced motion (the poster stays), and never forced.
-  const loopVideo = $(".hero-slot video.loop");
-  if (loopVideo) {
+  // hero: the muted video loop behind the top block. Two copies of the same video take turns: shortly before the
+  // end of one, the other starts from the beginning and the first fades out, so the loop closes without a jump or a stall.
+  // Not under reduced motion (the poster stays), and never forced.
+  const A = $(".hero-slot video.loop");
+  if (A) {
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    A.classList.add("on");
     if (!still) {
-      loopVideo.src = loopVideo.dataset.src; loopVideo.muted = true;
-      const go = () => { const p = loopVideo.play(); if (p && p.catch) p.catch(() => {}); };
-      loopVideo.load(); go();                                                // preload="none" waits for this
-      loopVideo.addEventListener("canplay", go);
-      addEventListener("pointerdown", go, { once: true, passive: true });   // some browsers want a first touch
+      const XF = 0.9;                                     // length of the dissolve, in seconds
+      const B = A.cloneNode(false);
+      B.removeAttribute("poster"); B.classList.remove("on");
+      A.parentNode.appendChild(B);
+      [A, B].forEach(v => { v.loop = false; v.muted = true; v.preload = "auto"; v.src = A.dataset.src; v.load(); });
+      let cur = A, nxt = B, switching = false;
+      const play = v => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+      const swap = () => {
+        if (switching) return; switching = true;
+        const old = cur, fresh = nxt;
+        try { fresh.currentTime = 0; } catch (e) {}
+        play(fresh);
+        fresh.classList.add("on"); old.classList.remove("on");
+        cur = fresh; nxt = old;
+        setTimeout(() => { old.pause(); try { old.currentTime = 0; } catch (e) {} switching = false; }, XF * 1000 + 250);
+      };
+      const tick = () => {
+        if (cur.duration && !cur.paused && cur.currentTime >= cur.duration - XF && nxt.readyState >= 3) swap();
+        requestAnimationFrame(tick);
+      };
+      A.addEventListener("canplay", () => play(A), { once: true });
+      play(A);
+      addEventListener("pointerdown", () => { if (cur.paused) play(cur); }, { once: true, passive: true });
+      requestAnimationFrame(tick);
+      // safety nets: a tab that was hidden stops animation frames; when it ends or returns, carry on
+      [A, B].forEach(v => v.addEventListener("ended", () => { if (v === cur) { switching = false; swap(); } }));
+      document.addEventListener("visibilitychange", () => { if (!document.hidden && cur.paused && !switching) play(cur); });
     }
   }
 

@@ -233,3 +233,8 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
   .stage h1 { grid-area: 1 / 1; align-self: start; position: relative; z-index: 2; margin: 40px 0 16px; font-size: clamp(1.55rem, 7.2vw, 2.4rem); line-height: 1; text-shadow: 0 2px 18px rgba(0,0,0,.55); max-width: 15ch; }
   .stage .lead { grid-area: 2 / 1; margin-top: 18px; }
 }
+
+/* two copies of the loop take turns, dissolving into each other */
+.hero-slot video.loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .9s linear; }
+.hero-slot video.loop.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .hero-slot video.loop { transition: none; } }

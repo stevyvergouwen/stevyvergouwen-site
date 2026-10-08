@@ -87,7 +87,7 @@
     date: "Pick a date from today onwards.",
     dateFar: "Pick a date within the next two years.",
     location: "Tell me where it will happen.",
-    start: "Add a start time.",
+    start: "Add a start time. For live registration I need to know when you are on.",
     end: "Add an end time.",
     startPast: "That time has already passed today."
   };
@@ -99,6 +99,8 @@
     return v.replace(/^@+/, "").replace(/\/+$/, "");
   };
 
+  // artists: the time is only needed to plan the cameras, so only when live registration is picked
+  const timeNeeded = () => form.elements.type.value !== "artist" || !!$('input[name="needs"][value="live registration"]:checked', form);
   const nowHM = () => { const n = new Date(); return `${pad(n.getHours())}:${pad(n.getMinutes())}`; };
   const check = {
     name: v => v.trim().length >= 2,
@@ -106,7 +108,7 @@
     instagram: v => /^[A-Za-z0-9._]{1,30}$/.test(cleanHandle(v)),
     date: v => /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= today && v <= maxDay,
     location: v => v.trim().length >= 2,
-    start: v => /^([01]\d|2[0-3]):[0-5]\d$/.test(v) && !(form.elements.date.value === today && v < nowHM()),
+    start: v => v === "" ? !timeNeeded() : /^([01]\d|2[0-3]):[0-5]\d$/.test(v) && !(form.elements.date.value === today && v < nowHM()),
     end: v => /^([01]\d|2[0-3]):[0-5]\d$/.test(v)
   };
 
@@ -129,6 +131,8 @@
     el.addEventListener("input", () => { if (el.closest(".field").classList.contains("bad")) validateOne(name); });
   });
   form.elements.date.addEventListener("change", () => { if (form.elements.start && form.elements.start.value) validateOne("start"); });
+  // the time becomes required (or optional) as live registration is ticked
+  $$('input[name="needs"]', form).forEach(i => i.addEventListener("change", () => { if (form.elements.start && (form.elements.start.dataset.touched || form.elements.start.value)) validateOne("start"); }));
   // tidy the handle when the field is left
   form.elements.instagram.addEventListener("blur", e => { const h = cleanHandle(e.target.value); if (h && /^[A-Za-z0-9._]{1,30}$/.test(h)) e.target.value = "@" + h; });
 

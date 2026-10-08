@@ -49,12 +49,12 @@ export default {
     const far = new Date(ams + "T00:00:00Z"); far.setUTCFullYear(far.getUTCFullYear() + 2);
     if (date < ams || date > far.toISOString().slice(0, 10)) return reply(400, { ok: false, error: "date" }, okOrigin);
 
-    // times: event needs start and end, artist needs a start, brand none (HH:MM)
+    // times: event needs start and end, artist needs a start only with live registration, brand none (HH:MM)
     const hm = t => (/^([01]\d|2[0-3]):[0-5]\d$/.test(String(t || "")) ? String(t) : "");
     const start = hm(d.start), end = hm(d.end);
-    if ((type === "event" && (!start || !end)) || (type === "artist" && !start)) return reply(400, { ok: false, error: "time" }, okOrigin);
-
     const needs = (Array.isArray(d.needs) ? d.needs : []).filter(n => NEEDS.includes(n));
+    // artist: the set time is only needed for live registration (a presskit has no time)
+    if ((type === "event" && (!start || !end)) || (type === "artist" && !start && needs.includes("live registration"))) return reply(400, { ok: false, error: "time" }, okOrigin);
     const notes = text(d.notes);
     const src = line(d.src, 40) || "direct";
 

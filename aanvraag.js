@@ -135,12 +135,16 @@
   form.elements.date.addEventListener("change", () => { if (form.elements.start && form.elements.start.value) validateOne("start"); });
   // adapt the time label and the location field to what is picked
   const timeLabel = $('label[for="f-start"]', form), locIn = form.elements.location;
+  const dateLabel = $('label[for="f-date"]', form), dateText = dateLabel.textContent;
   let autoStudio = false;
   locIn.addEventListener("input", () => { autoStudio = false; });
   const syncNeeds = () => {
     if (timeLabel && form.elements.type.value === "artist") {
       const multi = !!$('input[name="needs"][value="live registration"]:checked', form);
-      timeLabel.textContent = multi ? "What time are you on? I plan the cameras around it. Not sure yet? Leave it open." : "Time you are on, if you know. Not sure yet? Leave it open.";
+      timeLabel.textContent = presskitOnly() ? "Preferred time, if you have one. Not sure yet? Leave it open."
+        : multi ? "What time are you on? I plan the cameras around it. Not sure yet? Leave it open."
+        : "Time you are on, if you know. Not sure yet? Leave it open.";
+      dateLabel.textContent = presskitOnly() ? "Preferred date for your presskit shoot" : dateText;
     }
     if (presskitOnly()) {
       if (!locIn.value.trim() || autoStudio) { locIn.value = "Studio Brada"; autoStudio = true; place = null; closeList(); }

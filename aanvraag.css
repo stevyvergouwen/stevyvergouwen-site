@@ -41,6 +41,8 @@ h3 { margin: 0; font: 700 clamp(1.4rem, 4vw, 2rem)/1.15 var(--sans); letter-spac
 .hero-slot { margin-top: clamp(30px,6vw,56px); aspect-ratio: 16 / 9; }
 .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px,2vw,18px); margin-top: clamp(28px,5vw,48px); }
 .trio .slot { aspect-ratio: 3 / 4; }
+.trio.four { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 640px) { .trio.four { grid-template-columns: repeat(2, 1fr); } }
 .slot-note { position: absolute; inset: 0; display: none; place-content: center; justify-items: center; text-align: center; padding: 12px;
   color: var(--dim); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; line-height: 1.7;
   background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(235,231,224,.04) 14px 15px); border: 1px dashed rgba(235,231,224,.35); }

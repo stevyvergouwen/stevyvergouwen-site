@@ -198,3 +198,7 @@ input, textarea { text-transform: none; }
 input::placeholder, textarea::placeholder { text-transform: uppercase; }
 .found a, .combo-list li { text-transform: uppercase; }
 .combo-list .l2 { text-transform: none; }
+
+/* the hero loop is always visible; the poster shows first and under reduced motion */
+.hero-slot video.loop { display: block; }
+.hero-slot .slot-note, .hero-slot .tag { display: none; }

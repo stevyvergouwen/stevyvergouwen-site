@@ -13,28 +13,28 @@
   // /start: carry ?src= over to the three pages
   $$("[data-keepsrc]").forEach(a => { if (params.get("src")) a.href += "?src=" + encodeURIComponent(src); });
 
-  // image slots: show the marked placeholder until the real file exists
-  $$(".slot").forEach(fig => {
+  // image slots (the row of three): show the marked placeholder until the real file exists
+  $$(".slot:not(.hero-slot)").forEach(fig => {
     const img = $("img", fig);
+    if (!img) return;
     const check = () => { fig.classList.toggle("missing", !(img.complete && img.naturalWidth > 0)); };
     img.addEventListener("error", () => fig.classList.add("missing"));
     img.addEventListener("load", () => fig.classList.remove("missing"));
     if (img.complete) check();
-
-    // hero: no real image yet -> let the black-and-white loop run (muted, silent, not under reduced motion)
-    const loop = $("video.loop", fig);
-    if (loop) {
-      const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const useLoop = () => {
-        if (img.complete && img.naturalWidth > 0) { loop.remove(); return; }
-        fig.classList.add("loop-on");
-        if (still) return;
-        loop.src = loop.dataset.src; loop.muted = true;
-        const p = loop.play(); if (p && p.catch) p.catch(() => {});
-      };
-      if (img.complete) useLoop(); else { img.addEventListener("error", useLoop); img.addEventListener("load", () => { loop.remove(); fig.classList.remove("loop-on"); }); }
-    }
   });
+
+  // hero: the muted video loop behind the top block. Not under reduced motion (the poster stays), and never forced.
+  const loopVideo = $(".hero-slot video.loop");
+  if (loopVideo) {
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!still) {
+      loopVideo.src = loopVideo.dataset.src; loopVideo.muted = true;
+      const go = () => { const p = loopVideo.play(); if (p && p.catch) p.catch(() => {}); };
+      loopVideo.load(); go();                                                // preload="none" waits for this
+      loopVideo.addEventListener("canplay", go);
+      addEventListener("pointerdown", go, { once: true, passive: true });   // some browsers want a first touch
+    }
+  }
 
   // a hairline under the sticky bar once the page has moved
   const onScroll = () => document.body.classList.toggle("scrolled", scrollY > 8);

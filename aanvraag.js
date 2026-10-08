@@ -133,10 +133,10 @@
     el.addEventListener("input", () => { if (el.closest(".field").classList.contains("bad")) validateOne(name); });
   });
   form.elements.date.addEventListener("change", () => { if (form.elements.start && form.elements.start.value) validateOne("start"); });
-  locIn.addEventListener("input", () => { autoStudio = false; });
   // adapt the time label and the location field to what is picked
   const timeLabel = $('label[for="f-start"]', form), locIn = form.elements.location;
   let autoStudio = false;
+  locIn.addEventListener("input", () => { autoStudio = false; });
   const syncNeeds = () => {
     if (timeLabel && form.elements.type.value === "artist") {
       const multi = !!$('input[name="needs"][value="live registration"]:checked', form);

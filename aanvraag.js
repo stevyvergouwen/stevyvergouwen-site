@@ -20,6 +20,20 @@
     img.addEventListener("error", () => fig.classList.add("missing"));
     img.addEventListener("load", () => fig.classList.remove("missing"));
     if (img.complete) check();
+
+    // hero: no real image yet -> let the black-and-white loop run (muted, silent, not under reduced motion)
+    const loop = $("video.loop", fig);
+    if (loop) {
+      const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const useLoop = () => {
+        if (img.complete && img.naturalWidth > 0) { loop.remove(); return; }
+        fig.classList.add("loop-on");
+        if (still) return;
+        loop.src = loop.dataset.src; loop.muted = true;
+        const p = loop.play(); if (p && p.catch) p.catch(() => {});
+      };
+      if (img.complete) useLoop(); else { img.addEventListener("error", useLoop); img.addEventListener("load", () => { loop.remove(); fig.classList.remove("loop-on"); }); }
+    }
   });
 
   // a hairline under the sticky bar once the page has moved

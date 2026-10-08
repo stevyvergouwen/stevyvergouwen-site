@@ -125,3 +125,13 @@ h3 { margin: 0; font: 700 clamp(1.4rem, 4vw, 2rem)/1.15 var(--sans); letter-spac
 @keyframes names { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .names-track { animation: none; flex-wrap: wrap; width: auto; padding: 0 var(--pad); } }
 .promise { margin: 8px 0 0; color: var(--paper); }
+
+/* placeholder loop in the hero until the real image exists */
+.slot video.loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+.slot.has-loop.loop-on video.loop { display: block; }
+.slot.has-loop.loop-on { border-style: solid; border-color: var(--faint); }
+.slot.has-loop.loop-on .slot-note { display: block; background: none; border: 0; inset: auto 10px 10px auto; padding: 0; text-align: right; }
+.slot.has-loop.loop-on .slot-note .full { display: none; }
+.slot.has-loop.loop-on .tag { display: inline-block; padding: 6px 10px; background: rgba(8,8,10,.72); color: var(--paper); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; border: 1px dashed rgba(235,231,224,.4); }
+.slot.has-loop.loop-on .tag b { font-weight: 500; text-transform: none; }
+.slot-note .tag { display: none; }

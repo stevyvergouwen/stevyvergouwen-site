@@ -24,8 +24,8 @@
 <meta name="twitter:title" content="Artists | Stevy Vergouwen">
 <meta name="twitter:description" content="Live registration, recaps, social content and presskits for DJs and artists. Send Stevy a request.">
 <meta name="twitter:image" content="https://stevyvergouwen.com/og.jpg">
-<link rel="stylesheet" href="/aanvraag.css?v=1791496443">
-<link rel="stylesheet" href="/voorwaarden.css?v=1791496443">
+<link rel="stylesheet" href="/aanvraag.css?v=1791497010">
+<link rel="stylesheet" href="/voorwaarden.css?v=1791497010">
 </head>
 <body class="page" data-type="artist">
 <div class="barwrap"><header class="bar">
@@ -33,13 +33,89 @@
   <div class="bar-r"><a class="other" href="/start/">Other options</a><a class="btn sm" href="#request">Send a request</a></div>
 </header></div>
 <main>
+<div class="stage"><div class="stage-in">
   <section class="hero">
     <p class="eyebrow">For artists</p>
     <h1>Make your sets look as good as they sound.</h1>
     <p class="lead">I&#x27;m Stevy, a photographer and videographer from Breda. I shoot DJs and artists on stage, in the booth and behind the scenes, so your visuals feel like your music. Tell me what you&#x27;re working on and I&#x27;ll come back to you personally.</p>
-    <a class="btn" href="#request">Send a request</a>
     <figure class="slot hero-slot has-loop" data-slot="artist-hero" data-ratio="16:9"><img src="/media/pages/artist-hero.jpg" alt="" width="1600" height="900" decoding="async" fetchpriority="high"><video class="loop" muted loop playsinline preload="none" poster="/media/pages/artist-loop.jpg" data-src="/media/pages/artist-loop.mp4" aria-hidden="true" tabindex="-1"></video><figcaption class="slot-note"><span class="tag">Placeholder loop &middot; replace with <b>artist-hero.jpg</b></span><span class="full">Image needed<br><b>artist-hero.jpg</b> &middot; 16:9</span></figcaption></figure>
   </section>
+
+  <section class="ask" id="request">
+    <h2>Tell me about your show or project</h2>
+    <p class="note">A few details is all I need to get started. I read every request myself.</p><p class="promise">I will get back to you within 24 hours.</p>
+    <form class="form" novalidate autocomplete="on" data-type="artist">
+      <input type="hidden" name="type" value="artist">
+      <input type="hidden" name="src" value="">
+      <input type="hidden" name="elapsed" value="">
+      <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="field">
+        <label for="f-name">Name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name">
+        <p class="err" id="e-name" role="alert"></p>
+      </div>
+      <div class="field">
+        <label for="f-email">Email</label>
+        <p class="hint" id="h-email">So I can reply to you.</p>
+        <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required aria-describedby="h-email e-email">
+        <p class="err" id="e-email" role="alert"></p>
+      </div>
+      <div class="field">
+        <label for="f-ig">Instagram</label>
+        <p class="hint" id="h-ig">Your handle or a link to your profile, so I can see who you are.</p>
+        <input id="f-ig" name="instagram" type="text" inputmode="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="@yourhandle" required aria-describedby="h-ig e-ig">
+        <p class="err" id="e-ig" role="alert"></p>
+      </div>
+      <div class="when one">
+        <div class="field">
+          <label for="f-date">Date of the show or shoot</label>
+          <p class="hint" id="h-date">The day of your show, or when you need the visuals.</p>
+          <input id="f-date" name="date" type="date" required aria-describedby="h-date e-date">
+          <p class="err" id="e-date" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="f-start">Set time</label>
+          <input id="f-start" name="start" type="time" required aria-describedby="e-start">
+          <p class="err" id="e-start" role="alert"></p>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-loc">Venue / location</label>
+        <p class="hint" id="h-loc">Start typing a venue or an address and pick it from the list.</p>
+        <div class="combo">
+          <input id="f-loc" name="location" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="loc-list" placeholder="Where will it happen?" required aria-describedby="h-loc e-loc found">
+          <ul id="loc-list" class="combo-list" role="listbox" hidden></ul>
+        </div>
+        <p class="found" id="found" aria-live="polite" hidden></p>
+        <p class="err" id="e-loc" role="alert"></p>
+      </div>
+      <fieldset class="field needs">
+        <legend>What do you need?</legend>
+        <p class="hint">Pick what you are looking for. Not sure yet? Choose Something else.</p>
+        <div class="chips">
+        <label class="chip"><input type="checkbox" name="needs" value="live registration"><span>Live registration</span></label>
+        <label class="chip"><input type="checkbox" name="needs" value="recap"><span>Recap</span></label>
+        <label class="chip"><input type="checkbox" name="needs" value="social content"><span>Social content</span></label>
+        <label class="chip"><input type="checkbox" name="needs" value="presskit"><span>Presskit</span></label>
+        <label class="chip"><input type="checkbox" name="needs" value="other"><span>Something else</span></label>
+        </div>
+      </fieldset>
+      <div class="field">
+        <label for="f-notes">Anything else I should know? <span class="opt">Optional</span></label>
+        <textarea id="f-notes" name="notes" rows="4" placeholder="Line-up, ideas, deadline, anything that helps."></textarea>
+      </div>
+
+      <button class="btn submit" type="submit">Send request</button>
+      <p class="form-err" id="form-err" role="alert"></p>
+    </form>
+    <div class="thanks" id="thanks" tabindex="-1" hidden>
+      <h3>Thanks, I'll get back to you personally.</h3>
+      <p>Your request is in. I'll read it and reply to the email you gave me.</p>
+      <a class="btn ghost" href="/">Back to the site</a>
+    </div>
+  </section>
+</div></div>
 
   <section class="what">
     <h2>What I can do for you</h2>
@@ -58,72 +134,14 @@
 
   <p class="claim">As good as it sounds.</p>
 
-  <section class="ask" id="request">
-    <h2>Tell me about your show or project</h2>
-    <p class="note">A few details is all I need to get started. I read every request myself.</p><p class="promise">I will get back to you within 24 hours.</p>
-    <form class="form" novalidate autocomplete="on" data-type="artist">
-      <input type="hidden" name="type" value="artist">
-      <input type="hidden" name="src" value="">
-      <input type="hidden" name="elapsed" value="">
-      <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
-
-      <div class="field">
-        <label for="f-name">Name</label>
-        <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name">
-        <p class="err" id="e-name" role="alert"></p>
-      </div>
-      <div class="field">
-        <label for="f-email">Email</label>
-        <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required aria-describedby="e-email">
-        <p class="err" id="e-email" role="alert"></p>
-      </div>
-      <div class="field">
-        <label for="f-ig">Instagram</label>
-        <input id="f-ig" name="instagram" type="text" inputmode="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="@yourhandle" required aria-describedby="e-ig">
-        <p class="err" id="e-ig" role="alert"></p>
-      </div>
-      <div class="field">
-        <label for="f-date">Date of the show or shoot</label>
-        <input id="f-date" name="date" type="date" required aria-describedby="e-date">
-        <p class="err" id="e-date" role="alert"></p>
-      </div>
-      <div class="field">
-        <label for="f-loc">Venue / location</label>
-        <input id="f-loc" name="location" type="text" autocomplete="off" placeholder="Where will it happen?" required aria-describedby="e-loc">
-        <p class="err" id="e-loc" role="alert"></p>
-      </div>
-      <fieldset class="field needs">
-        <legend>What do you need?</legend>
-        <div class="chips">
-        <label class="chip"><input type="checkbox" name="needs" value="live registration"><span>Live registration</span></label>
-        <label class="chip"><input type="checkbox" name="needs" value="recap"><span>Recap</span></label>
-        <label class="chip"><input type="checkbox" name="needs" value="social content"><span>Social content</span></label>
-        <label class="chip"><input type="checkbox" name="needs" value="presskit"><span>Presskit</span></label>
-        <label class="chip"><input type="checkbox" name="needs" value="other"><span>Something else</span></label>
-        </div>
-      </fieldset>
-      <div class="field">
-        <label for="f-notes">Anything else I should know? <span class="opt">Optional</span></label>
-        <textarea id="f-notes" name="notes" rows="4"></textarea>
-      </div>
-
-      <button class="btn submit" type="submit">Send request</button>
-      <p class="form-err" id="form-err" role="alert"></p>
-    </form>
-    <div class="thanks" id="thanks" tabindex="-1" hidden>
-      <h3>Thanks, I'll get back to you personally.</h3>
-      <p>Your request is in. I'll read it and reply to the email you gave me.</p>
-      <a class="btn ghost" href="/">Back to the site</a>
-    </div>
-  </section>
 </main>
 <footer class="foot">
   <span>&copy; <script>document.write(new Date().getFullYear())</script> Stevy Vergouwen</span>
   <a href="/terms/" data-voorwaarden>Terms &amp; conditions</a>
 </footer>
-<script src="/taal.js?v=1791496443"></script>
-<script src="/voorwaarden.js?v=1791496443"></script>
-<script src="/aanvraag.js?v=1791496443"></script>
+<script src="/taal.js?v=1791497010"></script>
+<script src="/voorwaarden.js?v=1791497010"></script>
+<script src="/aanvraag.js?v=1791497010"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6cab90cdc3c4243ab5b8c2c9f7ef7e7"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

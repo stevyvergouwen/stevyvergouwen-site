@@ -40,23 +40,47 @@ export default {
 
     const type = TYPES[d.type] ? d.type : "";
     const name = line(d.name, 80), email = line(d.email, 120), ig = line(d.instagram, 40);
-    const date = line(d.date, 10), location = line(d.location, 120);
+    const date = line(d.date, 10), location = line(d.location, 240);
     if (!type || name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || !/^@[A-Za-z0-9._]{1,30}$/.test(ig) ||
         !/^\d{4}-\d{2}-\d{2}$/.test(date) || location.length < 2) return reply(400, { ok: false, error: "invalid" }, okOrigin);
+
+    // the date: today (Amsterdam) up to two years ahead - never yesterday
+    const ams = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Amsterdam" }).format(new Date());   // YYYY-MM-DD
+    const far = new Date(ams + "T00:00:00Z"); far.setUTCFullYear(far.getUTCFullYear() + 2);
+    if (date < ams || date > far.toISOString().slice(0, 10)) return reply(400, { ok: false, error: "date" }, okOrigin);
+
+    // times: event needs start and end, artist needs a start, brand none (HH:MM)
+    const hm = t => (/^([01]\d|2[0-3]):[0-5]\d$/.test(String(t || "")) ? String(t) : "");
+    const start = hm(d.start), end = hm(d.end);
+    if ((type === "event" && (!start || !end)) || (type === "artist" && !start)) return reply(400, { ok: false, error: "time" }, okOrigin);
 
     const needs = (Array.isArray(d.needs) ? d.needs : []).filter(n => NEEDS.includes(n));
     const notes = text(d.notes);
     const src = line(d.src, 40) || "direct";
 
+    // the picked place from the address search (optional): clean every part, never trust the numbers
+    let place = null;
+    if (d.place && typeof d.place === "object") {
+      const lat = Number(d.place.lat), lon = Number(d.place.lon);
+      if (Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180)
+        place = { label: line(d.place.label, 240), lat: lat.toFixed(6), lon: lon.toFixed(6) };
+    }
+    const mapQuery = encodeURIComponent(place && place.label ? place.label : location);
+    const mapLines = [
+      `Address:    ${place && place.label ? place.label : "(typed by hand, not checked)"}`,
+      `Google Maps: https://www.google.com/maps/search/?api=1&query=${mapQuery}`,
+      ...(place ? [`Coordinates: ${place.lat}, ${place.lon}`] : [])
+    ];
+
     const body = [
       `New request: ${TYPES[type]}`, "",
       `Name:       ${name}`, `Email:      ${email}`, `Instagram:  ${ig}  (https://instagram.com/${ig.slice(1)})`,
-      `Date:       ${date}`, `Location:   ${location}`, `Needs:      ${needs.join(", ") || "-"}`, "",
+      `Date:       ${date}`, `Time:       ${start ? start + (end ? " - " + end : "") : "-"}`, `Location:   ${location}`, ...mapLines, `Needs:      ${needs.join(", ") || "-"}`, "",
       "Notes:", notes || "-", "",
       `Source:     ${src}`, `Page:       ${line(d.page, 40)}`
     ].join("\r\n");
 
-    const subject = `New request - ${TYPES[type]} - ${name} (${date})`;
+    const subject = `New request - ${TYPES[type]} - ${name} (${date}${start ? " " + start : ""})`;
     const raw = [
       `From: Stevy Vergouwen site <${FROM}>`,
       `To: ${env.MAIL_TO || "info@shotbystevy.com"}`,

@@ -202,3 +202,34 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
 /* the hero loop is always visible; the poster shows first and under reduced motion */
 .hero-slot video.loop { display: block; }
 .hero-slot .slot-note, .hero-slot .tag { display: none; }
+
+
+/* ---- the video keeps its 16:9 shape (no square crop): full width, fades into the black below it */
+.stage .hero-slot { top: 0; bottom: auto; height: min(100%, calc(100vw * 9 / 16)); aspect-ratio: 16 / 9; max-height: none;
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 72%, transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 72%, transparent 100%); }
+@media (min-width: 960px) {
+  .stage .hero-slot { inset: 0 calc(50% - 50vw) auto; height: min(100%, calc(100vw * 9 / 16)); width: auto; }
+  .stage::after { background: linear-gradient(90deg, rgba(8,8,10,.78) 0%, rgba(8,8,10,.42) 55%, rgba(8,8,10,.30) 100%),
+                              linear-gradient(180deg, rgba(8,8,10,0) 60%, rgba(8,8,10,1) 100%); }
+}
+/* phones: the video is a wide picture on top, the words sit underneath it */
+@media (max-width: 959px) {
+  .stage { padding-top: 0; }
+  .stage .hero { display: flex; flex-direction: column; }
+  .stage .hero-slot { order: -1; position: relative; inset: auto; margin: 0 calc(50% - 50vw) 22px; width: 100vw; height: auto; aspect-ratio: 16 / 9;
+    -webkit-mask-image: linear-gradient(180deg, #000 0, #000 78%, transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 78%, transparent 100%); }
+  .stage::after { display: none; }
+  .stage .eyebrow { margin-top: 4px; }
+}
+
+
+/* phones: "FOR ..." and the headline sit on top of the video, top left; the intro text follows underneath */
+@media (max-width: 959px) {
+  .stage .hero { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .stage .hero-slot { grid-area: 1 / 1; order: 0; margin: 0 calc(50% - 50vw); width: 100vw; height: auto; min-height: calc(100vw * 9 / 16); aspect-ratio: auto; align-self: stretch; }
+  .stage .hero-slot::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(8,8,10,.78) 0%, rgba(8,8,10,.35) 60%, rgba(8,8,10,0) 100%); }
+  .stage .eyebrow { grid-area: 1 / 1; align-self: start; position: relative; z-index: 2; margin: 14px 0 0; }
+  .stage h1 { grid-area: 1 / 1; align-self: start; position: relative; z-index: 2; margin: 40px 0 16px; font-size: clamp(1.55rem, 7.2vw, 2.4rem); line-height: 1; text-shadow: 0 2px 18px rgba(0,0,0,.55); max-width: 15ch; }
+  .stage .lead { grid-area: 2 / 1; margin-top: 18px; }
+}

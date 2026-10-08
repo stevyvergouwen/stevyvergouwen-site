@@ -31,7 +31,7 @@
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     A.classList.add("on");
     if (!still) {
-      const XF = 0.9;                                     // length of the dissolve, in seconds
+      const XF = 0.12;                                    // overlap at the loop point, in seconds: a hard cut
       const B = A.cloneNode(false);
       B.removeAttribute("poster"); B.classList.remove("on");
       A.parentNode.appendChild(B);

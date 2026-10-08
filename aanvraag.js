@@ -304,14 +304,15 @@
     try {
       if (!ENDPOINT) throw new Error("no endpoint");
       const res = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error("status " + res.status);
+      if (!res.ok) { let code = ""; try { code = (await res.json()).error || ""; } catch (e) {} const er = new Error("status " + res.status); er.code = code; throw er; }
       form.hidden = true;
       const thanks = $("#thanks");
       thanks.hidden = false; thanks.focus();
       thanks.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
     } catch (err) {
       submit.disabled = false; submit.textContent = "Send request";
-      formErr.innerHTML = `That didn't go through. Please try again, or <a href="${mailto(payload)}">send it by email</a> instead.`;
+      const why = { time: "Please check the time you picked. For a presskit it must be between 09:00 and 21:00.", date: "Please check the date.", invalid: "Please check your details." }[err && err.code];
+      formErr.innerHTML = (why ? why + " " : "That didn't go through. ") + `Please try again, or <a href="${mailto(payload)}">send it by email</a> instead.`;
     }
   });
 })();

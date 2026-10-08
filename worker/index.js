@@ -39,7 +39,7 @@ export default {
     if (Number(d.elapsed) < 3) return reply(200, { ok: true }, okOrigin);
 
     const type = TYPES[d.type] ? d.type : "";
-    const name = line(d.name, 80), email = line(d.email, 120), ig = line(d.instagram, 40);
+    const name = line(d.name, 80), email = line(d.email, 120), ig = line(d.instagram, 40).replace(/^@+$/, "");
     const date = line(d.date, 10);
     const needs = (Array.isArray(d.needs) ? d.needs : []).filter(n => NEEDS.includes(n));
     // an artist who only wants a presskit needs no location: those are shot at Studio Brada

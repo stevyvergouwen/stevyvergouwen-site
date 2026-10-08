@@ -177,7 +177,8 @@ html { overflow-x: clip; }
 .when { display: grid; gap: 14px 12px; grid-template-columns: 1fr 1fr; }
 .when .field:first-child { grid-column: 1 / -1; }
 @media (min-width: 560px) and (max-width: 959px) { .when { grid-template-columns: 1.4fr 1fr 1fr; } .when .field:first-child { grid-column: auto; } }
-.when.one { grid-template-columns: 1fr 1fr; }
+.when.one { grid-template-columns: 1fr; }
+@media (min-width: 560px) and (max-width: 959px) { .when.one { grid-template-columns: 1fr; } .when.one .field:first-child { grid-column: 1 / -1; } }
 .field input[type=time] { color-scheme: dark; width: 100%; background: transparent; color: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 14px; font: 400 16px/1.4 var(--mono); min-height: 52px; appearance: none; -webkit-appearance: none; }
 .field input[type=time]:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(91,132,255,.25); }
 .field.bad input[type=time] { border-color: var(--bad); }

@@ -137,6 +137,7 @@
   // adapt the time label and the location field to what is picked
   const timeLabel = $('label[for="f-start"]', form), locIn = form.elements.location;
   const dateLabel = $('label[for="f-date"]', form), dateText = dateLabel.textContent;
+  const notesIn = form.elements.notes, notesText = notesIn.placeholder;
   let autoStudio = false;
   locIn.addEventListener("input", () => { autoStudio = false; });
   const syncNeeds = () => {
@@ -148,6 +149,7 @@
       const st = form.elements.start; st.min = presskitOnly() ? "09:00" : ""; st.max = presskitOnly() ? "21:00" : ""; st.required = presskitOnly();
       dateLabel.textContent = presskitOnly() ? "Preferred date for your presskit shoot" : dateText;
     }
+    notesIn.placeholder = presskitOnly() ? "Paste a link to your moodboard or references, and tell me your ideas. Anything that helps." : notesText;
     if (form.elements.start && form.elements.start.dataset.touched) validateOne("start");
     if (presskitOnly()) {
       if (!locIn.value.trim() || autoStudio) { locIn.value = "Studio Brada"; autoStudio = true; place = null; closeList(); }

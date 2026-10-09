@@ -124,12 +124,11 @@ h3 { margin: 0; font: 700 clamp(1.4rem, 4vw, 2rem)/1.15 var(--sans); letter-spac
 /* film strip: slim, sprocket holes top and bottom, every name is a numbered frame; the ends fade out */
 .names { position: relative; margin: clamp(40px, 7vw, 72px) auto 0; max-width: 100%; overflow: hidden; background: #0b0b0d; border-radius: 6px;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
-.names-track { display: flex; width: max-content; padding: 18px 0; white-space: nowrap; animation: names 40s linear infinite;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='18'%3E%3Crect x='8' y='5' width='12' height='8' rx='4' fill='%23ebe7e0' fill-opacity='.55'/%3E%3C/svg%3E") repeat-x 0 0 / 28px 18px, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='18'%3E%3Crect x='8' y='5' width='12' height='8' rx='4' fill='%23ebe7e0' fill-opacity='.55'/%3E%3C/svg%3E") repeat-x 0 100% / 28px 18px; }
+.names-track { display: flex; width: max-content; padding: 12px 0; white-space: nowrap; animation: names 40s linear infinite;
+  border-top: 1px solid rgba(235,231,224,.14); border-bottom: 1px solid rgba(235,231,224,.14); }
 .names-track span { position: relative; padding: 10px clamp(20px, 3vw, 34px) 12px; border-left: 1px solid rgba(235,231,224,.1); text-transform: uppercase;
-  font: 700 clamp(.85rem, 2vw, 1.2rem)/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.005em; color: var(--paper); }
+  font: 700 clamp(.85rem, 2vw, 1.2rem)/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.005em; color: var(--paper); opacity: 1; }
 .names-track span::before { content: attr(data-n); display: block; margin-bottom: 8px; font: 400 8px/1 var(--mono); letter-spacing: .24em; color: rgba(217,138,61,.8); }
-.names-track span:nth-child(even) { color: rgba(235,231,224,.7); }
 @keyframes names { to { transform: translateX(var(--shift, -50%)); } }
 @media (prefers-reduced-motion: reduce) { .names-track { animation: none; flex-wrap: wrap; width: auto; padding: 0 var(--pad); } }
 .promise { margin: 8px 0 0; color: var(--paper); }

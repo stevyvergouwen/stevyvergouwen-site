@@ -317,11 +317,11 @@
   });
 })();
 
-// film strip: the sprocket holes are part of the moving strip, so one copy of the names must be a whole number of holes wide
+// film strip: the sprocket holes are part of the moving strip, so one copy of the names is measured so the loop closes without a jump
 (() => {
   const tr = document.querySelector(".names-track");
   if (!tr) return;
-  const HOLE = 28, SPEED = 120;   // px between holes, px per second
+  const HOLE = 1, SPEED = 120;   // px between holes, px per second
   const fit = () => {
     const s = [...tr.children], half = s.length / 2;
     if (!half || half % 1) return;

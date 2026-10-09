@@ -4,3 +4,12 @@ compatibility_date = "2024-09-01"
 
 # the mail goes to this address; it must be a verified destination address in Cloudflare Email Routing
 send_email = [{ name = "MAIL", destination_address = "info@shotbystevy.com" }]
+
+# Instagram feed: the latest posts are cached here; the token is a secret (npx wrangler secret put IG_TOKEN)
+[[kv_namespaces]]
+binding = "IG"
+id = "6f2dab44e7444d3d96281b919657e9b7"
+
+# once a day: refresh the Instagram feed and, when due, the 60-day token
+[triggers]
+crons = ["17 4 * * *"]

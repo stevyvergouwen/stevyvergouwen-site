@@ -10,7 +10,7 @@ const NEEDS = ["photos", "video", "aftermovie", "brand video", "social content",
 
 const cors = origin => ({
   "Access-Control-Allow-Origin": origin,
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Max-Age": "86400",
   "Vary": "Origin"
@@ -19,15 +19,56 @@ const reply = (status, body, origin) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...(origin ? cors(origin) : {}) } });
 
 // header values: one line, ASCII only (the body carries the real text)
+// ---- Instagram feed (Instagram API with Instagram Login): the token lives in KV (refreshed) or as the secret IG_TOKEN
+const IG_FIELDS = "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp";
+async function igToken(env) {
+  const saved = await env.IG.get("token", "json");          // { token, at }
+  return saved && saved.token ? saved : (env.IG_TOKEN ? { token: env.IG_TOKEN, at: 0 } : null);
+}
+async function igRefresh(env, force = false) {
+  const cur = await igToken(env);
+  if (!cur) return null;
+  const week = 7 * 24 * 3600 * 1000;
+  if (!force && cur.at && Date.now() - cur.at < week) return cur.token;
+  const r = await fetch("https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=" + encodeURIComponent(cur.token));
+  if (r.ok) { const j = await r.json(); if (j.access_token) { await env.IG.put("token", JSON.stringify({ token: j.access_token, at: Date.now() })); return j.access_token; } }
+  return cur.token;
+}
+async function igLoad(env) {
+  const token = await igRefresh(env);
+  if (!token) return { posts: [], error: "no token" };
+  const r = await fetch(`https://graph.instagram.com/me/media?fields=${IG_FIELDS}&limit=12&access_token=${encodeURIComponent(token)}`);
+  if (!r.ok) return { posts: [], error: "instagram " + r.status };
+  const j = await r.json();
+  const posts = (j.data || []).filter(p => p.permalink && (p.media_url || p.thumbnail_url)).map(p => ({
+    id: p.id, permalink: p.permalink, caption: (p.caption || "").slice(0, 200), mediaType: p.media_type, timestamp: p.timestamp,
+    mediaUrl: p.media_type === "VIDEO" ? (p.thumbnail_url || "") : p.media_url, thumbnailUrl: p.thumbnail_url || ""
+  })).filter(p => p.mediaUrl);
+  const out = { posts, at: Date.now() };
+  if (posts.length) await env.IG.put("feed", JSON.stringify(out));
+  return out;
+}
+async function igFeed(env) {
+  const cached = await env.IG.get("feed", "json");
+  if (cached && Date.now() - cached.at < 6 * 3600 * 1000) return cached;
+  const fresh = await igLoad(env);
+  return fresh.posts.length ? fresh : (cached || fresh);
+}
+
 const line = (s, max = 120) => String(s ?? "").replace(/[\r\n]+/g, " ").replace(/[^\x20-\x7E]/g, "").trim().slice(0, max);
 const text = (s, max = 2000) => String(s ?? "").replace(/\r/g, "").trim().slice(0, max);
 
 export default {
+  async scheduled(event, env, ctx) { ctx.waitUntil(igLoad(env)); },
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     const okOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
 
     if (request.method === "OPTIONS") return new Response(null, { status: okOrigin ? 204 : 403, headers: okOrigin ? cors(okOrigin) : {} });
+    if (request.method === "GET" && new URL(request.url).pathname === "/instagram") {
+      const feed = await igFeed(env);
+      return new Response(JSON.stringify({ posts: feed.posts || [] }), { headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=900", ...(okOrigin ? cors(okOrigin) : { "Access-Control-Allow-Origin": "*" }) } });
+    }
     if (request.method !== "POST") return reply(405, { ok: false, error: "method" }, okOrigin);
     if (!okOrigin) return reply(403, { ok: false, error: "origin" }, "");
 

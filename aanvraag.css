@@ -350,16 +350,9 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%); mask-image: linear-gradient(180deg, transparent 0, #000 22%); }
 @media (min-width: 960px) {
   /* wide screens: the photo runs the full width of the page, the headline sits right on it so the message is there at once */
-  body[data-type="brand"] .stage-in { padding-top: min(25vw, 360px); }
+  body[data-type="brand"] .stage-in { padding-top: min(7vw, 90px); }
   body[data-type="brand"] .stage .hero h1 { text-shadow: 0 2px 28px rgba(8,8,10,.55); }
-  .stage .hero-slot img.hero-photo { object-fit: cover; object-position: 50% 28%; transform: none; width: 100%; margin-left: 0;
+  .stage .hero-slot img.hero-photo { object-fit: cover; object-position: 50% 35%; transform: none; width: 100%; margin-left: 0;
     -webkit-mask-image: none; mask-image: none; }
 }
 .hero-slot picture { display: contents; }
-@media (min-width: 960px) {
-  /* Brand: the form on the left, the headline on the right (the pair in the photo sits between the two when it is not too tall) */
-  body[data-type="brand"] .stage-in { grid-template-columns: minmax(380px, 460px) minmax(0, 1fr); }
-  body[data-type="brand"] .stage .ask { grid-column: 1; grid-row: 1; }
-  body[data-type="brand"] .stage .hero { grid-column: 2; grid-row: 1; text-align: right; }
-  body[data-type="brand"] .stage .hero .lead { margin-left: auto; }
-}

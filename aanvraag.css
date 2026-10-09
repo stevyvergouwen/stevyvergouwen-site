@@ -270,8 +270,8 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
 .timepick select option { background: #111; color: var(--paper); }
 .field.bad .timepick select { border-color: var(--bad); }
 
-/* ambient glow behind the whole page: the hero still, blurred, so the lower sections are not bare */
-body.page::before { content: ""; position: fixed; inset: -12%; z-index: -1; pointer-events: none; background: var(--poster, none) center / cover no-repeat; filter: blur(70px) saturate(1.6); opacity: .5; }
-body.page::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(rgba(8,8,10,.55), rgba(8,8,10,.1) 45%, rgba(8,8,10,.25)); }
-
+/* a strong photo behind the whole page, dark enough to read on */
+body.page::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--poster, none) center / cover no-repeat; opacity: .5; }
+body.page::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(rgba(8,8,10,.72), rgba(8,8,10,.35) 40%, rgba(8,8,10,.7)); }
+.ask, .ask-card, .card-form { background: rgba(8,8,10,.72); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 body.page { background: transparent; }

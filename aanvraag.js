@@ -30,8 +30,35 @@
   if (A) {
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     A.classList.add("on");
+    const clips = (A.dataset.clips || "").split(",").filter(Boolean);
     const phone = matchMedia("(max-width: 900px), (pointer: coarse)").matches;
-    if (!still && phone) {
+    if (!still && clips.length > 1) {
+      // a sequence of different clips that dissolve into each other (like the home page): no loop seam to show
+      const FADE = 0.8;
+      const B = A.cloneNode(false);
+      B.removeAttribute("poster"); B.classList.remove("on");
+      A.parentNode.appendChild(B);
+      [A, B].forEach(v => { v.loop = false; v.muted = true; v.playsInline = true; v.preload = "auto"; v.style.transitionDuration = FADE + "s"; });
+      let i = Math.floor(Math.random() * clips.length), cur = A, nxt = B, switching = false;
+      const load = (v, k) => { v.src = clips[((k % clips.length) + clips.length) % clips.length]; v.load(); };
+      const play = v => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+      load(A, i); load(B, i + 1); play(A);
+      const next = () => {
+        if (switching) return; switching = true;
+        const old = cur, fresh = nxt;
+        try { fresh.currentTime = 0; } catch (e) {}
+        play(fresh);
+        fresh.classList.add("on"); old.classList.remove("on");
+        cur = fresh; nxt = old; i++;
+        setTimeout(() => { old.pause(); load(old, i + 1); switching = false; }, FADE * 1000 + 150);
+      };
+      [A, B].forEach(v => {
+        v.addEventListener("timeupdate", () => { if (v === cur && v.duration && v.currentTime >= v.duration - FADE && nxt.readyState >= 3) next(); });
+        v.addEventListener("ended", () => { if (v === cur) next(); });
+      });
+      addEventListener("pointerdown", () => { if (cur.paused) play(cur); }, { once: true, passive: true });
+      document.addEventListener("visibilitychange", () => { if (!document.hidden && cur.paused && !switching) play(cur); });
+    } else if (!still && phone) {
       // phones: one lighter video with the browser's own loop (two Full HD decoders at once make a phone stutter)
       A.loop = true; A.muted = true; A.playsInline = true; A.preload = "auto";
       A.src = A.dataset.src.replace("-loop.mp4", "-loop-m.mp4"); A.load();

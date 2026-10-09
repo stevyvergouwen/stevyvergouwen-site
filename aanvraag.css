@@ -315,3 +315,23 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
   .foot-base { font-size: 10px; }
   .igh h2 { font-size: 1.2rem; }
 }
+
+@media (max-width: 640px) {
+  :root { --pad: 16px; }
+  .stage .ask, .ask { padding: 18px 16px; }
+  .field { margin-bottom: 12px; }
+  .field input[type=text], .field input[type=email], .field input[type=date], .field textarea { padding: 10px 12px; min-height: 44px; font-size: 16px; }
+  .field textarea { min-height: 84px; }
+  .timepick select { padding: 10px 12px; min-height: 44px; }
+  .chips { gap: 6px; }
+  .chip span { padding: 8px 12px; min-height: 36px; }
+  .btn.submit { min-height: 46px; padding: 12px 18px; }
+  .services li, .sv-no { }
+  .what { margin-top: 32px; }
+  .names { margin-top: 28px; margin-bottom: 24px; }
+  .names-track { padding: 14px 0 12px; }
+  .igfeed { margin-top: 28px; }
+  .foot { padding-top: 28px; }
+  .foot-grid { gap: 20px 16px; }
+  .hero { padding-top: 18px; }
+}

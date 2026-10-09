@@ -349,6 +349,8 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
 .stage .hero-slot img.hero-photo { object-position: 50% 30%; transform: translateY(15%);
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%); mask-image: linear-gradient(180deg, transparent 0, #000 22%); }
 @media (min-width: 960px) {
-  .stage .hero-slot img.hero-photo { object-position: 50% 12%; transform: none;
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 9%); mask-image: linear-gradient(180deg, transparent 0, #000 9%); }
+  /* wide screens: the portrait photo is shown whole in the middle of the band (not cropped), its edges melt into the dark */
+  .stage .hero-slot img.hero-photo { object-fit: contain; object-position: 50% 0; transform: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent), linear-gradient(180deg, transparent 0, #000 9%);
+    -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent), linear-gradient(180deg, transparent 0, #000 9%); mask-composite: intersect; }
 }

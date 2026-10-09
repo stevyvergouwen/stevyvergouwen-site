@@ -28,6 +28,34 @@
   "pos": "50% 43%"
  },
  {
+  "type": "photo",
+  "src": "media/bg/260221-1850-rrmodular-stevyvergouwen-00155.jpg",
+  "group": "260221-1850-rrmodular-stevyvergouwen-00155",
+  "dur": 5,
+  "pos": "32% 50%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/260221-2138-rrmodular-stevyvergouwen-01081.jpg",
+  "group": "260221-2138-rrmodular-stevyvergouwen-01081",
+  "dur": 5,
+  "pos": "40% 45%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/260221-2150-rrmodular-stevyvergouwen-01322.jpg",
+  "group": "260221-2150-rrmodular-stevyvergouwen-01322",
+  "dur": 5,
+  "pos": "50% 50%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/260221-2159-rrmodular-stevyvergouwen-01549.jpg",
+  "group": "260221-2159-rrmodular-stevyvergouwen-01549",
+  "dur": 5,
+  "pos": "50% 55%"
+ },
+ {
   "type": "video",
   "src": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-a.mp4",
   "poster": "media/bg/gyra-oranjezoet-stevyvergouwen-16x9-9-a.jpg",

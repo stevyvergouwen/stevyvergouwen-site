@@ -321,7 +321,7 @@
 (() => {
   const tr = document.querySelector(".names-track");
   if (!tr) return;
-  const HOLE = 38, SPEED = 55;   // px between holes, px per second
+  const HOLE = 28, SPEED = 120;   // px between holes, px per second
   const fit = () => {
     const s = [...tr.children], half = s.length / 2;
     if (!half || half % 1) return;

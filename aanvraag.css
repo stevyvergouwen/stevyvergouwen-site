@@ -275,3 +275,8 @@ body.page::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer
 body.page::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(rgba(8,8,10,.72), rgba(8,8,10,.35) 40%, rgba(8,8,10,.7)); }
 .ask, .ask-card, .card-form { background: rgba(8,8,10,.72); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 body.page { background: transparent; }
+.fcol a.ig { display: inline-flex; align-items: center; gap: 10px; }
+/* slow movement in the background photo: a gentle zoom and drift */
+body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out infinite alternate; will-change: transform; }
+@keyframes drift { from { transform: scale(1.04) translate3d(-1.2%, 0, 0); } to { transform: scale(1.16) translate3d(1.2%, -1.5%, 0); } }
+@media (prefers-reduced-motion: reduce) { body.page::before { animation: none; } }

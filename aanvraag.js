@@ -30,7 +30,17 @@
   if (A) {
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     A.classList.add("on");
-    if (!still) {
+    const phone = matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+    if (!still && phone) {
+      // phones: one lighter video with the browser's own loop (two Full HD decoders at once make a phone stutter)
+      A.loop = true; A.muted = true; A.playsInline = true; A.preload = "auto";
+      A.src = A.dataset.src.replace("-loop.mp4", "-loop-m.mp4"); A.load();
+      const go = () => { const p = A.play(); if (p && p.catch) p.catch(() => {}); };
+      A.addEventListener("canplay", go, { once: true });
+      go();
+      addEventListener("pointerdown", () => { if (A.paused) go(); }, { once: true, passive: true });
+      document.addEventListener("visibilitychange", () => { if (!document.hidden && A.paused) go(); });
+    } else if (!still) {
       const XF = 0.12;                                    // overlap at the loop point, in seconds: a hard cut
       const B = A.cloneNode(false);
       B.removeAttribute("poster"); B.classList.remove("on");

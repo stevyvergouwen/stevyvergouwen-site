@@ -121,9 +121,17 @@ h3 { margin: 0; font: 700 clamp(1.4rem, 4vw, 2rem)/1.15 var(--sans); letter-spac
 }
 
 .claim { margin: clamp(64px, 12vw, 130px) 0 0; font: 700 clamp(2rem, 7vw, 4.4rem)/1 var(--sans); letter-spacing: -.035em; text-wrap: balance; max-width: 16ch; }
-.names { margin: clamp(48px, 9vw, 96px) calc(-1 * var(--pad)) 0; overflow: hidden; border-top: 1px solid var(--faint); border-bottom: 1px solid var(--faint); padding: 18px 0; }
-.names-track { display: flex; gap: 40px; width: max-content; animation: names 40s linear infinite; text-transform: uppercase; letter-spacing: .16em; color: var(--dim); white-space: nowrap; }
-.names-track span::after { content: "/"; margin-left: 40px; color: var(--faint); }
+/* film strip: sprocket holes top and bottom, every name is a frame */
+.names { position: relative; margin: clamp(48px, 9vw, 96px) calc(-1 * var(--pad)) 0; overflow: hidden; background: #0b0b0d; padding: 28px 0;
+  border-top: 1px solid rgba(235,231,224,.1); border-bottom: 1px solid rgba(235,231,224,.1); }
+.names::before, .names::after { content: ""; position: absolute; left: 0; right: 0; height: 28px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='28'%3E%3Crect x='11' y='8' width='16' height='12' rx='3.5' fill='%23ebe7e0' fill-opacity='.9'/%3E%3C/svg%3E") repeat-x 0 0 / 38px 28px; pointer-events: none; }
+.names::before { top: 0; }
+.names::after { bottom: 0; }
+.names-track { display: flex; width: max-content; animation: names 70s linear infinite; white-space: nowrap; }
+.names-track span { position: relative; padding: 18px clamp(26px, 4vw, 52px) 20px; border-left: 1px solid rgba(235,231,224,.12); text-transform: uppercase;
+  font: 700 clamp(1.05rem, 2.6vw, 1.75rem)/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.01em; color: var(--paper); }
+.names-track span::before { content: attr(data-n); display: block; margin-bottom: 14px; font: 400 9px/1 var(--mono); letter-spacing: .24em; color: #d98a3d; }
+.names-track span:nth-child(even) { color: rgba(235,231,224,.72); }
 @keyframes names { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .names-track { animation: none; flex-wrap: wrap; width: auto; padding: 0 var(--pad); } }
 .promise { margin: 8px 0 0; color: var(--paper); }

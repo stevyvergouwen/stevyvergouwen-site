@@ -73,7 +73,7 @@
     .names-track span { position: relative; padding: 0 20px; text-transform: uppercase; color: var(--paper);
       font: 700 .78rem/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.02em; }
     .names-track span + span::before { content: ""; position: absolute; left: 0; top: 50%; width: 1px; height: 1em; transform: translateY(-50%); background: rgba(235,231,224,.25); }
-    .names-track span::after { display: none; }
+    .names-track span::after { content: attr(data-n); position: absolute; left: 20px; top: -10px; font: 400 7px/1 "Roboto Mono",ui-monospace,Menlo,monospace; letter-spacing: .26em; color: var(--paper); }
     @keyframes names { to { transform: translateX(var(--shift, -50%)); } }
   }
   @media (prefers-reduced-motion: reduce) { .names-track { animation: none; } .names { animation: rise 1.6s ease 1.4s both; } }
@@ -165,7 +165,7 @@
       if (k < 1) requestAnimationFrame(tick); else tr.style.filter = ""; };
     requestAnimationFrame(tick); }); })();
 </script>
-<script src="achtergrond.js?v=1791542624"></script>
+<script src="achtergrond.js?v=1791542677"></script>
 <script src="taal.js?v=1791513690"></script>
 <script src="voorwaarden.js?v=1791513690"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6cab90cdc3c4243ab5b8c2c9f7ef7e7"}'></script><!-- End Cloudflare Web Analytics -->

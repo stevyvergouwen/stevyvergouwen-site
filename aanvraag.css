@@ -352,6 +352,7 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
   /* wide screens: the photo runs the full width of the page, the headline sits right on it so the message is there at once */
   body[data-type="brand"] .stage-in { padding-top: min(7vw, 90px); }
   body[data-type="brand"] .stage .hero h1 { text-shadow: 0 2px 28px rgba(8,8,10,.55); }
-  .stage .hero-slot img.hero-photo { object-fit: cover; object-position: 50% 14%; transform: none; width: 100%; margin-left: 0;
+  .stage .hero-slot img.hero-photo { object-fit: cover; object-position: 50% 28%; transform: none; width: 100%; margin-left: 0;
     -webkit-mask-image: none; mask-image: none; }
 }
+.hero-slot picture { display: contents; }

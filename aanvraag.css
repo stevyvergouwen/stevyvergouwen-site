@@ -260,5 +260,5 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
 .field.bad .timepick select { border-color: var(--bad); }
 
 /* ambient glow behind the whole page: the hero still, blurred, so the lower sections are not bare */
-body.page::before { content: ""; position: fixed; inset: -12%; z-index: -1; pointer-events: none; background: var(--poster, none) center / cover no-repeat; filter: blur(80px) saturate(1.5); opacity: .3; }
-body.page::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(130% 90% at 50% 0%, rgba(8,8,10,0) 0%, rgba(8,8,10,.55) 70%, #08080a 100%); }
+body.page::before { content: ""; position: fixed; inset: -12%; z-index: -1; pointer-events: none; background: var(--poster, none) center / cover no-repeat; filter: blur(70px) saturate(1.6); opacity: .5; }
+body.page::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(rgba(8,8,10,.55), rgba(8,8,10,.1) 45%, rgba(8,8,10,.25)); }

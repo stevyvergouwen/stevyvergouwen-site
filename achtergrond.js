@@ -6,6 +6,7 @@
   if (!root) return;
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const HOLD = 4000;
+  const phone = matchMedia("(max-width: 900px), (pointer: coarse)").matches;   // a phone decodes one HD video at a time without glitches
   let slides = [], cur = -1, timer = null;
 
   const make = s => {
@@ -83,7 +84,7 @@
       if (immediate) swap(); else setTimeout(swap, 1000);   // never wait longer than a second
     } else swap();
     // warm the next two, so their video is already loading while this one plays
-    for (let k = 1; k <= 2; k++) {
+    for (let k = 1; k <= (phone ? 1 : 2); k++) {
       const nn = slides[(n + k) % slides.length];
       if (!nn.el) { nn.el = make(nn); root.appendChild(nn.el); }
     }

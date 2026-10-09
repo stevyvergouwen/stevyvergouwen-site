@@ -54,6 +54,24 @@
   @keyframes kb { from { transform: scale(1.04); } to { transform: scale(1.12); } }
   [data-bg]::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(8,8,10,.5), rgba(8,8,10,.72)); }
   @media (prefers-reduced-motion: reduce) { .bg-slide img, .bg-slide.kb img { transform: none; animation: none; } }
+  /* who I have worked with: a small film strip above the footer, phones only */
+  .names { display: none; }
+  @media (max-width: 640px) {
+    .names { display: block; position: relative; margin: 22px calc(-1 * clamp(20px,4vw,48px)) 0; overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+    .names-track { display: flex; width: max-content; padding: 13px 0 11px; white-space: nowrap; animation: names 40s linear infinite;
+      background:
+        repeating-linear-gradient(90deg, rgba(235,231,224,.5) 0 1px, transparent 1px 14px) 0 0 / 100% 4px no-repeat,
+        linear-gradient(rgba(235,231,224,.2), rgba(235,231,224,.2)) 0 4px / 100% 1px no-repeat,
+        repeating-linear-gradient(90deg, rgba(235,231,224,.5) 0 1px, transparent 1px 14px) 0 100% / 100% 4px no-repeat,
+        linear-gradient(rgba(235,231,224,.2), rgba(235,231,224,.2)) 0 calc(100% - 4px) / 100% 1px no-repeat; }
+    .names-track span { position: relative; padding: 0 20px; text-transform: uppercase; color: var(--paper);
+      font: 700 .78rem/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.02em; }
+    .names-track span + span::before { content: ""; position: absolute; left: 0; top: 50%; width: 1px; height: 1em; transform: translateY(-50%); background: rgba(235,231,224,.25); }
+    .names-track span::after { display: none; }
+    @keyframes names { to { transform: translateX(var(--shift, -50%)); } }
+  }
+  @media (prefers-reduced-motion: reduce) { .names-track { animation: none; } }
   a { color:inherit; text-decoration:none; }
   a:hover { color:var(--blue); }
   .top, .foot { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
@@ -123,8 +141,16 @@
   <p>Visuals for artists, events and brands.</p>
   <p class="contact"><a href="mailto:info@stevyvergouwen.com">info@stevyvergouwen.com</a><span class="sep"> &nbsp;·&nbsp; </span><a href="https://www.instagram.com/stevyvergouwen" target="_blank" rel="noopener" aria-label="Instagram: @stevyvergouwen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b8880" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:8px"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r=".6" fill="#8b8880"/></svg>Instagram @stevyvergouwen ↗</a></p>
 </main>
+<div class="names" aria-label="Artists and events I have worked with"><div class="names-track" aria-hidden="true"><span data-n="01A">Awakenings</span><span data-n="02A">LOU&#x27;D</span><span data-n="03A">Mysteryland</span><span data-n="04A">Rotterdam Rave</span><span data-n="05A">GYRA</span><span data-n="06A">A State of Trance</span><span data-n="07A">Verknipt</span><span data-n="08A">Hazel</span><span data-n="09A">DGTL</span><span data-n="10A">Nachtcollege</span><span data-n="11A">Give Soul</span><span data-n="12A">Ploegendienst</span><span data-n="13A">Paaspop</span><span data-n="14A">Classified</span><span data-n="15A">Yousuke Yukimatsu</span><span data-n="16A">Modular</span><span data-n="17A">Winson</span><span data-n="18A">Sonus</span><span data-n="19A">Aloïs</span><span data-n="20A">The Crave</span><span data-n="21A">Rasa Sol</span><span data-n="22A">Now&amp;Wow</span><span data-n="23A">AMF</span><span data-n="24A">Audio Obscura</span><span data-n="25A">Oranje Zoet</span><span data-n="26A">Spanish Heat</span><span data-n="27A">Glitch</span><span data-n="01A">Awakenings</span><span data-n="02A">LOU&#x27;D</span><span data-n="03A">Mysteryland</span><span data-n="04A">Rotterdam Rave</span><span data-n="05A">GYRA</span><span data-n="06A">A State of Trance</span><span data-n="07A">Verknipt</span><span data-n="08A">Hazel</span><span data-n="09A">DGTL</span><span data-n="10A">Nachtcollege</span><span data-n="11A">Give Soul</span><span data-n="12A">Ploegendienst</span><span data-n="13A">Paaspop</span><span data-n="14A">Classified</span><span data-n="15A">Yousuke Yukimatsu</span><span data-n="16A">Modular</span><span data-n="17A">Winson</span><span data-n="18A">Sonus</span><span data-n="19A">Aloïs</span><span data-n="20A">The Crave</span><span data-n="21A">Rasa Sol</span><span data-n="22A">Now&amp;Wow</span><span data-n="23A">AMF</span><span data-n="24A">Audio Obscura</span><span data-n="25A">Oranje Zoet</span><span data-n="26A">Spanish Heat</span><span data-n="27A">Glitch</span></div></div>
 <div class="foot"><span>© <script>document.write(new Date().getFullYear())</script> Stevy Vergouwen</span><a href="/terms/" data-voorwaarden>Terms &amp; conditions</a></div>
-<script src="achtergrond.js?v=1791541895"></script>
+<script>
+(() => { const tr = document.querySelector(".names-track"); if (!tr) return; const HOLE = 14, SPEED = 60;
+  const fit = () => { const s = [...tr.children], half = s.length / 2; if (!half || half % 1) return; s[half - 1].style.marginRight = "0px";
+    const w = s[half].offsetLeft - s[0].offsetLeft, target = Math.ceil(w / HOLE) * HOLE; s[half - 1].style.marginRight = (target - w) + "px";
+    tr.style.setProperty("--shift", -target + "px"); tr.style.animationDuration = (target / SPEED) + "s"; };
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(fit); })();
+</script>
+<script src="achtergrond.js?v=1791542140"></script>
 <script src="taal.js?v=1791513690"></script>
 <script src="voorwaarden.js?v=1791513690"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6cab90cdc3c4243ab5b8c2c9f7ef7e7"}'></script><!-- End Cloudflare Web Analytics -->

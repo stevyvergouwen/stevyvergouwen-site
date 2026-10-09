@@ -349,8 +349,9 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
 .stage .hero-slot img.hero-photo { object-position: 50% 30%; transform: translateY(15%);
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%); mask-image: linear-gradient(180deg, transparent 0, #000 22%); }
 @media (min-width: 960px) {
-  /* wide screens: the photo runs the full width of the page as a banner, the headline and the form start underneath the faces */
-  body[data-type="brand"] .stage-in { padding-top: min(33vw, 480px); }
+  /* wide screens: the photo runs the full width of the page, the headline sits right on it so the message is there at once */
+  body[data-type="brand"] .stage-in { padding-top: min(7vw, 90px); }
+  body[data-type="brand"] .stage .hero h1 { text-shadow: 0 2px 28px rgba(8,8,10,.55); }
   .stage .hero-slot img.hero-photo { object-fit: cover; object-position: 50% 14%; transform: none; width: 100%; margin-left: 0;
     -webkit-mask-image: none; mask-image: none; }
 }

@@ -316,3 +316,20 @@
     }
   });
 })();
+
+// film strip: the sprocket holes are part of the moving strip, so one copy of the names must be a whole number of holes wide
+(() => {
+  const tr = document.querySelector(".names-track");
+  if (!tr) return;
+  const HOLE = 38, SPEED = 55;   // px between holes, px per second
+  const fit = () => {
+    const s = [...tr.children], half = s.length / 2;
+    if (!half || half % 1) return;
+    s[half - 1].style.marginRight = "0px";
+    const w = s[half].offsetLeft - s[0].offsetLeft, target = Math.ceil(w / HOLE) * HOLE;
+    s[half - 1].style.marginRight = (target - w) + "px";
+    tr.style.setProperty("--shift", -target + "px");
+    tr.style.animationDuration = (target / SPEED) + "s";
+  };
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(fit);
+})();

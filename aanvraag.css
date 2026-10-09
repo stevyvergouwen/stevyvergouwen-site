@@ -271,7 +271,7 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
 .field.bad .timepick select { border-color: var(--bad); }
 
 /* a strong photo behind the whole page, dark enough to read on */
-body.page::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--poster, none) center / cover no-repeat; opacity: .5; }
+body.page::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--poster, none) center var(--ypos, 50%) / cover no-repeat; opacity: .5; }
 body.page::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(rgba(8,8,10,.72), rgba(8,8,10,.35) 40%, rgba(8,8,10,.7)); }
 .ask, .ask-card, .card-form { background: rgba(8,8,10,.72); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 body.page { background: transparent; }

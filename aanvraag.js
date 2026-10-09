@@ -362,6 +362,7 @@
   const fit = () => {
     const s = [...tr.children], half = s.length / 2;
     if (!half || half % 1) return;
+    s.forEach(x => { x.style.width = ""; x.style.width = Math.ceil(x.offsetWidth / HOLE) * HOLE + "px"; });   // every frame is a whole number of ticks wide: the dividers land on a tick
     s[half - 1].style.marginRight = "0px";
     const w = s[half].offsetLeft - s[0].offsetLeft, target = Math.ceil(w / HOLE) * HOLE;
     s[half - 1].style.marginRight = (target - w) + "px";

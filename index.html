@@ -76,7 +76,7 @@
     .names-track span::after { content: attr(data-n); position: absolute; left: 20px; top: -10px; font: 400 7px/1 "Roboto Mono",ui-monospace,Menlo,monospace; letter-spacing: .26em; color: var(--paper); }
     @keyframes names { to { transform: translateX(var(--shift, -50%)); } }
   }
-  @media (prefers-reduced-motion: reduce) { .names-track { animation: none; } .names { animation: rise 1.6s ease 1.4s both; } }
+  @media (prefers-reduced-motion: reduce) { .names { animation: rise 1.6s ease 1.4s both; } }
   a { color:inherit; text-decoration:none; }
   a:hover { color:var(--blue); }
   .top, .foot { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
@@ -150,7 +150,7 @@
 <div class="names" aria-label="Artists and events I have worked with"><div class="names-track" aria-hidden="true"><span data-n="01A">Awakenings</span><span data-n="02A">LOU&#x27;D</span><span data-n="03A">Mysteryland</span><span data-n="04A">Rotterdam Rave</span><span data-n="05A">GYRA</span><span data-n="06A">A State of Trance</span><span data-n="07A">Verknipt</span><span data-n="08A">Hazel</span><span data-n="09A">DGTL</span><span data-n="10A">Nachtcollege</span><span data-n="11A">Give Soul</span><span data-n="12A">Ploegendienst</span><span data-n="13A">Paaspop</span><span data-n="14A">Classified</span><span data-n="15A">Yousuke Yukimatsu</span><span data-n="16A">Modular</span><span data-n="17A">Winson</span><span data-n="18A">Sonus</span><span data-n="19A">Aloïs</span><span data-n="20A">The Crave</span><span data-n="21A">Rasa Sol</span><span data-n="22A">Now&amp;Wow</span><span data-n="23A">AMF</span><span data-n="24A">Audio Obscura</span><span data-n="25A">Oranje Zoet</span><span data-n="26A">Spanish Heat</span><span data-n="27A">Glitch</span><span data-n="01A">Awakenings</span><span data-n="02A">LOU&#x27;D</span><span data-n="03A">Mysteryland</span><span data-n="04A">Rotterdam Rave</span><span data-n="05A">GYRA</span><span data-n="06A">A State of Trance</span><span data-n="07A">Verknipt</span><span data-n="08A">Hazel</span><span data-n="09A">DGTL</span><span data-n="10A">Nachtcollege</span><span data-n="11A">Give Soul</span><span data-n="12A">Ploegendienst</span><span data-n="13A">Paaspop</span><span data-n="14A">Classified</span><span data-n="15A">Yousuke Yukimatsu</span><span data-n="16A">Modular</span><span data-n="17A">Winson</span><span data-n="18A">Sonus</span><span data-n="19A">Aloïs</span><span data-n="20A">The Crave</span><span data-n="21A">Rasa Sol</span><span data-n="22A">Now&amp;Wow</span><span data-n="23A">AMF</span><span data-n="24A">Audio Obscura</span><span data-n="25A">Oranje Zoet</span><span data-n="26A">Spanish Heat</span><span data-n="27A">Glitch</span></div></div>
 <div class="foot"><span>© <script>document.write(new Date().getFullYear())</script> Stevy Vergouwen</span><a href="/terms/" data-voorwaarden>Terms &amp; conditions</a></div>
 <script>
-(() => { const tr = document.querySelector(".names-track"); if (!tr) return; const HOLE = 14, SPEED = 60;
+(() => { const tr = document.querySelector(".names-track"); if (!tr) return; const HOLE = 14, SPEED = matchMedia("(prefers-reduced-motion: reduce)").matches ? 24 : 60;   // calm, slower pace when the phone asks for reduced motion
   const fit = () => { const s = [...tr.children], half = s.length / 2; if (!half || half % 1) return;
     s.forEach(x => { x.style.width = ""; x.style.width = Math.ceil(x.offsetWidth / HOLE) * HOLE + "px"; });   // every frame is a whole number of ticks wide: the dividers land on a tick
     s[half - 1].style.marginRight = "0px";
@@ -167,7 +167,7 @@
       if (k < 1) requestAnimationFrame(tick); else tr.style.filter = ""; };
     requestAnimationFrame(tick); }); })();
 </script>
-<script src="achtergrond.js?v=1791542744"></script>
+<script src="achtergrond.js?v=1791542985"></script>
 <script src="taal.js?v=1791513690"></script>
 <script src="voorwaarden.js?v=1791513690"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6cab90cdc3c4243ab5b8c2c9f7ef7e7"}'></script><!-- End Cloudflare Web Analytics -->

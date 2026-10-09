@@ -108,7 +108,18 @@ h3 { margin: 0; font: 700 clamp(1.4rem, 4vw, 2rem)/1.15 var(--sans); letter-spac
 .card:hover .card-go { color: var(--paper); transform: translateX(4px); }
 .card-d { grid-column: 2 / 4; color: var(--dim); max-width: 52ch; margin-top: 6px; }
 
-.foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 56px var(--pad) 28px; max-width: 1080px; width: 100%; margin: 0 auto; color: var(--dim); }
+.foot { padding: clamp(40px, 7vw, 72px) var(--pad) 28px; max-width: 1080px; width: 100%; margin: 0 auto; color: var(--dim); border-top: 1px solid var(--faint); }
+.foot-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.3fr; gap: 32px 24px; }
+.fcol { display: flex; flex-direction: column; gap: 10px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+.fcol h3 { margin: 0 0 6px; font: 400 10px/1 var(--mono); letter-spacing: .26em; color: var(--dim); }
+.fcol a { color: var(--paper); text-decoration: none; }
+.fcol a:hover { color: var(--blue); }
+.fbrand strong { font: 700 1.25rem/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.02em; color: var(--paper); }
+.fbrand p { margin: 8px 0 0; color: var(--dim); line-height: 1.5; }
+.soonl { color: rgba(235,231,224,.55); }
+.soonl i { font-style: normal; margin-left: 8px; padding: 2px 7px; border: 1px solid var(--faint); border-radius: 999px; font-size: 9px; letter-spacing: .2em; }
+.foot-base { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--faint); font-size: 11px; letter-spacing: .14em; }
+@media (max-width: 760px) { .foot-grid { grid-template-columns: 1fr 1fr; } .fbrand { grid-column: 1 / -1; } }
 
 @media (min-width: 760px) {
   .cards { grid-template-columns: repeat(3, 1fr); }
@@ -262,3 +273,5 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
 /* ambient glow behind the whole page: the hero still, blurred, so the lower sections are not bare */
 body.page::before { content: ""; position: fixed; inset: -12%; z-index: -1; pointer-events: none; background: var(--poster, none) center / cover no-repeat; filter: blur(70px) saturate(1.6); opacity: .5; }
 body.page::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(rgba(8,8,10,.55), rgba(8,8,10,.1) 45%, rgba(8,8,10,.25)); }
+
+body.page { background: transparent; }

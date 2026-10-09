@@ -39,7 +39,20 @@
     if (!e || e.name !== "NotAllowedError" || !slide.el) return;
     slide.stillOnly = true;
     slide.el.classList.add("is-still");
+    if (!hint) {   // a small hint: one tap lets the browser play the video in full quality
+      hint = document.createElement("button");
+      hint.type = "button"; hint.className = "tapplay"; hint.textContent = "Tap for video";
+      document.body.appendChild(hint);
+    }
   }
+  let hint = null;
+  // one tap = a user gesture: now the browser allows the video, so the sharp still gives way to the real video
+  const unlock = () => {
+    const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
+    if (!v) return;
+    const p = v.play();
+    if (p && p.then) p.then(() => { slides.forEach(x => { x.stillOnly = false; if (x.el) x.el.classList.remove("is-still"); }); if (hint) { hint.remove(); hint = null; } }).catch(() => {});
+  };
 
   function show(n, immediate) {
     const next = slides[n];
@@ -84,7 +97,7 @@
   // some browsers only allow autoplay after a first touch or click
   ["pointerdown", "keydown", "touchstart"].forEach(ev => addEventListener(ev, () => {
     const s = slides[cur]; const v = s && s.el && s.el.querySelector("video");
-    if (!calm && v && v.paused && !v.ended) v.play().catch(() => {});
+    if (!calm && v && v.paused && !v.ended) unlock();
   }, { passive: true, once: false }));
   const wait = () => ((slides[cur] && slides[cur].dur) ? Math.max(3000, slides[cur].dur * 1000 - 600) : HOLD);
 

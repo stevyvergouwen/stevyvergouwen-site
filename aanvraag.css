@@ -349,7 +349,8 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
 .stage .hero-slot img.hero-photo { object-position: 50% 30%; transform: translateY(15%);
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%); mask-image: linear-gradient(180deg, transparent 0, #000 22%); }
 @media (min-width: 960px) {
-  /* wide screens: the portrait photo is shown whole next to the headline (not cropped), its sides melt into the dark */
-  .stage .hero-slot img.hero-photo { object-fit: contain; object-position: 50% 0; transform: none; width: 40%; margin-left: 15%;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24%, #000 76%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 24%, #000 76%, transparent 100%); }
+  /* wide screens: the photo runs the full width of the page as a banner, the headline and the form start underneath the faces */
+  body[data-type="brand"] .stage-in { padding-top: min(33vw, 480px); }
+  .stage .hero-slot img.hero-photo { object-fit: cover; object-position: 50% 14%; transform: none; width: 100%; margin-left: 0;
+    -webkit-mask-image: none; mask-image: none; }
 }

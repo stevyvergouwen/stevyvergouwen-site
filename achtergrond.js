@@ -34,15 +34,11 @@
     return el;
   };
 
-  // the browser refuses video outright (iPhone Low Power Mode, a strict autoplay policy): use the animated copy
+  // the browser refuses video outright (iPhone Low Power Mode, a strict autoplay policy): show a sharp still of that piece with a slow zoom
   function refused(slide, e) {
     if (!e || e.name !== "NotAllowedError" || !slide.el) return;
-    if (slide.anim) {
-      const old = slide.el.querySelector("img.anim"); if (old) old.remove();
-      const g = new Image(); g.className = "anim"; g.alt = "";
-      g.onload = () => { if (slide.el.classList.contains("is-on")) slide.el.appendChild(g); };
-      g.src = slide.anim;
-    } else slide.el.classList.add("is-still");
+    slide.stillOnly = true;
+    slide.el.classList.add("is-still");
   }
 
   function show(n, immediate) {
@@ -55,7 +51,7 @@
     const swap = () => {           // the actual switch: the new slide fades in, the old one fades out
       if (done) return; done = true;
       if (!v) next.el.classList.add("kb");          // photo: slow zoom starts when it appears
-      next.el.classList.remove("is-still");
+      if (!next.stillOnly) next.el.classList.remove("is-still");
       next.el.classList.add("is-on");
       if (prev && prev !== next && prev.el) {
         prev.el.classList.remove("is-on");

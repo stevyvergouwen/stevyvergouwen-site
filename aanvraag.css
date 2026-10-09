@@ -121,14 +121,19 @@ h3 { margin: 0; font: 700 clamp(1.4rem, 4vw, 2rem)/1.15 var(--sans); letter-spac
 }
 
 .claim { margin: clamp(64px, 12vw, 130px) 0 0; font: 700 clamp(2rem, 7vw, 4.4rem)/1 var(--sans); letter-spacing: -.035em; text-wrap: balance; max-width: 16ch; }
-/* film strip: slim, sprocket holes top and bottom, every name is a numbered frame; the ends fade out */
-.names { position: relative; margin: clamp(40px, 7vw, 72px) auto clamp(32px, 6vw, 56px); max-width: 100%; overflow: hidden; background: #1b1b1f; border-radius: 6px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
-.names-track { display: flex; width: max-content; padding: 18px 0; white-space: nowrap; animation: names 40s linear infinite;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='18'%3E%3Crect x='8' y='4' width='12' height='10' rx='3' fill='%2308080a'/%3E%3C/svg%3E") repeat-x 0 0 / 28px 18px, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='18'%3E%3Crect x='8' y='4' width='12' height='10' rx='3' fill='%2308080a'/%3E%3C/svg%3E") repeat-x 0 100% / 28px 18px, #1b1b1f; }
-.names-track span { position: relative; padding: 10px clamp(20px, 3vw, 34px) 12px; border-left: 1px solid rgba(235,231,224,.08); text-transform: uppercase;
-  font: 700 clamp(.85rem, 2vw, 1.2rem)/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.005em; color: var(--paper); opacity: 1; }
-.names-track span::before { content: attr(data-n); display: block; margin-bottom: 8px; font: 400 8px/1 var(--mono); letter-spacing: .24em; color: var(--paper); }
+/* film edge: hairlines with fine edge ticks, every name is a numbered frame; the ends fade out */
+.names { position: relative; margin: clamp(40px, 7vw, 72px) calc(-1 * var(--pad)) clamp(32px, 6vw, 56px); overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.names-track { display: flex; width: max-content; padding: 24px 0 22px; white-space: nowrap; animation: names 40s linear infinite;
+  background:
+    repeating-linear-gradient(90deg, rgba(235,231,224,.55) 0 1px, transparent 1px 14px) 0 0 / 100% 6px no-repeat,
+    linear-gradient(rgba(235,231,224,.22), rgba(235,231,224,.22)) 0 6px / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, rgba(235,231,224,.55) 0 1px, transparent 1px 14px) 0 100% / 100% 6px no-repeat,
+    linear-gradient(rgba(235,231,224,.22), rgba(235,231,224,.22)) 0 calc(100% - 6px) / 100% 1px no-repeat; }
+.names-track span { position: relative; padding: 0 clamp(26px, 4vw, 46px); text-transform: uppercase; color: var(--paper);
+  font: 700 clamp(1.3rem, 3.4vw, 2.1rem)/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.03em; }
+.names-track span + span::before { content: ""; position: absolute; left: 0; top: 50%; width: 1px; height: 1.1em; transform: translateY(-50%); background: rgba(235,231,224,.25); }
+.names-track span::after { content: attr(data-n); position: absolute; left: clamp(26px, 4vw, 46px); top: -17px; font: 400 8px/1 var(--mono); letter-spacing: .26em; color: var(--paper); opacity: 1; }
 @keyframes names { to { transform: translateX(var(--shift, -50%)); } }
 @media (prefers-reduced-motion: reduce) { .names-track { animation: none; flex-wrap: wrap; width: auto; padding: 0 var(--pad); } }
 .promise { margin: 8px 0 0; color: var(--paper); }
@@ -253,3 +258,7 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
 .timepick select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(91,132,255,.25); }
 .timepick select option { background: #111; color: var(--paper); }
 .field.bad .timepick select { border-color: var(--bad); }
+
+/* ambient glow behind the whole page: the hero still, blurred, so the lower sections are not bare */
+body.page::before { content: ""; position: fixed; inset: -12%; z-index: -1; pointer-events: none; background: var(--poster, none) center / cover no-repeat; filter: blur(80px) saturate(1.5); opacity: .3; }
+body.page::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(130% 90% at 50% 0%, rgba(8,8,10,0) 0%, rgba(8,8,10,.55) 70%, #08080a 100%); }

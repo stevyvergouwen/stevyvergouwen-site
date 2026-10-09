@@ -234,7 +234,7 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
 @media (min-width: 960px) {
   .stage .hero-slot { inset: 0 calc(50% - 50vw) auto; height: min(100%, calc(100vw * 9 / 16)); width: auto; }
   .stage::after { background: linear-gradient(90deg, rgba(8,8,10,.78) 0%, rgba(8,8,10,.42) 55%, rgba(8,8,10,.30) 100%),
-                              linear-gradient(180deg, rgba(8,8,10,0) 60%, rgba(8,8,10,1) 100%); }
+                              linear-gradient(180deg, rgba(8,8,10,0) 60%, rgba(8,8,10,0) 100%); }
 }
 /* phones: the video is a wide picture on top, the words sit underneath it */
 @media (max-width: 959px) {

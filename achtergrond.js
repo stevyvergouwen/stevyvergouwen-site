@@ -23,7 +23,9 @@
       v.controls = false; v.disablePictureInPicture = true;
       v.setAttribute("controlslist", "nodownload nofullscreen noremoteplayback"); v.setAttribute("x-webkit-airplay", "deny");
       // download the whole piece first and play it from memory: no stalls halfway
-      fetch(s.src).then(r => r.blob()).then(b => { v.src = URL.createObjectURL(b); }).catch(() => { v.src = s.src; });
+      // (the first one streams straight away so the page starts quickly)
+      if (cur < 0) v.src = s.src;
+      else fetch(s.src).then(r => r.blob()).then(b => { v.src = URL.createObjectURL(b); }).catch(() => { v.src = s.src; });
       el.appendChild(v);
     } else {
       const i = document.createElement("img");

@@ -241,7 +241,7 @@ input::placeholder, textarea::placeholder { text-transform: uppercase; }
   .stage { padding-top: 0; }
   .stage .hero { display: flex; flex-direction: column; }
   .stage .hero-slot { order: -1; position: relative; inset: auto; margin: 0 calc(50% - 50vw) 22px; width: 100vw; height: auto; aspect-ratio: 16 / 9;
-    -webkit-mask-image: linear-gradient(180deg, #000 0, #000 78%, transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 78%, transparent 100%); }
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 74%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 74%, transparent 100%); }
   .stage::after { display: none; }
   .stage .eyebrow { margin-top: 4px; }
 }
@@ -333,5 +333,4 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
   .igfeed { margin-top: 28px; }
   .foot { padding-top: 28px; }
   .foot-grid { gap: 20px 16px; }
-  .hero { padding-top: 18px; }
 }

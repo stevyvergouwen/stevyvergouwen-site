@@ -8,6 +8,41 @@
  },
  {
   "type": "photo",
+  "src": "media/bg/20260813-2056-glitch-stevyvergouwen-02419.jpg",
+  "group": "20260813-2056-glitch-stevyvergouwen-02419",
+  "dur": 5,
+  "pos": "50% 14%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/20260814-2154-glitch-stevyvergouwen-00615.jpg",
+  "group": "20260814-2154-glitch-stevyvergouwen-00615",
+  "dur": 5,
+  "pos": "50% 14%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/20260815-0400-glitch-stevyvergouwen-05245.jpg",
+  "group": "20260815-0400-glitch-stevyvergouwen-05245",
+  "dur": 5,
+  "pos": "50% 14%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/20260829-1956-rr26-stevyvergouwen-07719.jpg",
+  "group": "20260829-1956-rr26-stevyvergouwen-07719",
+  "dur": 5,
+  "pos": "50% 14%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/20260829-1957-rr26-stevyvergouwen-07778.jpg",
+  "group": "20260829-1957-rr26-stevyvergouwen-07778",
+  "dur": 5,
+  "pos": "50% 14%"
+ },
+ {
+  "type": "photo",
   "src": "media/bg/20260829-2000-rr26-stevyvergouwen-07851.jpg",
   "group": "20260829-2000-rr26-stevyvergouwen-07851",
   "dur": 5,
@@ -29,10 +64,31 @@
  },
  {
   "type": "photo",
+  "src": "media/bg/260221-1605-rrmodular-stevyvergouwen.jpg",
+  "group": "260221-1605-rrmodular-stevyvergouwen",
+  "dur": 5,
+  "pos": "50% 14%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/260221-1839-rrmodular-stevyvergouwen-00023.jpg",
+  "group": "260221-1839-rrmodular-stevyvergouwen-00023",
+  "dur": 5,
+  "pos": "50% 14%"
+ },
+ {
+  "type": "photo",
   "src": "media/bg/260221-1850-rrmodular-stevyvergouwen-00155.jpg",
   "group": "260221-1850-rrmodular-stevyvergouwen-00155",
   "dur": 5,
   "pos": "32% 50%"
+ },
+ {
+  "type": "photo",
+  "src": "media/bg/260221-2012-rrmodular-stevyvergouwen-00389.jpg",
+  "group": "260221-2012-rrmodular-stevyvergouwen-00389",
+  "dur": 5,
+  "pos": "50% 14%"
  },
  {
   "type": "photo",

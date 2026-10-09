@@ -344,3 +344,11 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
 .brandrow { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(6px,1.4vw,14px); margin-top: clamp(24px,4vw,40px); }
 .brandrow img { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 4px; }
 @media (max-width: 760px) { .brandrow { grid-template-columns: repeat(3, 1fr); } }
+
+/* Brand banner photo: lowered on phones (the headline sits above the faces), higher in the wide band so both heads are in frame */
+.stage .hero-slot img.hero-photo { object-position: 50% 30%; transform: translateY(15%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%); mask-image: linear-gradient(180deg, transparent 0, #000 22%); }
+@media (min-width: 960px) {
+  .stage .hero-slot img.hero-photo { object-position: 50% 12%; transform: none;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 9%); mask-image: linear-gradient(180deg, transparent 0, #000 9%); }
+}

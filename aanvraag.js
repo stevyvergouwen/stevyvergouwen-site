@@ -3,7 +3,7 @@
 (() => {
   // The address of the Worker that mails the request to Stevy. Set after the Worker is deployed.
   const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
-  const FALLBACK_MAIL = "info@shotbystevy.com";
+  const FALLBACK_MAIL = "info@stevyvergouwen.com";
 
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];

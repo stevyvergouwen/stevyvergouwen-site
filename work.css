@@ -1,0 +1,38 @@
+/* Work pages: overview tiles and the case gallery (vertical and horizontal photos mixed in justified rows) */
+body.work main.wrk { max-width: 1280px; margin: 0 auto; padding: 0 var(--pad) 40px; }
+.whero { padding: clamp(40px, 8vw, 96px) 0 clamp(24px, 4vw, 48px); max-width: 880px; }
+.whero h1 { margin: 10px 0 0; font: 700 clamp(2.4rem, 8vw, 5.6rem)/.96 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.035em; text-transform: uppercase; }
+.whero .lead { margin: 22px 0 0; max-width: 56ch; color: var(--dim); }
+
+.gal { display: flex; flex-wrap: wrap; gap: clamp(6px, 1vw, 12px); }
+.gal::after { content: ""; flex-grow: 999999; }
+.g { margin: 0; flex-shrink: 1; min-width: 0; }
+.g button { display: block; width: 100%; padding: 0; border: 0; background: var(--ink-2); cursor: zoom-in; border-radius: 3px; overflow: hidden; }
+.g img { display: block; width: 100%; height: auto; transition: transform .6s cubic-bezier(.16, 1, .3, 1), opacity .3s; }
+.g button:hover img { transform: scale(1.025); }
+.g button:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+.tiles { display: grid; gap: clamp(10px, 1.6vw, 18px); grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.tile { position: relative; display: block; overflow: hidden; border-radius: 4px; aspect-ratio: 4 / 5; background: var(--ink-2); color: var(--paper); text-decoration: none; }
+.tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.16, 1, .3, 1); }
+.tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 45%, rgba(8, 8, 10, .85)); }
+.tile:hover img { transform: scale(1.05); }
+.tmeta { position: absolute; left: 18px; right: 18px; bottom: 54px; z-index: 1; font: 400 10px/1 var(--mono); letter-spacing: .24em; color: var(--paper); opacity: .85; }
+.tt { position: absolute; left: 18px; right: 18px; bottom: 18px; z-index: 1; font: 700 clamp(1.1rem, 2.2vw, 1.5rem)/1.05 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.02em; text-transform: uppercase; }
+
+.wcta { padding: clamp(56px, 9vw, 110px) 0 clamp(24px, 4vw, 40px); text-align: center; }
+.wcta h2 { margin: 0 0 22px; font: 700 clamp(1.6rem, 4.4vw, 3rem)/1 "Helvetica Neue", Arimo, Arial, sans-serif; letter-spacing: -.03em; text-transform: uppercase; }
+.cnav { display: flex; justify-content: space-between; gap: 16px; padding: 24px 0; border-top: 1px solid var(--faint); }
+.cnav a { display: flex; flex-direction: column; gap: 6px; color: var(--paper); text-decoration: none; text-transform: uppercase; font: 700 1.1rem/1.1 "Helvetica Neue", Arimo, Arial, sans-serif; }
+.cnav a.r { text-align: right; }
+.cnav a span { font: 400 10px/1 var(--mono); letter-spacing: .24em; color: var(--dim); }
+.cnav a:hover { color: var(--blue); }
+
+.lb { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(8, 8, 10, .94); }
+.lb[hidden] { display: none; }
+.lb img { max-width: 94vw; max-height: 90vh; object-fit: contain; }
+.lb button { position: absolute; background: none; border: 0; color: var(--paper); font: 400 28px/1 var(--mono); cursor: pointer; padding: 18px; }
+.lb-x { top: 6px; right: 10px; font-size: 38px; }
+.lb-p { left: 6px; top: 50%; transform: translateY(-50%); }
+.lb-n { right: 6px; top: 50%; transform: translateY(-50%); }
+@media (max-width: 640px) { .lb-p, .lb-n { top: auto; bottom: 8px; transform: none; } }

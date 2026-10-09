@@ -108,7 +108,7 @@ h3 { margin: 0; font: 700 clamp(1.4rem, 4vw, 2rem)/1.15 var(--sans); letter-spac
 .card:hover .card-go { color: var(--paper); transform: translateX(4px); }
 .card-d { grid-column: 2 / 4; color: var(--dim); max-width: 52ch; margin-top: 6px; }
 
-.foot { padding: clamp(40px, 7vw, 72px) var(--pad) 28px; max-width: 1080px; width: 100%; margin: 0 auto; color: var(--dim); border-top: 1px solid var(--faint); }
+.foot { padding: clamp(40px, 7vw, 72px) var(--pad) 28px; max-width: 1080px; width: 100%; margin: 0 auto; color: var(--dim); }
 .foot-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.3fr; gap: 32px 24px; }
 .fcol { display: flex; flex-direction: column; gap: 10px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
 .fcol h3 { margin: 0 0 6px; font: 400 10px/1 var(--mono); letter-spacing: .26em; color: var(--dim); }

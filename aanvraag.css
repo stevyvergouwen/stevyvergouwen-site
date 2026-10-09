@@ -334,3 +334,8 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
   .foot { padding-top: 28px; }
   .foot-grid { gap: 20px 16px; }
 }
+
+/* phones: solid black behind the video area, so the top of the video fades into black (the page photo starts below it) */
+@media (max-width: 959px) {
+  .stage { background: linear-gradient(180deg, #08080a 0, #08080a calc(100vw * 9 / 16 - 10px), rgba(8,8,10,0) calc(100vw * 9 / 16 + 90px)) top / 100% 100% no-repeat; }
+}

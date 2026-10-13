@@ -98,6 +98,14 @@
     }
   }
 
+  // no flashing while you fill in the form: as soon as a field gets focus the hero video freezes (and stays frozen)
+  const calm = () => {
+    document.body.classList.add("calm");
+    document.querySelectorAll(".hero-slot video").forEach(v => v.pause());
+  };
+  document.addEventListener("focusin", e => { if (e.target.closest && e.target.closest(".form")) calm(); });
+  document.addEventListener("play", e => { if (document.body.classList.contains("calm") && e.target.matches && e.target.matches(".hero-slot video")) e.target.pause(); }, true);
+
   // a hairline under the sticky bar once the page has moved
   const onScroll = () => document.body.classList.toggle("scrolled", scrollY > 8);
   addEventListener("scroll", onScroll, { passive: true }); onScroll();

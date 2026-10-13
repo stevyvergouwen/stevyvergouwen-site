@@ -356,3 +356,6 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
     -webkit-mask-image: none; mask-image: none; }
 }
 .hero-slot picture { display: contents; }
+
+/* the frozen hero while the form is in use: a little calmer */
+body.calm .hero-slot video { filter: brightness(.7); transition: filter .6s ease; }

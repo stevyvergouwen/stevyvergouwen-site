@@ -357,5 +357,8 @@ body.page::before { transform-origin: 50% 40%; animation: drift 38s ease-in-out 
 }
 .hero-slot picture { display: contents; }
 
-/* the frozen hero while the form is in use: a little calmer */
-body.calm .hero-slot video { filter: brightness(.7); transition: filter .6s ease; }
+/* video pages (Event, Artist): a darker veil over the hero video takes the sting out of the strobe flashes */
+body[data-type="event"] .stage::after, body[data-type="artist"] .stage::after { background: linear-gradient(180deg, rgba(8,8,10,.74) 0%, rgba(8,8,10,.86) 100%); }
+@media (min-width: 960px) {
+  body[data-type="event"] .stage::after, body[data-type="artist"] .stage::after { background: linear-gradient(90deg, rgba(8,8,10,.88) 0%, rgba(8,8,10,.7) 55%, rgba(8,8,10,.62) 100%), linear-gradient(180deg, rgba(8,8,10,0) 60%, rgba(8,8,10,0) 100%); }
+}

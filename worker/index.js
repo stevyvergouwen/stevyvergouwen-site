@@ -129,7 +129,7 @@ export default {
     const subject = `New request - ${TYPES[type]} - ${name} (${date}${start ? " " + start : ""})`;
     const raw = [
       `From: Stevy Vergouwen site <${FROM}>`,
-      `To: ${env.MAIL_TO || "info@shotbystevy.com"}`,
+      `To: ${env.MAIL_TO || "info@stevyvergouwen.com"}`,
       `Reply-To: ${name.replace(/[<>",]/g, "")} <${email}>`,
       `Subject: ${subject}`,
       `Date: ${new Date().toUTCString()}`,
@@ -142,7 +142,7 @@ export default {
     ].join("\r\n");
 
     try {
-      await env.MAIL.send(new EmailMessage(FROM, env.MAIL_TO || "info@shotbystevy.com", raw));
+      await env.MAIL.send(new EmailMessage(FROM, env.MAIL_TO || "info@stevyvergouwen.com", raw));
     } catch (e) {
       return reply(502, { ok: false, error: "mail" }, okOrigin);
     }

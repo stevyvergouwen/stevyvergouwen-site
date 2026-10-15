@@ -56,7 +56,7 @@
         }), { root: sc, rootMargin: "-10% 0px -80% 0px" });
         body.querySelectorAll(".article").forEach(s => io.observe(s));
       }
-    }).catch(() => { loaded = false; body.innerHTML = '<p class="vw-intro">Could not load the terms / Kon de voorwaarden niet laden. info@shotbystevy.com</p>'; });
+    }).catch(() => { loaded = false; body.innerHTML = '<p class="vw-intro">Could not load the terms / Kon de voorwaarden niet laden. info@stevyvergouwen.com</p>'; });
   }
 
   function open() {

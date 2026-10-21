@@ -8,6 +8,8 @@
   const HOLD = 4000;
   const phone = matchMedia("(max-width: 900px), (pointer: coarse)").matches;   // a phone decodes one HD video at a time without glitches
   let slides = [], cur = -1, timer = null;
+  const lite = innerWidth <= 900 || matchMedia("(pointer: coarse)").matches || !!(navigator.connection && navigator.connection.saveData);   // phones and data-saver get the 540p copy of every clip
+  const lighter = u => lite ? u.replace(/\.mp4$/, "-m.mp4") : u;
 
   const make = s => {
     const el = document.createElement("div");
@@ -24,8 +26,9 @@
       v.setAttribute("controlslist", "nodownload nofullscreen noremoteplayback"); v.setAttribute("x-webkit-airplay", "deny");
       // download the whole piece first and play it from memory: no stalls halfway
       // (the first one streams straight away so the page starts quickly)
-      if (cur < 0) v.src = s.src;
-      else fetch(s.src).then(r => r.blob()).then(b => { v.src = URL.createObjectURL(b); }).catch(() => { v.src = s.src; });
+      v.addEventListener("error", () => { if (!v.dataset.fb && lite) { v.dataset.fb = 1; v.src = s.src; } });
+      if (cur < 0) v.src = lighter(s.src);
+      else fetch(lighter(s.src)).then(r => { if (!r.ok) throw 0; return r.blob(); }).then(b => { v.src = URL.createObjectURL(b); }).catch(() => { v.src = s.src; });
       el.appendChild(v);
     } else {
       const i = document.createElement("img");

@@ -40,7 +40,8 @@
       A.parentNode.appendChild(B);
       [A, B].forEach(v => { v.loop = false; v.muted = true; v.playsInline = true; v.preload = "auto"; v.style.transitionDuration = FADE + "s"; });
       let i = Math.floor(Math.random() * clips.length), cur = A, nxt = B, switching = false;
-      const load = (v, k) => { v.src = clips[((k % clips.length) + clips.length) % clips.length]; v.load(); };
+      const lite = innerWidth <= 900 || matchMedia("(pointer: coarse)").matches || !!(navigator.connection && navigator.connection.saveData);
+      const load = (v, k) => { const u = clips[((k % clips.length) + clips.length) % clips.length]; v.onerror = () => { if (lite && !v.dataset.fb) { v.dataset.fb = 1; v.src = u; v.load(); } }; v.dataset.fb = ""; v.src = lite ? u.replace(/\.mp4$/, "-m.mp4") : u; v.load(); };
       const play = v => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
       load(A, i); load(B, i + 1); play(A);
       const next = () => {
@@ -331,6 +332,7 @@
       place: place ? { name: place.name, street: place.street, postcode: place.postcode, city: place.city, country: place.country, lat: place.lat, lon: place.lon, label: place.label } : null,
       needs: $$('input[name="needs"]:checked', form).map(i => i.value),
       notes: form.elements.notes.value.trim(),
+      updates: !!(form.elements.updates && form.elements.updates.checked),
       src,
       page: location.pathname,
       elapsed: Math.round((Date.now() - t0) / 1000),

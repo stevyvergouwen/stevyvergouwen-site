@@ -69,3 +69,5 @@ body.vw-open { overflow: hidden; }
 
 .vw .clause .tx, .vw .vw-intro, .vw .vw-contact { text-transform: none; }
 .vw .vw-contact strong { text-transform: uppercase; }
+
+@media (pointer: coarse) { .vw-lang button, .vw-close, .vw-top a { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; } }

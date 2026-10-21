@@ -9,3 +9,9 @@ media/*
 !media/pages/
 tools/
 serve.py
+worker/.wrangler/
+node_modules/
+.env
+*.pem
+serve-lan.py
+worker/geheim/

@@ -1417,3 +1417,17 @@ body.work .bar .btn.sm::after { content: "\2197"; margin-left: 4px; font-size: 1
   .chero .ctext { left: calc(var(--pad) + clamp(28px, 3.2vw, 56px)); right: calc(var(--pad) + clamp(28px, 3.2vw, 56px)); bottom: calc(28px + clamp(32px, 5vh, 64px)); }
   .chero .htags { right: calc(var(--pad) + clamp(28px, 3.2vw, 56px)); bottom: calc(28px + clamp(32px, 5vh, 64px)); }
 }
+.pg-num ul:has(> li:nth-child(3):last-child) { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 760px) { .pg-num ul:has(> li:nth-child(3):last-child) { grid-template-columns: 1fr; } }
+
+/* Explore "Drift": photos floating at different depths; scroll flies the camera through them */
+#gdrift { position: fixed; inset: 0; z-index: 3; perspective: 900px; perspective-origin: 50% 46%; overflow: hidden; display: none; touch-action: none; cursor: grab; }
+body.drifting #gdrift { display: block; }
+body.drifting .gstage, body.drifting #gflow { visibility: hidden; pointer-events: none; }
+body.drifting .gui .glab { opacity: 0; }
+#gdrift .dw { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; will-change: transform; }
+#gdrift .dp { position: absolute; left: 0; top: 0; display: block; opacity: 0; visibility: hidden; background: #111; transition: opacity .5s linear; backface-visibility: hidden; }
+#gdrift .dp img { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
+#gdrift .dl { position: absolute; left: clamp(18px, 3vw, 44px); bottom: clamp(70px, 9vh, 96px); max-width: 70vw; font: 600 11px/1.5 "SF Mono", Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: rgba(240, 238, 232, .92); pointer-events: none; }
+#gdrift .dl b { display: block; font-weight: 700; font-size: 14px; letter-spacing: .06em; }
+#gdrift .dl span { color: rgba(240, 238, 232, .55); }

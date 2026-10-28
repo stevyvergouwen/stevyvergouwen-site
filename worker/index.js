@@ -3,7 +3,7 @@
    Setup: see worker/README.md */
 import { EmailMessage } from "cloudflare:email";
 
-const ALLOWED_ORIGINS = ["https://stevyvergouwen.com", "https://www.stevyvergouwen.com"];
+const ALLOWED_ORIGINS = ["https://stevyvergouwen.com", "https://www.stevyvergouwen.com", "https://stevyvergouwen-site.polished-shape-ff19.workers.dev"];   // the last one is the test address, remove at go-live
 const FROM = "aanvraag@stevyvergouwen.com";     // must be an address on a domain with Email Routing
 const TYPES = { event: "Event", brand: "Brand", artist: "Artist" };
 const NEEDS = ["photos", "video", "aftermovie", "brand video", "social content", "presskit", "live registration", "recap", "other"];
@@ -251,6 +251,23 @@ export default {
     const okOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
 
     if (request.method === "OPTIONS") return new Response(null, { status: okOrigin ? 204 : 403, headers: okOrigin ? cors(okOrigin) : {} });
+    if (request.method === "GET" && new URL(request.url).pathname === "/dl") {   // download for a personal link: 7 days, 5 downloads
+      const t = new URL(request.url).searchParams.get("t") || "";
+      if (!/^[a-z2-9]{16}$/.test(t)) return new Response("Not found", { status: 404 });
+      let rec; try { rec = JSON.parse(await env.IG.get("dl:" + t) || "null"); } catch { rec = null; }
+      if (!rec || rec.exp < Date.now() || rec.uses >= 5) return new Response("This link has expired. Ask for a new one at stevyvergouwen.com.", { status: 410 });
+      let item; try { item = JSON.parse(await env.IG.get("item:" + rec.item) || "null"); } catch { item = null; }
+      const file = item && await env.IG.get("file:" + rec.item, { type: "arrayBuffer" });
+      if (!item || !file) return new Response("Not found", { status: 404 });
+      rec.uses++; try { await env.IG.put("dl:" + t, JSON.stringify(rec), { expiration: Math.floor(rec.exp / 1000) }); } catch { /* ignore */ }
+      return new Response(file, { headers: { "Content-Type": item.type || "application/octet-stream", "Content-Disposition": `attachment; filename="${String(item.filename || rec.item).replace(/[^A-Za-z0-9._ -]/g, "")}"`, "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex" } });
+    }
+    if (request.method === "GET" && new URL(request.url).pathname === "/items") {   // the free downloads on offer (no files, only what to show)
+      const out = []; let cursor;
+      do { const l = await env.IG.list({ prefix: "item:", cursor }); cursor = l.list_complete ? undefined : l.cursor;
+        for (const k of l.keys) { try { const it = JSON.parse(await env.IG.get(k.name) || "null"); if (it && it.free) out.push({ id: k.name.slice(5), title: it.title, blurb: it.blurb || "" }); } catch { /* ignore */ } } } while (cursor);
+      return new Response(JSON.stringify({ items: out }), { headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300", ...(okOrigin ? cors(okOrigin) : { "Access-Control-Allow-Origin": "*" }) } });
+    }
     if (request.method === "GET" && new URL(request.url).pathname === "/health") {   // KV round trip + whether the secrets are there; nothing private
       let kv = false; try { await env.IG.put("health", "1", { expirationTtl: 60 }); kv = (await env.IG.get("health")) === "1"; } catch { kv = false; }
       let dead = -1; try { dead = (await env.IG.list({ prefix: "dead:", limit: 100 })).keys.length; } catch { /* ignore */ }
@@ -373,6 +390,21 @@ export default {
         const link = plink;
         const { text, html } = mailParts({ heading: "Here are my prices.", eyebrow: "Prices", intro: `Hi ${cn.split(" ")[0] || "there"}, thanks for asking. This private link opens my prices; fill in your request right there and I reply within 24 hours to confirm it or to talk it through.`, cta: { text: "Open the prices", href: link }, note: "The link is private and works for 24 hours. Need more time? Just reply and I will send a new one.", sign: true });
         await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: ce, name: cn }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: "Your prices | Stevy Vergouwen", htmlContent: html, textContent: text }, "confirm prices " + ce);
+      }
+      await done(); return reply(200, { ok: true }, okOrigin);
+    }
+    if (d.type === "lead") {   // a free download in exchange for an email (consent for updates is a separate tick)
+      const le = line(d.email, 120), ln = line(d.name, 80), li = line(d.item, 40).toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(le) || !/^[a-z0-9-]{2,40}$/.test(li)) return reply(400, { ok: false, error: "invalid" }, okOrigin);
+      let item; try { item = JSON.parse(await env.IG.get("item:" + li) || "null"); } catch { item = null; }
+      if (!item || !item.free) return reply(404, { ok: false, error: "item" }, okOrigin);
+      const tok = [...crypto.getRandomValues(new Uint8Array(16))].map(b => "abcdefghjkmnpqrstuvwxyz23456789"[b % 31]).join("");
+      await env.IG.put("dl:" + tok, JSON.stringify({ item: li, email: le, exp: Date.now() + 7 * 864e5, uses: 0 }), { expiration: Math.floor((Date.now() + 7 * 864e5) / 1000) });
+      const link = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev/dl?t=" + tok;
+      await saveContact(env, { email: le, name: ln, via: "download", what: "Free download: " + item.title, source: line(d.src, 40) || "download", updates: d.updates === true, tags: ["download", li] });
+      if (env.BREVO_API_KEY) {
+        const { text, html } = mailParts({ heading: item.title, eyebrow: "Your download", intro: `Hi ${(ln.split(" ")[0]) || "there"}, thanks for downloading. Here is your file; the link works for 7 days.`, cta: { text: "Download", href: link }, note: "If the button does not work, copy this link: " + link, sign: true });
+        await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: le, name: ln || undefined }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: item.title + " | Stevy Vergouwen", htmlContent: html, textContent: text }, "confirm download " + le);
       }
       await done(); return reply(200, { ok: true }, okOrigin);
     }

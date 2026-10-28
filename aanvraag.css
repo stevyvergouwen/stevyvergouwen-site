@@ -464,3 +464,11 @@ body.work .bar .btn.sm::after { content: "\2197"; margin-left: 4px; font-size: 1
 .check { display: flex; gap: 12px; align-items: flex-start; margin: 4px 0 14px; cursor: pointer; font-size: 14px; line-height: 1.45; color: rgba(232, 230, 225, .8); text-transform: none; letter-spacing: 0; }
 .check input { flex: none; width: 20px; height: 20px; margin: 1px 0 0; accent-color: #e8e6e1; cursor: pointer; }
 .check span { text-transform: none; letter-spacing: 0; }
+
+/* the top block fades out at the bottom instead of ending on a hard edge, and the logo bar runs to both edges with air above it */
+.stage .hero-slot { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 140px, #000 58%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 140px, #000 58%, transparent 100%); }
+.stage::after { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 140px, #000 66%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 140px, #000 66%, transparent 100%); }
+main > .pg-logos.slim { margin: clamp(28px, 5vw, 64px) calc(50% - 50vw) 0; }
+
+/* the top bar has no solid block: only its soft gradient, so it fades into the picture below instead of ending on a hard edge */
+body.wbar .barwrap { background: none !important; border-bottom: 0 !important; }

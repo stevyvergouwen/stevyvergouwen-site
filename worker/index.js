@@ -2,8 +2,10 @@
    Uses Cloudflare Email Routing's send_email binding: no API key, no third party.
    Setup: see worker/README.md */
 import { EmailMessage } from "cloudflare:email";
+import { handleDelivery, giveToken } from "./delivery.js";
+import { handleUpload } from "./upload.js";
 
-const ALLOWED_ORIGINS = ["https://stevyvergouwen.com", "https://www.stevyvergouwen.com", "https://stevyvergouwen-site.polished-shape-ff19.workers.dev"];   // the last one is the test address, remove at go-live
+const ALLOWED_ORIGINS = ["https://stevyvergouwen.com", "https://www.stevyvergouwen.com"];
 const FROM = "aanvraag@stevyvergouwen.com";     // must be an address on a domain with Email Routing
 const TYPES = { event: "Event", brand: "Brand", artist: "Artist" };
 const NEEDS = ["photos", "video", "aftermovie", "brand video", "social content", "presskit", "live registration", "recap", "other"];
@@ -61,9 +63,9 @@ const text = (s, max = 2000) => String(s ?? "").replace(/\r/g, "").trim().slice(
 // ---- mails in the style of the site: dark, uppercase headline, hairlines, the signature banner for the client.
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const b64 = str => { const by = new TextEncoder().encode(str); let bin = ""; for (const x of by) bin += String.fromCharCode(x); return btoa(bin).replace(/.{1,76}/g, "$&\r\n").trim(); };
-function mailParts({ heading, eyebrow, intro, rows, note, sign, cta }) {
+function mailParts({ heading, eyebrow, intro, rows, note, sign, cta, lang }) {
   const items = (rows || []).filter(r => r && r[1]);
-  const text = [heading, "", ...(intro ? [intro, ""] : []), ...items.map(r => `${r[0]}: ${r[1]}${r[2] ? "  (" + r[2] + ")" : ""}`), ...(note ? ["", note] : []), ...(cta ? ["", `${cta.text}: ${cta.href}`] : []), ...(sign ? ["", "Kind regards,", "Stevy Vergouwen", "https://stevyvergouwen.com"] : [])].join("\n");
+  const text = [heading, "", ...(intro ? [intro, ""] : []), ...items.map(r => `${r[0]}: ${r[1]}${r[2] ? "  (" + r[2] + ")" : ""}`), ...(note ? ["", note] : []), ...(cta ? ["", `${cta.text}: ${cta.href}`] : []), ...(sign ? ["", (lang === "nl" ? "Hartelijke groet," : "Kind regards,"), "Stevy Vergouwen", "https://stevyvergouwen.com"] : [])].join("\n");
   const F = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif";
   const rowsHtml = items.map(r => `<tr><td style="padding:20px 0;border-top:1px solid #232327"><div style="${F};font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#8d8b85;margin:0 0 7px">${esc(r[0])}</div><div style="${F};font-size:17px;line-height:1.5;color:#f1efe9">${r[2] ? `<a href="${esc(r[2])}" style="color:#f1efe9;text-decoration:underline;text-underline-offset:3px">${esc(r[1])}</a>` : esc(r[1]).replace(/\n/g, "<br>")}</div></td></tr>`).join("");
   const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#050506" bgcolor="#050506"><table role="presentation" width="100%" bgcolor="#050506" style="background:#050506"><tr><td align="center" style="padding:0 18px"><table role="presentation" width="620" style="max-width:620px;width:100%;${F};color:#f1efe9">
@@ -75,7 +77,7 @@ ${rowsHtml}
 <tr><td style="border-top:1px solid #232327;font-size:0;line-height:0;height:1px">&nbsp;</td></tr>
 ${note ? `<tr><td style="${F};padding:22px 0 0;font-size:14px;line-height:1.55;color:#8d8b85">${esc(note)}</td></tr>` : ""}
 ${cta ? `<tr><td style="padding:34px 0 6px"><a href="${esc(cta.href)}" style="${F};display:inline-block;padding:17px 30px;border:1px solid #f1efe9;border-radius:99px;color:#f1efe9;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase">${esc(cta.text)} &nbsp;&#8599;</a></td></tr>` : ""}
-${sign ? `<tr><td style="${F};padding:40px 0 0;font-size:17px;color:#f1efe9">Kind regards,</td></tr><tr><td style="padding:16px 0 0"><a href="https://stevyvergouwen.com" style="text-decoration:none"><img src="https://stevyvergouwen.com/mail/signature.png" width="500" height="170" alt="Stevy Vergouwen, photographer and videographer" style="display:block;border:0;max-width:100%;height:auto"></a></td></tr>` : ""}
+${sign ? `<tr><td style="${F};padding:40px 0 0;font-size:17px;color:#f1efe9">${lang === "nl" ? "Hartelijke groet," : "Kind regards,"}</td></tr><tr><td style="padding:16px 0 0"><a href="https://stevyvergouwen.com" style="text-decoration:none"><img src="https://stevyvergouwen.com/mail/signature.png" width="500" height="170" alt="Stevy Vergouwen, photographer and videographer" style="display:block;border:0;max-width:100%;height:auto"></a></td></tr>` : ""}
 ${sign ? `<tr><td style="height:64px;font-size:0;line-height:0">&nbsp;</td></tr>` : `<tr><td style="height:56px;font-size:0;line-height:0">&nbsp;</td></tr><tr><td style="border-top:1px solid #232327;font-size:0;line-height:0;height:1px">&nbsp;</td></tr>`}
 <tr><td style="${F};padding:22px 0 6px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#6f6d68">Visuals for artists, events &amp; brands</td></tr>
 <tr><td style="${F};padding:0 0 48px;font-size:11px;letter-spacing:.2em;text-transform:uppercase"><a href="https://stevyvergouwen.com" style="color:#8d8b85;text-decoration:none">stevyvergouwen.com</a></td></tr>
@@ -226,15 +228,18 @@ async function feedbackRun(env, dry) {
       if ((rec.requests || []).some(r => r.fbSent)) continue;   // one feedback mail per client, ever
       let changed = false;
       for (const r of rec.requests || []) {
+        if (out.sent >= (Number(env.FEEDBACK_MAX) || 5)) break;   // at most 5 feedback mails per day: a new sending domain should not mail in bursts
         if (r.fbSent || !r.dateIso) continue;
         const due = new Date(r.dateIso + "T12:00:00Z"); due.setUTCDate(due.getUTCDate() + (r.via === "moneybird" ? 0 : 14));   // requests: 14 days after the shoot date; Moneybird invoices: dateIso is already the due day (sent + 7)
         const dueIso = due.toISOString().slice(0, 10), age = (Date.now() - new Date(r.at).getTime()) / 864e5;
         if (dueIso > today || age > 180) continue;   // not yet, or too old to ask now
         out.due++; if (dry) continue;
-        const first = (rec.name || "").split(" ")[0] || "there";
-        const { text, html } = mailParts({ heading: "How was it?", eyebrow: "Feedback", intro: `Hi ${first}, it was a pleasure working with you. If you are happy with the result, would you share a few words about the experience? It takes two minutes, and with your permission it may appear on my website.`, cta: { text: "Share your experience", href: `https://stevyvergouwen.com/${env.FEEDBACK_PATH}/` }, note: "If you would rather not get this kind of mail, just reply and let me know.", sign: true });
+        const nl = rec.lang === "nl", first = (rec.name || "").split(" ").find(w => w && !/^(none|null|undefined|nan)$/i.test(w)) || (nl ? "daar" : "there");
+        const { text, html } = nl
+          ? mailParts({ lang: "nl", heading: "Hoe was het?", eyebrow: "Feedback", intro: `Hoi ${first}, het was fijn om met je samen te werken. Ben je tevreden met het resultaat? Dan zou ik het erg waarderen als je een paar woorden wilt delen over de samenwerking. Het kost twee minuten en met jouw toestemming mag het op mijn website.`, cta: { text: "Deel je ervaring", href: `https://stevyvergouwen.com/${env.FEEDBACK_PATH}/nl/` }, note: "Liever geen mails als deze? Reageer even en ik haal je eraf.", sign: true })
+          : mailParts({ heading: "How was it?", eyebrow: "Feedback", intro: `Hi ${first}, it was a pleasure working with you. If you are happy with the result, would you share a few words about the experience? It takes two minutes, and with your permission it may appear on my website.`, cta: { text: "Share your experience", href: `https://stevyvergouwen.com/${env.FEEDBACK_PATH}/` }, note: "If you would rather not get this kind of mail, just reply and let me know.", sign: true });
         try {
-          const res = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: rec.email, name: rec.name || undefined }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: "How was it? | Stevy Vergouwen", htmlContent: html, textContent: text }, "feedback " + rec.email);
+          const res = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: rec.email, name: rec.name || undefined }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: nl ? "Hoe was het? | Stevy Vergouwen" : "How was it? | Stevy Vergouwen", htmlContent: html, textContent: text }, "feedback " + rec.email);
           if (res.ok) { r.fbSent = new Date().toISOString(); changed = true; out.sent++; for (const o of rec.requests) if (o !== r && !o.fbSent) o.fbSent = "skipped"; break; } else console.error("feedback mail failed:", res.status);
         } catch (e) { console.error("feedback mail error:", String(e && e.message || e)); }
       }
@@ -245,11 +250,18 @@ async function feedbackRun(env, dry) {
 }
 
 export default {
-  async scheduled(event, env, ctx) { ctx.waitUntil(Promise.all([igLoad(env), feedbackRun(env, false), deadRun(env), remindRun(env, false)])); },
+  // mails only go out in the daytime: the cron fires at 07:00 and 08:00 UTC and the work only runs when it is 09:00 in Amsterdam (summer and winter time both work)
+  async scheduled(event, env, ctx) {
+    const h = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Amsterdam", hour: "2-digit", hour12: false }).format(new Date()));
+    if (h !== 9) return;
+    ctx.waitUntil(Promise.all([igLoad(env), feedbackRun(env, false), deadRun(env), remindRun(env, false)]));
+  },
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     const okOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
 
+    const dRes = await handleDelivery(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a), (to, subject, text) => brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], subject, textContent: text }, "delivery")); if (dRes) return dRes;
+    const uRes = await handleUpload(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a)); if (uRes) return uRes;
     if (request.method === "OPTIONS") return new Response(null, { status: okOrigin ? 204 : 403, headers: okOrigin ? cors(okOrigin) : {} });
     if (request.method === "GET" && new URL(request.url).pathname === "/dl") {   // download for a personal link: 7 days, 5 downloads
       const t = new URL(request.url).searchParams.get("t") || "";
@@ -277,6 +289,23 @@ export default {
       const feed = await igFeed(env);
       return new Response(JSON.stringify({ posts: feed.posts || [] }), { headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=900", ...(okOrigin ? cors(okOrigin) : { "Access-Control-Allow-Origin": "*" }) } });
     }
+    if (new URL(request.url).pathname === "/delivery-mail" && request.method === "POST") {   // from the Projecten app: the designed delivery mail with a personal link (x-key)
+      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
+      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!env.BREVO_API_KEY) return reply(503, { ok: false, error: "no brevo" }, okOrigin);
+      let b; try { b = JSON.parse((await request.text()).slice(0, 20000)); } catch { return reply(400, { ok: false, error: "json" }, okOrigin); }
+      const to = String(b.to || "").toLowerCase().trim(), slug = String(b.slug || ""); if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to) || !/^[a-z0-9]{10,40}$/.test(slug)) return reply(400, { ok: false, error: "to or slug" }, okOrigin);
+      const nl = b.lang === "nl", first = String(b.name || "").split(" ")[0] || (nl ? "" : "there"), title = String(b.title || "").slice(0, 120) + (b.scope ? " · " + String(b.scope).split("/").pop().slice(0, 60) : ""), wat = String(b.what || (nl ? "bestanden" : "files")).slice(0, 40);
+      const scope = String(b.scope || "").slice(0, 200); let drec = null; try { drec = JSON.parse(await env.IG.get("deliv:" + slug) || "null"); } catch { drec = null; } if (!drec) return reply(404, { ok: false, error: "no such delivery" }, okOrigin); const tok = b.preview ? "" : await giveToken(env, slug, to, String(b.name || ""), scope, drec.days || 365);
+      const link = `https://stevyvergouwen.com/d/?c=${slug}${tok ? "&t=" + tok : ""}`;
+      const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 12).map(r => [String(r[0] || "").slice(0, 60), String(r[1] || "").slice(0, 80)]);
+      const { text, html } = mailParts({ heading: nl ? `Je ${wat} staan klaar.` : `Your ${wat} are ready.`, eyebrow: nl ? "Oplevering" : "Delivery",
+        intro: nl ? `Hi${first ? " " + first : ""}, de ${wat} van ${title} staan voor je klaar. Bekijk ze, download ze en vink je favorieten aan op je eigen pagina.` : `Hi ${first}, the ${wat} from ${title} are ready for you. View them, download them and mark your favourites on your own page.`,
+        rows, note: nl ? "Deze link is persoonlijk: open hem zo vaak als je wilt. Moet er iets anders? Laat het achter op de pagina; bij een video kun je reageren op het exacte moment. Een korte review helpt me enorm." : "This link is personal: open it as often as you like. Should something change? Leave it on the page; on a video you can comment at the exact moment. A short review helps me a lot.",
+        cta: { text: nl ? "Bekijk je oplevering" : "View your delivery", href: link }, sign: true, lang: nl ? "nl" : "en" });
+      const r = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: b.preview ? "info@stevyvergouwen.com" : to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: (b.preview ? "[Preview] " : "") + (nl ? `Je ${wat} van ${title}` : `Your ${wat} from ${title}`), htmlContent: html, textContent: text }, "delivery mail");
+      return reply(r.ok ? 200 : 502, { ok: r.ok, preview: !!b.preview }, okOrigin);
+    }
     if (new URL(request.url).pathname === "/feedback-queue" && request.method === "POST") {   // from ~/moneybird/feedback_queue.py: paid, sent invoices -> one feedback mail per invoice
       const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
       if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
@@ -287,13 +316,31 @@ export default {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || !inv || !/^\d{4}-\d{2}-\d{2}$/.test(dueIso)) { skipped++; continue; }
         const key = "contact:" + email; let rec = null; try { rec = JSON.parse(await env.IG.get(key) || "null"); } catch { rec = null; }
         rec = rec || { email, created: new Date().toISOString(), requests: [], tags: [] };
-        rec.name = rec.name || String(it.name || "").slice(0, 80);
-        if ((rec.requests || []).some(r => r.inv === inv || r.fbSent)) { skipped++; continue; }   // known invoice, or this client already got their feedback mail
+        rec.name = rec.name || String(it.name || "").slice(0, 80); if (it.lang === "nl" || it.lang === "en") rec.lang = it.lang;
+        if ((rec.requests || []).some(r => r.inv === inv || r.fbSent)) { if ((it.lang === "nl" || it.lang === "en") && !q.dry) { try { await env.IG.put(key, JSON.stringify(rec)); } catch { /* ignore */ } } skipped++; continue; }   // known invoice, or this client already got their feedback mail
         rec.requests = [...(rec.requests || []).slice(-19), { at: new Date().toISOString(), via: "moneybird", inv, what: "Invoice " + inv, dateIso: dueIso, date: dueIso, location: "", source: "moneybird" }];
         rec.tags = [...new Set([...(rec.tags || []), "client"])];
         if (!q.dry) { try { await env.IG.put(key, JSON.stringify(rec)); added++; } catch { skipped++; } } else added++;
       }
       return reply(200, { ok: true, added, skipped, dry: !!q.dry }, okOrigin);
+    }
+    if (new URL(request.url).pathname === "/sorry-send" && request.method === "POST") {   // one-off apology for the 29-10 feedback mails that greeted "None": same key as /feedback-queue, sends at once, once per address
+      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
+      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      let q; try { q = JSON.parse((await request.text()).slice(0, 50000)); } catch { return reply(400, { ok: false, error: "json" }, okOrigin); }
+      const out = { sent: 0, skipped: 0, failed: [] };
+      for (const it of Array.isArray(q.items) ? q.items.slice(0, 50) : []) {
+        const email = String(it.email || "").toLowerCase().trim(); if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { out.skipped++; continue; }
+        const key = "contact:" + email; let rec = null; try { rec = JSON.parse(await env.IG.get(key) || "null"); } catch { rec = null; }
+        if (rec && rec.sorrySent && !q.test) { out.skipped++; continue; }
+        const first = String(it.name || "").split(" ").find(w => w && !/^(none|null|undefined|nan)$/i.test(w)) || "daar";
+        const { text, html } = mailParts({ lang: "nl", heading: "Excuses.", eyebrow: "Feedback", intro: `Hoi ${first}, vanochtend kreeg je een mail van mij met de vraag hoe de samenwerking was. Daarin stond per ongeluk "None" in plaats van je naam. Mijn fout, excuses daarvoor. De vraag zelf is wel gemeend: als je tevreden bent met het resultaat, zou ik het erg waarderen als je een paar woorden deelt. Het kost twee minuten en met jouw toestemming mag het op mijn website.`, cta: { text: "Deel je ervaring", href: `https://stevyvergouwen.com/${env.FEEDBACK_PATH}/nl/` }, note: "Liever geen mails als deze? Reageer even en ik haal je eraf.", sign: true });
+        try {
+          const res = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email, name: (it.name || "").trim() || undefined }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: "Excuses voor de mail van vanochtend", htmlContent: html, textContent: text }, "sorry " + email);
+          if (res.ok) { out.sent++; if (rec && !q.test) { rec.sorrySent = new Date().toISOString(); try { await env.IG.put(key, JSON.stringify(rec)); } catch { /* ignore */ } } } else out.failed.push(email);
+        } catch { out.failed.push(email); }
+      }
+      return reply(200, { ok: true, ...out }, okOrigin);
     }
     if (new URL(request.url).pathname === "/manychat" && request.method === "POST") {   // ManyChat "External Request": a follower left an email in the DM. Header x-key = MANYCHAT_KEY.
       const kk = String(request.headers.get("x-key") || ""), want = String(env.MANYCHAT_KEY || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);

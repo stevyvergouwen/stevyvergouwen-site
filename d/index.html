@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#08080a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stevy Vergouwen">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev">
+<title>Delivery | Stevy Vergouwen</title>
+<meta property="og:title" content="Your delivery | Stevy Vergouwen">
+<meta property="og:description" content="Your photos and videos are ready. Open the page to view, download and leave feedback.">
+<meta property="og:image" content="https://stevyvergouwen.com/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/fonts.css">
+<style>
+:root{--ink:#08080a;--ink2:#111114;--paper:#ebe7e0;--dim:#a09e99;--faint:#2c2b29;--line:rgba(235,231,224,.22);--blue:#5b84ff;--pad:clamp(16px,3.4vw,48px);--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--mono:"Roboto Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}html{background:var(--ink);color-scheme:dark}
+body{margin:0;background:var(--ink);color:var(--paper);font:13px/1.6 var(--mono);letter-spacing:.03em;-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");z-index:90}
+::selection{background:var(--blue);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:999px;padding:11px 20px;cursor:pointer;letter-spacing:.16em;text-transform:uppercase;font-size:11px;transition:background .2s,color .2s,border-color .2s,transform .25s cubic-bezier(.2,.7,.1,1)}
+button:hover{border-color:var(--paper)}button.on,button.pri{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.bar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:18px var(--pad) 26px;background:linear-gradient(var(--ink) 40%,transparent);font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+.hero{position:relative;min-height:78svh;display:flex;align-items:flex-end;padding:120px var(--pad) 48px;overflow:hidden;border-bottom:1px solid var(--faint)}
+.hero .bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.5;transform:scale(1.04);animation:drift 24s ease-in-out infinite alternate}
+@keyframes drift{to{transform:scale(1.12) translate(-1.5%,1%)}}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--ink) 4%,transparent 70%)}
+.hero .in{position:relative;z-index:2;max-width:1100px}
+.eyebrow{color:var(--dim);letter-spacing:.22em;text-transform:uppercase;font-size:11px}
+h1{margin:12px 0 18px;font:700 clamp(2.4rem,8vw,6.5rem)/.95 var(--sans);letter-spacing:-.04em;text-wrap:balance}
+.note{max-width:60ch;color:var(--dim);margin:0 0 24px;text-wrap:pretty}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+main{padding:0 var(--pad) 140px}
+.tabs{position:sticky;top:46px;z-index:40;display:flex;gap:8px;padding:16px 0;background:linear-gradient(var(--ink) 70%,transparent);margin-bottom:12px}
+.sec{padding-top:12px}
+.sec h2{margin:0 0 18px;font:700 clamp(1.4rem,3vw,2rem)/1.1 var(--sans);letter-spacing:-.025em;display:flex;gap:14px;align-items:baseline}
+.sec h2 small{font:400 11px var(--mono);color:var(--dim);letter-spacing:.18em;text-transform:uppercase}
+.grid{columns:4 260px;column-gap:10px}
+.ph{position:relative;margin:0 0 10px;break-inside:avoid;overflow:hidden;background:var(--ink2);border-radius:3px;cursor:zoom-in;opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s cubic-bezier(.2,.7,.1,1)}
+.ph.in{opacity:1;transform:none}
+.ph img{display:block;width:100%;height:auto;min-height:120px;transition:transform .8s cubic-bezier(.2,.7,.1,1),filter .4s}
+.ph:hover img{transform:scale(1.035)}
+.ph .tools{position:absolute;inset:auto 0 0 0;display:flex;justify-content:space-between;padding:10px;background:linear-gradient(transparent,#000a);opacity:0;transition:opacity .25s}
+.ph:hover .tools,.ph.fav .tools{opacity:1}
+.ic{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#0008;display:grid;place-items:center;padding:0;font-size:15px;letter-spacing:0}
+.ph.fav .heart{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:18px}
+.vid{border:1px solid var(--faint);background:var(--ink2);border-radius:4px;overflow:hidden}
+.vid video{display:block;width:100%;background:#000;max-height:70svh}
+.vid .m{padding:14px 16px}
+.vid .t{font:700 15px var(--sans);letter-spacing:-.01em;margin:0 0 2px;word-break:break-word}
+.vid .g{color:var(--dim);font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+.vid form{display:flex;gap:8px;margin-top:12px}
+input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent;border:1px solid var(--line);border-radius:4px;padding:10px 12px;letter-spacing:.02em}
+.cm{display:flex;gap:10px;margin-top:8px;color:var(--dim);cursor:pointer}.cm b{color:var(--blue);font-weight:500}
+.fb{position:fixed;left:0;right:0;bottom:0;z-index:60;padding-bottom:max(14px,env(safe-area-inset-bottom))!important;background:rgba(8,8,10,.92);backdrop-filter:blur(12px);border-top:1px solid var(--faint);padding:14px var(--pad);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.fb .st{color:var(--dim);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.lb{position:fixed;inset:0;z-index:80;background:rgba(8,8,10,.96);display:none;align-items:center;justify-content:center}
+.lb.on{display:flex}.lb img{max-width:94vw;max-height:86svh;object-fit:contain}
+.lb .x,.lb .p,.lb .n{position:absolute}.lb .x{top:18px;right:18px}.lb .p{left:18px;top:50%}.lb .n{right:18px;top:50%}
+.lb .bt{position:absolute;bottom:20px;left:0;right:0;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.sheet{position:fixed;inset:0;z-index:85;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:var(--pad)}
+.sheet.on{display:flex}.sheet .c{width:min(560px,100%);background:var(--ink);border:1px solid var(--line);border-radius:6px;padding:26px}
+.sheet h3{margin:0 0 6px;font:700 1.6rem var(--sans);letter-spacing:-.02em}
+.sheet label{display:block;margin-top:14px;color:var(--dim);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.sheet input,.sheet textarea{margin-top:6px}
+.gate{min-height:100svh;display:grid;place-items:center;padding:var(--pad);text-align:center}
+.gate form{display:flex;flex-direction:column;gap:12px;width:min(340px,100%)}
+.msg{color:var(--blue);margin-top:10px}
+@media (max-width:640px){.tabs{overflow-x:auto}.ph .tools{opacity:1}button{min-height:44px}.ic{width:40px;height:40px}.lb .bt{padding-bottom:env(safe-area-inset-bottom)}.view .lab{display:none}}
+@media (hover:none){.ph:hover img{transform:none}}
+.shim{background:linear-gradient(90deg,var(--ink2),#1b1b20,var(--ink2));background-size:200% 100%;animation:sh 1.4s linear infinite}@keyframes sh{to{background-position:-200% 0}}
+.mine{margin-top:26px;text-align:left}.mine a{display:block;padding:14px 0;border-top:1px solid var(--faint)}.mine b{display:block;font:700 1.1rem var(--sans);letter-spacing:-.01em}.mine span{color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){.hero .bg{animation:none}.ph{transition:none;opacity:1;transform:none}}
+
+[data-theme="light"]{--ink:#f4f1ec;--ink2:#e9e5de;--paper:#141414;--dim:#6d6a64;--faint:#d6d1c8;--line:rgba(20,20,20,.24);--blue:#2f55d4}
+[data-theme="light"] .hero::after{background:linear-gradient(to top,var(--ink) 4%,transparent 70%)}
+[data-theme="light"] .hero .bg{opacity:.35}
+[data-theme="light"] .lb,[data-theme="light"] .fb{background:rgba(244,241,236,.94)}
+[data-theme="light"] body::after{opacity:.04}
+.tabs{align-items:center}.tabs .sp{flex:1}
+.view{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 18px}
+.view button{padding:8px 14px;font-size:10px}
+.view .lab{color:var(--dim);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-right:2px}
+.view input[type=range]{width:120px;padding:0;accent-color:var(--blue)}
+.grid.masonry{columns:auto var(--col,260px)}
+.grid.cells{columns:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--col,260px),1fr));gap:10px}
+.grid.cells .ph{margin:0;aspect-ratio:1/1}.grid.cells .ph img{height:100%;object-fit:cover}
+.grid.large{columns:1;max-width:1100px;margin:0 auto}
+.stars{display:flex;gap:6px;margin-top:8px}.stars button{border:0;padding:0;font-size:26px;letter-spacing:0;color:var(--dim);line-height:1}.stars button.on{background:none;color:var(--paper)}
+.chk{display:flex;gap:10px;align-items:flex-start;margin-top:14px;color:var(--dim);font-size:11px;letter-spacing:.04em;text-transform:none}.chk input{width:auto;margin-top:3px}
+.rv{margin-top:56px;padding-top:24px;border-top:1px solid var(--faint);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.rv p{margin:0;max-width:52ch;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="bar"><span>Stevy Vergouwen</span><span id="barr">Delivery</span></div>
+<div id="app"></div>
+<div class="lb" id="lb" role="dialog" aria-label="Photo"><button class="x" id="lbx">Close</button><button class="p ic" id="lbp" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="n ic" id="lbn" aria-label="Next">›</button><div class="bt"><button id="lbh">♡ Favourite</button><a id="lbd" href="#"><button class="pri" type="button">Download</button></a></div></div>
+<div class="sheet" id="rsheet"><div class="c"><h3>Leave a review</h3><p class="eyebrow">How was working together?</p><div class="stars" id="stars"><button data-n="1" aria-label="1 star">☆</button><button data-n="2" aria-label="2 stars">☆</button><button data-n="3" aria-label="3 stars">☆</button><button data-n="4" aria-label="4 stars">☆</button><button data-n="5" aria-label="5 stars">☆</button></div><label>Your review<textarea id="rt" rows="5"></textarea></label><label>Your name<input id="rn2" autocomplete="name"></label><label>Company or role (optional)<input id="rc"></label><label class="chk"><input type="checkbox" id="rp"> You may show this review (with my name) on stevyvergouwen.com</label><div class="acts" style="margin-top:18px"><button class="pri" id="rs">Send review</button><button id="rx">Cancel</button></div><div class="msg" id="rmsg"></div></div></div>
+<div class="sheet" id="sheet"><div class="c"><h3 id="sh">Send feedback</h3><p class="eyebrow" id="sp"></p><label>Your name<input id="fn" autocomplete="name"></label><label>Note<textarea id="fnote" rows="4" placeholder="Anything we should change, or any shots you loved?"></textarea></label><div class="acts" style="margin-top:18px"><button class="pri" id="sa">Approve</button><button id="sc">Request changes</button><button id="sx">Cancel</button></div><div class="msg" id="smsg"></div></div></div>
+<script>
+(() => {
+const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
+const q = new URLSearchParams(location.search), slug = q.get("c") || location.hash.slice(1) || "", demo = q.has("demo");
+try { document.documentElement.dataset.theme = localStorage.getItem("dv-theme") || "dark"; } catch {}
+const $ = s => document.querySelector(s), app = $("#app"), esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const kk = () => sessionStorage.getItem("dp:" + slug) || "";
+if (q.get("t")) { try { localStorage.setItem("dt:" + slug, q.get("t")); } catch {} history.replaceState(null, "", "?c=" + slug); }
+const rem = (k, d = "") => { try { return localStorage.getItem(k) || d; } catch { return d; } }, put2 = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+const albums = () => { try { return JSON.parse(rem("sv-albums", "[]")); } catch { return []; } };
+const tk = () => { try { return localStorage.getItem("dt:" + slug) || ""; } catch { return ""; } };
+const url = (a, p = {}) => demo ? p.demo : `${ENDPOINT}/delivery/${slug}${a ? "/" + a : ""}?${new URLSearchParams({ ...p.q, k: kk(), t: tk() })}`;
+let M = null; const fav = new Set(JSON.parse(localStorage.getItem("fv:" + slug) || "[]")); const comments = []; let cur = 0;
+const save = () => { try { localStorage.setItem("fv:" + slug, JSON.stringify([...fav])); } catch {} };
+const thumb = (p, s) => demo ? p : url("thumb", { q: { p, s } });
+const file = p => demo ? p : url("file", { q: { p, dl: 1 } });
+const mmss = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+
+async function load(pass) {
+  if (demo) {
+    const n = ["20260812-2255-glitch-stevyvergouwen-01297","20260813-2056-glitch-stevyvergouwen-02419","20260814-2154-glitch-stevyvergouwen-00615","20260815-0400-glitch-stevyvergouwen-05245","20260829-1956-rr26-stevyvergouwen-07719","20260829-1957-rr26-stevyvergouwen-07778","20260829-2000-rr26-stevyvergouwen-07851","20260829-2109-rr26-stevyvergouwen-09322"];
+    return { select: q.get("demosel") ? { limit: +q.get("demosel") } : null, title: "Demo album", client: "Preview", date: "2026-10-29", note: "This is a preview with sample photos. Real deliveries load straight from Dropbox.", photos: [...n, ...n, ...n].map((x, i) => ({ id: x + i, name: x, thumb: `/media/bg/${x}.jpg`, high: `/media/bg/${x}.jpg`, low: `/media/bg/${x}.jpg` })), videos: [{ id: "v1", name: "alois-azure-1-loop.mp4", path: "/media/clips/alois-azure-1-loop.mp4", group: "Clips" }] };
+  }
+  if (q.has("demogate")) throw { gate: { title: "Demo album", client: "Preview", code: true, request: true } };
+  const r = await fetch(url(""), { headers: pass ? { "x-pass": pass } : {} });
+  if (r.status === 401) throw { gate: await r.json().catch(() => ({ code: true, request: true })) }; if (r.status === 410) throw { msg: "This delivery has expired. Ask Stevy for a new link." }; if (!r.ok) throw { msg: "This delivery could not be found." };
+  return r.json();
+}
+function gate(info, msg) {
+  info = info || {};
+  app.innerHTML = `<div class="gate"><div style="width:min(420px,100%)"><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:clamp(1.8rem,6vw,2.6rem);margin:10px 0 6px">${esc(info.title || "Delivery")}</h1><p class="note" style="margin:0 auto 22px">${esc(info.client ? info.client + ". " : "")}This delivery is private. Sign in with your email address: you get a code by mail, and this device stays signed in.</p>
+  <form id="ef" style="display:flex;flex-direction:column;gap:10px;text-align:left"><input id="em" type="email" placeholder="Your email" autocomplete="email" value="${esc(rem("sv-email"))}" required><button class="pri">Send me a code</button></form>
+  <form id="cf" style="display:none;flex-direction:column;gap:10px;text-align:left"><input id="cd" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" style="letter-spacing:.4em;text-align:center;font-size:1.3rem"><button class="pri">Open</button></form>
+  ${info.code ? `<form id="gf" style="display:flex;gap:8px;margin-top:22px"><input id="gp" type="password" placeholder="Or an access code" autocomplete="off"><button>Open</button></form>` : ""}
+  ${info.request ? `<p class="note" style="margin-top:22px">No access yet? <a href="#" id="rq" style="text-decoration:underline">Ask Stevy for it</a></p><form id="rf" style="display:none;flex-direction:column;gap:10px;text-align:left;margin-top:10px"><input id="rn" placeholder="Your name" autocomplete="name"><input id="re" type="email" placeholder="Your email" autocomplete="email" required><button class="pri">Request access</button></form>` : ""}
+  <div class="msg" id="gm">${esc(msg || "")}</div></div></div>`;
+  const ef = $("#ef"), cf = $("#cf"), rf = $("#rf"), gf = $("#gf"); let mail = "";
+  ef.onsubmit = async e => { e.preventDefault(); mail = $("#em").value.trim(); put2("sv-email", mail); $("#gm").textContent = "Sending…"; try { if (!(demo || q.has("demogate"))) { const r = await fetch(`${ENDPOINT}/delivery/${slug}/code-request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail }) }); if (!r.ok) throw 0; } ef.style.display = "none"; cf.style.display = "flex"; $("#cd").focus(); $("#gm").textContent = "If this address has access, a code is on its way. It works for 10 minutes."; } catch { $("#gm").textContent = "That did not work. Check the address and try again."; } };
+  cf.onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Checking…"; try { if (demo || q.has("demogate")) { $("#gm").textContent = "Demo: in real life you are in now."; return; } const r = await fetch(`${ENDPOINT}/delivery/${slug}/code-verify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail, code: $("#cd").value }) }); const j = await r.json().catch(() => ({})); if (!r.ok || !j.token) { $("#gm").textContent = r.status === 429 ? "Too many tries. Wait a while." : "That code is not right."; return; } try { localStorage.setItem("dt:" + slug, j.token); } catch {} M = await load(); render(); } catch (x) { $("#gm").textContent = x.msg || "That did not work."; } };
+  if ($("#rq")) $("#rq").onclick = e => { e.preventDefault(); rf.style.display = "flex"; };
+  if (rf) rf.onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Sending…"; try { if (demo || q.has("demogate")) { $("#gm").textContent = "Demo: Stevy would be asked now."; return; } const r = await fetch(`${ENDPOINT}/delivery/${slug}/request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: $("#rn").value, email: $("#re").value }) }); if (!r.ok) throw 0; $("#gm").textContent = "Thanks. Stevy has been asked, you get an email once it is approved."; } catch { $("#gm").textContent = "That did not work. Try again."; } };
+  if (gf) gf.onsubmit = async e => { e.preventDefault(); const v = $("#gp").value; sessionStorage.setItem("dp:" + slug, v); try { M = await load(v); render(); } catch (x) { gate(x.gate || info, x.gate ? "That code is not right." : x.msg); } };
+}
+function render() {
+  { const a = albums().filter(x => x.slug !== slug); a.unshift({ slug, title: M.title, client: M.client || "", at: Date.now() }); put2("sv-albums", JSON.stringify(a.slice(0, 20))); }
+  const P = M.photos, V = M.videos; $("#barr").textContent = M.client || "Delivery";
+  const date = M.date ? new Date(M.date + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
+  app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc([M.client, date].filter(Boolean).join(" · "))}</div><h1>${esc(M.title)}</h1>${M.note ? `<p class="note">${esc(M.note)}</p>` : ""}<div class="acts">${P.length && !M.select ? `<a href="${demo ? "#" : url("zip", { q: { sub: "" } })}"><button class="pri" type="button">Download everything</button></a>` : ""}${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
+  <main><div class="tabs">${P.length ? `<button class="on" data-t="p">Photos · ${P.length}</button>` : ""}${V.length ? `<button class="${P.length ? "" : "on"}" data-t="v">Video · ${V.length}</button>` : ""}<span class="sp"></span><button id="theme" aria-label="Dark or light">Light / dark</button></div>
+  ${P.length ? `<section class="sec" id="sp"><h2>Photos <small>click a photo to open, ♡ to mark a favourite</small></h2><div class="view" id="view"><span class="lab">View</span><button data-l="masonry">Masonry</button><button data-l="cells">Grid</button><button data-l="large">Large</button><button id="slide">Slideshow</button><span class="lab" style="margin-left:10px">Size</span><input id="sz" type="range" min="160" max="480" step="10" aria-label="Size"></div><div class="grid" id="grid">${P.map((p, i) => `<figure class="ph" data-i="${i}"><img data-src="${thumb(p.thumb, "w640h480")}" alt="${esc(p.name)}"><div class="tools"><button class="ic heart" data-h="${i}" aria-label="Favourite">♡</button>${M.select ? "" : `<a class="ic" href="${file(p.high || p.low || p.thumb)}" aria-label="Download" data-dl><button class="ic" type="button">↓</button></a>`}</div></figure>`).join("")}</div></section>` : ""}
+  ${V.length ? `<section class="sec" id="sv" style="margin-top:56px"><h2>Video <small>comment on a moment to leave feedback at that time</small></h2><div class="vids">${V.map((v, i) => `<div class="vid" data-v="${i}"><video controls preload="metadata" src="${file(v.path)}"></video><div class="m"><div class="t">${esc(v.name)}</div><div class="g">${esc(v.group)}</div><form><input placeholder="Comment at the current time" aria-label="Comment"><button class="pri">Add</button></form><div class="cl"></div><div style="margin-top:12px"><a href="${file(v.path)}"><button type="button">Download</button></a></div></div></div>`).join("")}</div></section>` : ""}<div class="rv"><p><b style="color:var(--paper)">Happy with the work?</b><br>A short review means a lot, and with your OK it can appear on stevyvergouwen.com.</p><button id="rvb">Leave a review</button></div></main>
+  <div class="fb"><div class="st" id="fst"></div><div class="acts"><button class="pri" id="fsend">Send feedback or approve</button></div></div>`;
+  wire(); stat();
+}
+function stat() { $("#fst").textContent = M.select ? `${fav.size} / ${M.select.limit} picked` : `${fav.size} favourite${fav.size === 1 ? "" : "s"} · ${comments.length} comment${comments.length === 1 ? "" : "s"}`; const fs = $("#fsend"); if (fs) fs.textContent = M.select ? "Send my selection" : "Send feedback or approve"; document.querySelectorAll(".ph").forEach(f => f.classList.toggle("fav", fav.has(M.photos[f.dataset.i].id))); document.querySelectorAll(".heart").forEach(h => h.textContent = fav.has(M.photos[h.dataset.h].id) ? "♥" : "♡"); }
+function wire() {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const im = e.target.querySelector("img"); if (im && !im.src) im.src = im.dataset.src; e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "300px" }); document.querySelectorAll(".ph").forEach((f, i) => { f.style.transitionDelay = (i % 8) * 40 + "ms"; io.observe(f); });
+  document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => { document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x === b)); ($(b.dataset.t === "p" ? "#sp" : "#sv")).scrollIntoView({ behavior: "smooth" }); });
+  document.querySelectorAll(".ph").forEach(f => f.onclick = e => { if (e.target.closest("[data-h]")) { const id = M.photos[f.dataset.i].id; toggle(id); return; } if (e.target.closest("[data-dl]")) return; open(+f.dataset.i); });
+  document.querySelectorAll(".vid").forEach(el => { const v = M.videos[el.dataset.v], vid = el.querySelector("video"), f = el.querySelector("form"), cl = el.querySelector(".cl");
+    f.onsubmit = e => { e.preventDefault(); const i = f.querySelector("input"); if (!i.value.trim()) return; comments.push({ file: v.name, t: vid.currentTime, text: i.value.trim() }); i.value = ""; draw(); stat(); };
+    const draw = () => { cl.innerHTML = comments.filter(c => c.file === v.name).map(c => `<div class="cm" data-t="${c.t}"><b>${mmss(c.t)}</b><span>${esc(c.text)}</span></div>`).join(""); cl.querySelectorAll(".cm").forEach(c => c.onclick = () => { vid.currentTime = +c.dataset.t; vid.play(); }); }; });
+  $("#fsend").onclick = () => { $("#sh").textContent = M.select ? "Send my selection" : "Send feedback"; $("#sa").textContent = M.select ? "Send selection" : "Approve"; $("#sc").style.display = M.select ? "none" : ""; $("#fnote").parentElement.style.display = M.select ? "none" : ""; $("#sp").textContent = M.select ? `${fav.size} of ${M.select.limit} picked` : ""; $("#sheet").classList.add("on"); };
+  // view: layout, size, theme, slideshow (remembered on this device; the default layout comes from the delivery)
+  const store = (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } }, put = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+  const g = $("#grid"), sz = $("#sz");
+  if (g) {
+    const apply = () => { const l = store("dv-layout", M.layout === "grid" ? "cells" : M.layout || "masonry"); g.className = "grid " + (l === "cells" ? "cells" : l === "large" ? "large" : "masonry"); g.style.setProperty("--col", store("dv-size", "260") + "px");
+      document.querySelectorAll("#view [data-l]").forEach(b => b.classList.toggle("on", b.dataset.l === l)); sz.disabled = l === "large"; };
+    document.querySelectorAll("#view [data-l]").forEach(b => b.onclick = () => { put("dv-layout", b.dataset.l); apply(); });
+    sz.value = store("dv-size", "260"); sz.oninput = () => { put("dv-size", sz.value); apply(); }; apply();
+    $("#slide").onclick = () => { open(0); clearInterval(window.__sl); window.__sl = setInterval(() => open(cur + 1), 4000); };
+  }
+  $("#theme").onclick = () => { const t = document.documentElement.dataset.theme === "light" ? "dark" : "light"; document.documentElement.dataset.theme = t; put("dv-theme", t); };
+  // review
+  let stars = 0; const paint = () => document.querySelectorAll("#stars button").forEach(b => { b.textContent = +b.dataset.n <= stars ? "★" : "☆"; b.classList.toggle("on", +b.dataset.n <= stars); });
+  document.querySelectorAll("#stars button").forEach(b => b.onclick = () => { stars = +b.dataset.n; paint(); });
+  $("#rvb").onclick = () => $("#rsheet").classList.add("on"); $("#rx").onclick = () => $("#rsheet").classList.remove("on");
+  $("#rs").onclick = async () => { if (!stars || !$("#rt").value.trim()) { $("#rmsg").textContent = "Pick the stars and write a few words."; return; } $("#rmsg").textContent = "Sending…";
+    try { if (!demo) { const r = await fetch(url("review"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ rating: stars, text: $("#rt").value, name: $("#rn2").value, company: $("#rc").value, publish: $("#rp").checked }) }); if (!r.ok) throw 0; } $("#rmsg").textContent = "Thank you, that means a lot."; setTimeout(() => $("#rsheet").classList.remove("on"), 1800); }
+    catch { $("#rmsg").textContent = "Sending failed. Please try again."; } };
+}
+function open(i) { cur = (i + M.photos.length) % M.photos.length; const p = M.photos[cur]; [cur + 1, cur - 1].forEach(j => { const n = M.photos[(j + M.photos.length) % M.photos.length]; if (n) new Image().src = thumb(n.thumb, "w2048h1536"); }); $("#lb").classList.add("on"); $("#lbi").src = thumb(p.thumb, "w2048h1536"); $("#lbh").textContent = fav.has(p.id) ? (M.select ? "♥ Picked" : "♥ Favourite") : (M.select ? "♡ Pick" : "♡ Favourite"); $("#lbd").href = file(p.high || p.low || p.thumb); $("#lbd").style.display = M.select ? "none" : ""; document.body.style.overflow = "hidden"; }
+function toggle(id) { if (fav.has(id)) fav.delete(id); else { if (M.select && fav.size >= M.select.limit) { $("#fst").textContent = `Limit reached: ${M.select.limit}. Remove one to pick another.`; return; } fav.add(id); } save(); stat(); }
+const closeLb = () => { clearInterval(window.__sl); $("#lb").classList.remove("on"); document.body.style.overflow = ""; };
+let tx = 0; $("#lb").addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true }); $("#lb").addEventListener("touchend", e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) open(cur + (dx < 0 ? 1 : -1)); }, { passive: true });
+$("#lbd").addEventListener("click", async e => { if (!(navigator.canShare && matchMedia("(hover:none)").matches)) return; const p = M.photos[cur]; try { e.preventDefault(); const b = await (await fetch(file(p.high || p.low || p.thumb))).blob(); const f = new File([b], p.name + ".jpg", { type: b.type || "image/jpeg" }); if (navigator.canShare({ files: [f] })) await navigator.share({ files: [f] }); else location.href = file(p.high || p.low || p.thumb); } catch { location.href = file(p.high || p.low || p.thumb); } });
+$("#lbx").onclick = closeLb; $("#lbp").onclick = () => open(cur - 1); $("#lbn").onclick = () => open(cur + 1);
+$("#lbh").onclick = () => { toggle(M.photos[cur].id); open(cur); };
+document.addEventListener("keydown", e => { if (!$("#lb").classList.contains("on")) return; if (e.key === "Escape") closeLb(); if (e.key === "ArrowLeft") open(cur - 1); if (e.key === "ArrowRight") open(cur + 1); });
+$("#sx").onclick = () => $("#sheet").classList.remove("on");
+async function send(decision) {
+  const body = { name: $("#fn").value, note: $("#fnote").value, decision, favorites: M.photos.filter(p => fav.has(p.id)).map(p => p.name), comments };
+  $("#smsg").textContent = "Sending…";
+  try { if (!demo) { const r = await fetch(url("feedback"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify(body) }); if (!r.ok) throw 0; } $("#smsg").textContent = decision === "approved" ? "Thank you, approved." : "Thank you, Stevy will get back to you."; setTimeout(() => $("#sheet").classList.remove("on"), 1600); }
+  catch { $("#smsg").textContent = "Sending failed. Please try again or reply to Stevy by mail."; }
+}
+async function sendSel() {
+  $("#smsg").textContent = "Sending…";
+  try { if (!demo) { const r = await fetch(url("selection"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ name: $("#fn").value, names: M.photos.filter(p => fav.has(p.id)).map(p => p.name) }) }); if (!r.ok) throw 0; } $("#smsg").textContent = "Thank you, your selection is sent."; setTimeout(() => $("#sheet").classList.remove("on"), 1800); }
+  catch { $("#smsg").textContent = "Sending failed. Please try again."; }
+}
+$("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").onclick = () => send("changes");
+(async () => {
+  if (!slug && !demo) { const a = albums(); app.innerHTML = `<div class="gate"><div style="width:min(460px,100%)"><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem;margin:10px 0 6px">${a.length ? "Your albums" : "Open your link"}</h1><p class="note" style="margin:0 auto">${a.length ? "Opened on this device. Tap to go back in." : "Use the link from your mail or message. Albums you open are listed here afterwards."}</p><div class="mine">${a.map(x => `<a href="/d/?c=${esc(x.slug)}"><b>${esc(x.title || "Delivery")}</b><span>${esc(x.client)}</span></a>`).join("")}</div></div></div>`; return; }
+  try { M = await load(kk()); render(); } catch (x) { x.gate ? gate(x.gate) : (app.innerHTML = `<div class="gate"><div><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem">${esc(x.msg || "Something went wrong.")}</h1></div></div>`); }
+})();
+})();
+</script>
+</body>
+</html>

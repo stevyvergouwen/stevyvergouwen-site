@@ -1,4 +1,6 @@
 User-agent: *
+Disallow: /d/
+Disallow: /u/
 Allow: /
 
 Sitemap: https://stevyvergouwen.com/sitemap.xml

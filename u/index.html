@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Upload footage | Stevy Vergouwen</title>
+<link rel="stylesheet" href="/fonts.css">
+<style>
+:root{--ink:#08080a;--ink2:#111114;--paper:#ebe7e0;--dim:#a09e99;--faint:#2c2b29;--line:rgba(235,231,224,.22);--blue:#5b84ff;--pad:clamp(16px,3.4vw,48px);--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--mono:"Roboto Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}html{background:var(--ink);color-scheme:dark}
+body{margin:0;background:var(--ink);color:var(--paper);font:13px/1.6 var(--mono);letter-spacing:.03em;-webkit-font-smoothing:antialiased}
+::selection{background:var(--blue);color:var(--ink)}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:999px;padding:11px 20px;cursor:pointer;letter-spacing:.16em;text-transform:uppercase;font-size:11px;transition:background .2s,color .2s,border-color .2s,transform .25s cubic-bezier(.2,.7,.1,1)}
+button:hover:not(:disabled){border-color:var(--paper);transform:translateY(-1px)}button.pri{background:var(--paper);color:var(--ink);border-color:var(--paper)}button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.bar{display:flex;justify-content:space-between;padding:18px var(--pad);font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+main{max-width:980px;margin:0 auto;padding:clamp(24px,6vw,64px) var(--pad) 120px}
+.eyebrow{color:var(--dim);letter-spacing:.22em;text-transform:uppercase;font-size:11px}
+h1{margin:12px 0 14px;font:700 clamp(2.2rem,7vw,4.6rem)/.98 var(--sans);letter-spacing:-.04em;text-wrap:balance}
+.lead{color:var(--dim);max-width:58ch;margin:0 0 30px;text-wrap:pretty}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:640px){.row{grid-template-columns:1fr}}
+label{display:block;color:var(--dim);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-top:14px}
+input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent;border:1px solid var(--line);border-radius:4px;padding:11px 12px;margin-top:6px}
+.drop{margin-top:22px;border:1px dashed var(--line);border-radius:6px;padding:clamp(28px,6vw,56px);text-align:center;transition:border-color .2s,background .2s}
+.drop.over{border-color:var(--blue);background:rgba(91,132,255,.06)}
+.drop h2{margin:0 0 6px;font:700 1.5rem var(--sans);letter-spacing:-.02em}.drop p{margin:0 0 18px;color:var(--dim)}
+.acts{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.sum{display:flex;gap:24px;flex-wrap:wrap;margin:26px 0 6px}.sum div b{display:block;font:700 1.7rem var(--sans);letter-spacing:-.03em}.sum div span{color:var(--dim);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.bigbar{height:8px;border-radius:99px;background:var(--faint);overflow:hidden;margin:14px 0 6px}.bigbar i{display:block;height:100%;width:0;background:var(--blue);transition:width .4s linear}
+.note{color:var(--dim);font-size:11px}
+.list{margin-top:22px;border-top:1px solid var(--faint)}
+.f{display:grid;grid-template-columns:1fr 90px 110px;gap:10px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--faint);font-size:12px}
+.f .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.f .s{color:var(--dim);text-align:right}.f .st{text-align:right;color:var(--dim)}
+.f.up .st{color:var(--blue)}.f.ok .st{color:var(--paper)}.f.bad .st{color:#e6746f}
+.f .pb{grid-column:1/-1;height:2px;background:var(--faint);margin-top:-4px}.f .pb i{display:block;height:100%;width:0;background:var(--blue)}
+.grp{margin:22px 0 4px;color:var(--dim);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.msg{color:var(--blue);margin-top:12px}
+.done{margin-top:26px;border:1px solid var(--line);border-radius:6px;padding:26px}.done h2{margin:0 0 6px;font:700 1.8rem var(--sans);letter-spacing:-.03em}
+.gate{min-height:80svh;display:grid;place-items:center;text-align:center}.gate form{display:flex;gap:8px;width:min(380px,100%)}
+</style>
+</head>
+<body>
+<div class="bar"><span>Stevy Vergouwen</span><span id="barr">Upload</span></div>
+<main id="app"></main>
+<script>
+(() => {
+const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
+const q = new URLSearchParams(location.search), slug = q.get("c") || "", demo = q.has("demo");
+const $ = s => document.querySelector(s), app = $("#app"), esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const CHUNK = 8 * 1024 * 1024, PAR = 2;
+const kk = () => sessionStorage.getItem("up:" + slug) || "";
+const api = (a, p = {}) => `${ENDPOINT}/upload/${slug}${a ? "/" + a : ""}?${new URLSearchParams({ ...p, k: kk() })}`;
+const fmt = n => n >= 1073741824 ? (n / 1073741824).toFixed(2) + " GB" : n >= 1048576 ? (n / 1048576).toFixed(n > 1e8 ? 0 : 1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB";
+const dur = s => !isFinite(s) ? "calculating…" : s < 60 ? Math.max(1, Math.round(s)) + " sec" : s < 3600 ? Math.round(s / 60) + " min" : Math.floor(s / 3600) + " h " + Math.round((s % 3600) / 60) + " min";
+let title = "", files = [], running = false, paused = false, startedAt = 0, samples = [], wake = null, finished = false;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const total = () => files.reduce((a, f) => a + f.file.size, 0), sent = () => files.reduce((a, f) => a + Math.min(f.off, f.file.size), 0);
+
+async function info() {
+  if (demo) return { title: q.get("t") || "Demo shoot" };
+  const r = await fetch(api("")); if (r.status === 401) throw { gate: await r.json().catch(() => ({})) }; if (r.status === 410) throw { msg: "This upload link has expired." }; if (!r.ok) throw { msg: "This upload link could not be found." };
+  return r.json();
+}
+function gate(msg) { app.innerHTML = `<div class="gate"><div><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2.2rem">Upload footage</h1><form id="gf"><input id="gp" type="password" placeholder="Access code"><button class="pri">Open</button></form><div class="msg">${esc(msg || "")}</div></div></div>`; $("#gf").onsubmit = async e => { e.preventDefault(); sessionStorage.setItem("up:" + slug, $("#gp").value); try { const i = await info(); title = i.title; home(); } catch (x) { gate(x.gate ? "That code is not right." : x.msg); } }; }
+function home() {
+  $("#barr").textContent = title || "Upload";
+  app.innerHTML = `<div class="eyebrow">Footage upload</div><h1>${esc(title || "Upload your footage")}</h1><p class="lead">Drop the whole folder of your shoot here: all cameras, angles and recordings. Keep the folder structure as it is, it is kept in Dropbox. You can close the page and come back: the upload picks up where it stopped when you add the same folder again.</p>
+  <div class="row"><div><label for="who">Your name</label><input id="who" autocomplete="name" placeholder="Name"></div><div><label for="notes">What is in it? (optional)</label><input id="notes" placeholder="e.g. Sony A7 IV angle A, 2 cams, mixer audio"></div></div>
+  <div class="drop" id="drop"><h2>Drop a folder or files</h2><p>Camera angles as subfolders work best, for example <b style="color:var(--paper)">CAM A</b>, <b style="color:var(--paper)">CAM B</b>, <b style="color:var(--paper)">AUDIO</b>.</p><div class="acts"><button class="pri" id="pf">Choose folder</button><button id="pi">Choose files</button></div><input id="fi" type="file" multiple hidden><input id="fd" type="file" webkitdirectory hidden></div>
+  <div id="work"></div>`;
+  const drop = $("#drop");
+  $("#pf").onclick = () => $("#fd").click(); $("#pi").onclick = () => $("#fi").click();
+  $("#fi").onchange = e => add([...e.target.files].map(f => ({ file: f, rel: f.name }))); $("#fd").onchange = e => add([...e.target.files].map(f => ({ file: f, rel: f.webkitRelativePath || f.name })));
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); })); ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", async e => { const items = [...(e.dataTransfer.items || [])].map(i => i.webkitGetAsEntry && i.webkitGetAsEntry()).filter(Boolean); const out = []; for (const en of items) await walk(en, "", out); if (!items.length) [...e.dataTransfer.files].forEach(f => out.push({ file: f, rel: f.name })); add(out); });
+  draw();
+}
+async function walk(en, base, out) {
+  if (en.isFile) { const f = await new Promise((res, rej) => en.file(res, rej)); out.push({ file: f, rel: base + en.name }); }
+  else if (en.isDirectory) { const rd = en.createReader(); let all = []; for (;;) { const b = await new Promise((res, rej) => rd.readEntries(res, rej)); if (!b.length) break; all = all.concat(b); } for (const c of all) await walk(c, base + en.name + "/", out); }
+}
+function add(list) {
+  const have = new Set(files.map(f => f.rel + f.file.size));
+  for (const x of list) { if (/(^|\/)(\.DS_Store|Thumbs\.db)$/i.test(x.rel) || have.has(x.rel + x.file.size)) continue; const key = `u:${slug}:${x.rel}:${x.file.size}:${x.file.lastModified}`; let st = null; try { st = JSON.parse(localStorage.getItem(key) || "null"); } catch {}
+    files.push({ file: x.file, rel: x.rel, key, sid: st && st.sid, dest: st && st.dest, off: st ? st.off : 0, state: st && st.off >= x.file.size ? "done" : "wait", tries: 0 }); }
+  draw();
+}
+function draw() {
+  const w = $("#work"); if (!w) return;
+  if (finished) return;
+  if (!files.length) { w.innerHTML = ""; return; }
+  const grp = {}; files.forEach(f => { const g = f.rel.includes("/") ? f.rel.split("/").slice(0, -1).join(" / ") : "Files"; (grp[g] = grp[g] || []).push(f); });
+  const tot = total(), snt = sent(), pct = tot ? snt / tot * 100 : 0;
+  const speed = (() => { if (samples.length < 2) return 0; const a = samples[0], b = samples[samples.length - 1]; return b.t > a.t ? (b.n - a.n) / ((b.t - a.t) / 1000) : 0; })();
+  const eta = speed > 50000 ? (tot - snt) / speed : Infinity;
+  w.innerHTML = `<div class="sum"><div><b>${files.length}</b><span>files</span></div><div><b>${fmt(tot)}</b><span>total</span></div>${running || snt ? `<div><b>${pct.toFixed(pct < 10 ? 1 : 0)}%</b><span>done</span></div><div><b>${running && !paused ? fmt(speed) + "/s" : "-"}</b><span>speed</span></div><div><b>${running && !paused ? dur(eta) : paused ? "paused" : "-"}</b><span>time left</span></div>` : ""}</div>
+  <div class="bigbar"><i style="width:${pct}%"></i></div><div class="note">${running ? (paused ? "Paused. Press resume to continue." : "Keep this page open until it says everything is uploaded. Your computer will not be put to sleep meanwhile.") : "Ready when you are. Large footage can take a while; the time left shows up once it runs."}</div>
+  <div class="acts" style="justify-content:flex-start;margin-top:16px"><button class="pri" id="go" ${running && !paused ? "disabled" : ""}>${paused ? "Resume" : running ? "Uploading…" : snt ? "Continue upload" : "Start upload"}</button>${running && !paused ? `<button id="pa">Pause</button>` : ""}${!running ? `<button id="cl">Clear list</button>` : ""}</div>
+  <div class="list">${Object.keys(grp).sort().map(g => `<div class="grp">${esc(g)}</div>` + grp[g].map(f => `<div class="f ${f.state === "up" ? "up" : f.state === "done" ? "ok" : f.state === "bad" ? "bad" : ""}"><div class="n">${esc(f.rel.split("/").pop())}</div><div class="s">${fmt(f.file.size)}</div><div class="st">${f.state === "done" ? "done" : f.state === "bad" ? "retrying…" : f.state === "up" ? Math.floor(f.off / f.file.size * 100) + "%" : "waiting"}</div>${f.state === "up" ? `<div class="pb"><i style="width:${f.off / f.file.size * 100}%"></i></div>` : ""}</div>`).join("")).join("")}</div>`;
+  const go = $("#go"); if (go) go.onclick = start; const pa = $("#pa"); if (pa) pa.onclick = () => { paused = true; draw(); }; const cl = $("#cl"); if (cl) cl.onclick = () => { files = []; draw(); };
+}
+async function post(url, body) { for (let i = 0; ; i++) { try { if (!navigator.onLine) await new Promise(r => addEventListener("online", r, { once: true })); const r = await fetch(url, { method: "POST", body }); return r; } catch (e) { if (i >= 7) throw e; await sleep(Math.min(30000, 1000 * 2 ** i)); } } }
+async function upOne(f, who) {
+  f.state = "up";
+  if (demo) { while (f.off < f.file.size) { while (paused) await sleep(300); const step = Math.min(CHUNK, f.file.size - f.off); await sleep(step / (7e6 * (0.7 + Math.random() * 0.6)) * 1000); f.off += step; tick(step); } f.state = "done"; return; }
+  if (!f.sid) { const r = await post(api("start", { who, rel: f.rel }), new Blob()); if (!r.ok) throw new Error("start"); const j = await r.json(); f.sid = j.sid; f.dest = j.dest; }
+  while (f.off < f.file.size) {
+    while (paused) await sleep(300);
+    const end = Math.min(f.off + CHUNK, f.file.size);
+    const r = await post(api("chunk", { sid: f.sid, off: f.off }), f.file.slice(f.off, end));
+    if (r.status === 409) { const j = await r.json().catch(() => ({})); if (typeof j.offset === "number") { f.off = j.offset; continue; } throw new Error("conflict"); }
+    if (!r.ok) { f.state = "bad"; draw(); if (++f.tries > 6) throw new Error("chunk"); await sleep(2000 * f.tries); f.state = "up"; continue; }
+    const j = await r.json(); tick(j.offset - f.off); f.off = j.offset; f.tries = 0; try { localStorage.setItem(f.key, JSON.stringify({ sid: f.sid, dest: f.dest, off: f.off })); } catch {}
+  }
+  const r = await post(api("finish", { sid: f.sid, off: f.off, dest: f.dest }), new Blob()); if (!r.ok) throw new Error("finish");
+  f.state = "done"; try { localStorage.removeItem(f.key); } catch {}
+}
+const tick = n => { const t = Date.now(); samples.push({ t, n: (samples.length ? samples[samples.length - 1].n : 0) + n }); while (samples.length > 2 && t - samples[0].t > 15000) samples.shift(); };
+async function start() {
+  const who = $("#who").value.trim(); if (!who) { $("#who").focus(); $("#who").style.borderColor = "var(--blue)"; return; }
+  if (paused) { paused = false; draw(); return; } if (running) return;
+  running = true; paused = false; startedAt = Date.now(); samples = [{ t: Date.now(), n: 0 }];
+  try { if (navigator.wakeLock) wake = await navigator.wakeLock.request("screen"); } catch {}
+  addEventListener("beforeunload", warn); const iv = setInterval(draw, 700);
+  const queue = files.filter(f => f.state !== "done"); let failed = 0;
+  const worker = async () => { while (queue.length) { const f = queue.shift(); try { await upOne(f, who); } catch { f.state = "bad"; failed++; } } };
+  await Promise.all(Array.from({ length: PAR }, worker));
+  clearInterval(iv); running = false; removeEventListener("beforeunload", warn); try { wake && wake.release(); } catch {}
+  const ok = files.filter(f => f.state === "done"), bytes = ok.reduce((a, f) => a + f.file.size, 0);
+  if (!failed && ok.length === files.length) {
+    finished = true; try { if (!demo) await fetch(api("done"), { method: "POST", body: JSON.stringify({ who, notes: $("#notes").value, count: ok.length, bytes, failed: 0 }) }); } catch {}
+    $("#work").innerHTML = `<div class="done"><h2>Everything is uploaded</h2><p class="lead" style="margin:0">${ok.length} files, ${fmt(bytes)}, in ${dur((Date.now() - startedAt) / 1000)}. Stevy has been told. Thank you, you can close this page.</p></div>`;
+  } else { draw(); $("#work").insertAdjacentHTML("afterbegin", `<div class="msg">${failed} file${failed > 1 ? "s" : ""} did not finish. Press "Continue upload" to try again, it only sends what is missing.</div>`); }
+}
+const warn = e => { e.preventDefault(); e.returnValue = ""; };
+(async () => {
+  if (!slug && !demo) { app.innerHTML = `<div class="gate"><div><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem">This link is incomplete.</h1></div></div>`; return; }
+  try { const i = await info(); title = i.title; home(); } catch (x) { x.gate ? gate() : (app.innerHTML = `<div class="gate"><div><h1 style="font-size:2rem">${esc(x.msg || "Something went wrong.")}</h1></div></div>`); }
+})();
+window.__test = { add: l => add(l), start };
+})();
+</script>
+</body>
+</html>

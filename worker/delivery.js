@@ -42,7 +42,7 @@ const base = n => n.replace(/\.[^.]+$/, "").toLowerCase();
 /** A job's folder becomes: photos (HighRes + LowRes/Previews matched by file name) and finished clips (stacks, audio and raw footage are left out). */
 async function manifest(env, rec, scope = "") {
   const files = (await listAll(env, rec.path)).filter(f => !scope || f.path_lower.startsWith((rec.path + "/" + scope).toLowerCase() + "/")); const root = rec.path.toLowerCase().length;
-  const photos = new Map(), videos = [], audio = [];
+  const photos = new Map(), videos = [], audio = [], sidecars = new Map();
   const wmExists = files.some(f => f.path_lower.includes("/preview-wm/") && isPhotoName(f.name));   // pre-made watermarked copies: when they exist, originals are never shown
   for (const f of files) {
     const rel = f.path_lower.slice(root + 1); const parts = rel.split("/"); const name = f.name;
@@ -55,11 +55,20 @@ async function manifest(env, rec, scope = "") {
       const key = base(name); const p = photos.get(key) || { id: key, name: name.replace(/\.[^.]+$/, "") };
       if (tier === "wm") p.wm = f.path_display; else if (tier === "high") p.high = f.path_display; else if (tier === "low" && !/logo/.test(rel)) p.low = f.path_display; else if (tier === "preview") p.preview = f.path_display;
       photos.set(key, p);
+    } else if (/\.peaks\.json$/i.test(name) && parts.some(p => p === "audio")) {
+      sidecars.set(base(name.replace(/\.peaks\.json$/i, "")), { ...(sidecars.get(base(name.replace(/\.peaks\.json$/i, ""))) || {}), peaks: f.path_display });
+    } else if (/\.preview\.m4a$/i.test(name) && parts.some(p => p === "audio")) {
+      sidecars.set(base(name.replace(/\.preview\.m4a$/i, "")), { ...(sidecars.get(base(name.replace(/\.preview\.m4a$/i, ""))) || {}), stream: f.path_display });
     } else if (isAudio(name) && parts.some(p => p === "audio") && !parts.some(p => ["stacks", "raw video", "raw footage", "raw audio"].includes(p))) {
       audio.push({ id: f.id, name, path: f.path_display, size: f.size, group: f.path_display.slice(rec.path.length + 1).split("/").slice(0, -1).join(" / ") });
     } else if (isVideo(name) && !parts.some(p => ["stacks", "audio", "raw video", "raw footage"].includes(p))) {
       videos.push({ id: f.id, name, path: f.path_display, size: f.size, group: f.path_display.slice(rec.path.length + 1).split("/").slice(0, -1).filter(p => !/^\d+x\d+$/i.test(p)).join(" / ") });
     }
+  }
+  for (const a of audio) {   // a waveform and a light copy to play, made by the Projecten app next to the master
+    const sc = sidecars.get(base(a.name)); if (!sc) continue;
+    if (sc.stream) a.stream = sc.stream;
+    if (sc.peaks) { try { const ck = "pk:" + await sha(sc.peaks); let pk = await env.IG.get(ck, "json"); if (!pk) { const j = await rpc(env, "files/get_temporary_link", { path: sc.peaks }); const r = await fetch(j.link); const arr = await r.json(); pk = (Array.isArray(arr) ? arr : arr.peaks || []).slice(0, 800).map(x => Math.max(0, Math.min(100, Math.round(Number(x) || 0)))); await env.IG.put(ck, JSON.stringify(pk), { expirationTtl: 86400 }); } a.peaks = pk; } catch { /* no waveform */ } }
   }
   const lockedNow = rec.nodl || locked(rec), list = [...photos.values()].filter(p => p.wm || (!(lockedNow && wmExists) && (p.high || p.low || p.preview))).map(p => ({ id: p.id, name: p.name, thumb: lockedNow && p.wm ? p.wm : (p.low || p.preview || p.high), high: lockedNow && wmExists ? null : (p.high || null), low: lockedNow && wmExists ? null : (p.low || null) })).sort((a, b) => a.name.localeCompare(b.name));
   return { scope: scope || "", select: rec.select || null, layout: rec.layout || "masonry", title: rec.title, client: rec.client, date: rec.date, note: rec.note || "", location: String(rec.location || "").slice(0, 160), lineup: Array.isArray(rec.lineup) ? rec.lineup : [], dropbox: rec.dropbox || "", end: rec.end || "", final: !!rec.final, wmserver: wmExists && (rec.nodl || locked(rec)), nodl: !!rec.nodl, comments: !!rec.comments, share: !!rec.share, watermark: !!rec.watermark || !!rec.select, locked: (!!rec.watermark && !rec.released) || !!rec.select, wm: String(rec.wm || "STEVYVERGOUWEN.COM").slice(0, 60), root: rec.path, photos: list, audio: audio.sort((a, b) => a.name.localeCompare(b.name)), videos: videos.sort((a, b) => (a.group + a.name).localeCompare(b.group + b.name)) };

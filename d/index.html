@@ -93,7 +93,7 @@ details.fg>summary a{margin-left:auto}
 .nz ol li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;font-size:13px;line-height:1.55;color:var(--paper)}
 .nz ol li::before{content:counter(s);flex:0 0 26px;height:26px;border-radius:50%;border:1px solid var(--blue);color:var(--blue);display:grid;place-items:center;font:700 12px var(--sans)}
 .nz .small{color:var(--dim);font-size:11px;line-height:1.6;margin:-6px 0 22px}
-.hero .note{max-width:58ch;margin:0 0 14px;font:400 clamp(15px,1.7vw,18px)/1.7 var(--sans);letter-spacing:0;text-transform:none;color:rgba(235,231,224,.86);text-wrap:pretty}
+.hero .note{max-width:58ch;margin:0 0 14px;font:400 clamp(15px,1.7vw,18px)/1.7 var(--sans);letter-spacing:0;text-transform:none;color:var(--paper);opacity:.88;text-wrap:pretty}
 .hero .loc{display:flex;align-items:center;gap:8px;margin:0 0 22px;font:400 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}.hero .loc svg{flex:0 0 auto}
 .bar .rvl{margin-left:auto;font:inherit;color:var(--paper);background:none;border:1px solid var(--line);border-radius:999px;padding:8px 14px;margin-right:12px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s,border-color .2s}.bar .rvl:hover{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 @media (max-width:560px){.bar .rvl{margin-right:8px;font-size:9px;padding:7px 11px}}
@@ -118,11 +118,6 @@ details.fg>summary a{margin-left:auto}
 .thx .x{position:absolute;top:8px;right:10px;border:0;background:none;color:var(--dim);font-size:18px;line-height:1;padding:6px 8px;cursor:pointer;letter-spacing:0;text-transform:none}
 @media (prefers-reduced-motion:reduce){.thx{transition:none}}
 .art .bar2 button[data-share]{color:var(--paper);border-color:var(--blue);background:rgba(91,132,255,.12)}.art .bar2 button[data-share]:hover{background:var(--blue);color:var(--ink)}
-.au{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 4px;padding:12px 14px;border:1px solid var(--faint);border-radius:6px;background:var(--ink)}
-.au b{font:700 13px var(--sans);letter-spacing:-.01em}.au em{font:400 10px var(--mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.au .pl{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--paper);cursor:pointer;font-size:12px;flex:none}.au .pl:hover{border-color:var(--paper)}
-.au audio{flex:1 1 220px;min-width:0;height:34px}.au a{margin-left:auto;color:var(--blue);font-size:11px;letter-spacing:.08em;text-decoration:none}
-.locked .au a{display:none}
 #barr{display:none!important}
 .art .at{flex:0 0 auto;min-width:104px;font:400 11px var(--mono);letter-spacing:.1em;color:var(--blue);white-space:nowrap}
 @media (max-width:760px){.art .at{flex:1 1 100%;order:-1;min-width:0;font-size:10px}}
@@ -134,6 +129,16 @@ details.fg>summary a{margin-left:auto}
 .art .dla{display:inline-flex;align-items:center;justify-content:center;margin-left:8px;padding:8px;color:var(--dim);flex:none;line-height:0;transition:color .2s,transform .2s}.art .dla:hover,.art .dla:focus-visible{color:var(--paper);transform:translateY(1px)}
 .onlyfav .ph:not(.fav){display:none!important}
 .artistpg .rv,.artistpg .rvl{display:none!important}
+.au{display:grid;grid-template-columns:auto 1fr auto;gap:6px 16px;align-items:center;margin:14px 0 18px;padding:18px 20px 16px;border:1px solid var(--faint);border-radius:8px;background:var(--ink)}
+.au .pl{grid-row:1;width:44px;height:44px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);cursor:pointer;padding:0;display:grid;place-items:center;transition:transform .15s}.au .pl svg{grid-area:1/1;display:block}.au .pl .i-play{margin-left:2px}.au .pl .i-pause{display:none}.au .pl.on .i-play{display:none}.au .pl.on .i-pause{display:block}.au .pl:hover{transform:scale(1.06)}
+.au .aam{grid-row:1;min-width:0}.au .aam b{display:block;font:700 15px var(--sans);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.au .aam em{display:block;margin-top:4px;font:400 10px var(--mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.au .adl{grid-row:1;color:var(--blue);font-size:11px;letter-spacing:.1em;text-decoration:none;text-transform:uppercase;white-space:nowrap}.au .adl:hover{color:var(--paper)}
+.au .wv{grid-column:1/-1;grid-row:2;display:block;width:100%;height:96px;margin-top:8px;cursor:pointer}
+.au .tm{grid-column:1/-1;grid-row:3;font:400 10px var(--mono);letter-spacing:.14em;color:var(--dim);text-align:right}
+.au .bar0{grid-column:1/-1;grid-row:2;height:4px;margin-top:10px;background:var(--faint);border-radius:9px;overflow:hidden;cursor:pointer}.au .bar0 i{display:block;height:100%;width:0;background:var(--paper)}
+.locked .au .adl{display:none}
+@media (max-width:560px){.au{grid-template-columns:auto 1fr;padding:14px}.au .adl{grid-column:1/-1;grid-row:4;justify-self:start}.au .wv{height:76px}}
+.fg > .fh .fdl,.fg > summary.fh .fdl{display:inline-flex;align-items:center;gap:8px;margin-left:auto;padding:6px 4px;border:0;border-radius:0;background:none;color:var(--dim);font:400 11px var(--mono);letter-spacing:.08em;text-transform:none;text-decoration:none;transition:color .2s}.fg .fdl:hover,.fg .fdl:focus-visible{color:var(--paper);background:none}.fg .fdl svg{flex:none}
 .nofb [data-h],.nofb .fb,.nofb #fst{display:none!important}
 .nudge{position:fixed;right:clamp(14px,3vw,34px);bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:12px;max-width:min(380px,calc(100vw - 28px));padding:12px 14px 12px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(17,17,20,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--paper);cursor:pointer;box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(24px) scale(.96);opacity:0;pointer-events:none;transition:transform .7s cubic-bezier(.2,.9,.2,1.15),opacity .6s ease}
 .nudge.on{transform:none;opacity:1;pointer-events:auto}
@@ -227,6 +232,12 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 [data-theme="light"] .hero .bg{opacity:.35}
 [data-theme="light"] .lb,[data-theme="light"] .fb{background:rgba(244,241,236,.94)}
 [data-theme="light"] body::after{opacity:.04}
+[data-theme="light"] .bar{background:linear-gradient(rgba(244,241,236,.94),rgba(244,241,236,0))}
+[data-theme="light"] .hero{background:var(--ink)}
+[data-theme="light"] .hero .hv{filter:brightness(1.05) saturate(1.05) contrast(1);opacity:0}[data-theme="light"] .hero .hv.on{opacity:.45}
+[data-theme="light"] .hero .sub span,[data-theme="light"] .hero .loc{color:#55524c}
+[data-theme="light"] .au .pl,[data-theme="light"] .sheet .pri,[data-theme="light"] .nzo .go{background:var(--paper);color:var(--ink)}
+
 .tabs{align-items:center}.tabs .sp{flex:1}
 .view{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 18px}
 .view button{padding:8px 14px;font-size:10px}
@@ -254,7 +265,7 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 <script>
 (() => {
 const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
-const q = new URLSearchParams(location.search), slug = ((s0 => /^[a-z0-9]{10,40}$/.test(s0) ? s0 : "")(q.get("c") || location.hash.slice(1) || "")), demo = q.has("demo") && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);   // test mode only on this Mac: a live link can never be pointed at someone else's data
+const q = new URLSearchParams(location.search), slug = ((s0 => /^[a-z0-9]{10,40}$/.test(s0) ? s0 : "")(q.get("c") || location.hash.slice(1) || "")), demo = q.has("demo") && /^(localhost|127\.0\.0\.1|\[::1\]|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)$/.test(location.hostname);   // test mode only on this Mac: a live link can never be pointed at someone else's data
 try { document.documentElement.dataset.theme = localStorage.getItem("dv-theme") || "dark"; } catch {}
 const $ = s => document.querySelector(s), app = $("#app"), esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const kk = () => sessionStorage.getItem("dp:" + slug) || "";
@@ -343,7 +354,7 @@ function videoHtml(V) {
         <div class="bar2"><span class="c" style="color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase">${mine.length} clips</span><button type="button" data-x="open">Expand formats</button><button type="button" data-x="close">Collapse formats</button>${M.comments ? `<button type="button" data-apall="1">Approve all</button>` : ""}${M.share && !M.scope && arts.length > 1 ? `<button type="button" data-share="${esc(mine[0].x.asub.replace(/\/CLIPS$/i, ""))}" data-name="${esc(a)}">Share</button>` : ""}</div>
         ${mf.flatMap(f => { const inF = mine.filter(o => o.x.fmt === f), rs = [...new Set(inF.map(o => o.x.res))].sort((p, q) => ({ "HD": 0, "4K": 1 }[p] ?? 5) - ({ "HD": 0, "4K": 1 }[q] ?? 5)); return rs.map((r, ri) => ({ f, r, ri, nr: rs.length, set: inF.filter(o => o.x.res === r), all: inF })); }).map(g => {
           const sz = g.set.reduce((s, o) => s + (o.v.size || 0), 0), allSz = g.all.reduce((s, o) => s + (o.v.size || 0), 0), vert = /^(9:16|4:5)$/.test(g.f), rfn = g.set[0].x.rf, title = g.f + (g.r ? " · " + g.r : "");
-          return `<details class="fg" data-f="${esc(g.f)}" ${g.ri === 0 && g.f === mf[0] ? "open" : ""}><summary class="fh"><span class="ch2">›</span><b>${esc(title)}</b><span class="c">${g.set.length} clips · ${fmtB(sz)}</span>${rfn && g.ri === 0 ? `<a href="${zip(g.set[0].x.sub + "/" + rfn)}" data-size="${allSz}">Download ${esc(g.f)}${g.nr > 1 ? ", all qualities" : ""} · ${fmtB(allSz)}</a>` : ""}</summary>
+          return `<details class="fg" data-f="${esc(g.f)}" ${g.ri === 0 && g.f === mf[0] ? "open" : ""}><summary class="fh"><span class="ch2">›</span><b>${esc(title)}</b><span class="c">${g.set.length} clips · ${fmtB(sz)}</span>${rfn && g.ri === 0 ? `<a class="fdl" href="${zip(g.set[0].x.sub + "/" + rfn)}" data-size="${allSz}" title="Download all ${esc(g.f)} clips${g.nr > 1 ? ", all qualities" : ""} · ${fmtB(allSz)}" aria-label="Download all ${esc(g.f)} clips, ${fmtB(allSz)}"><svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M6.2 0h1.6v8.2l2.6-2.6 1.1 1.1L7 11 2.5 6.7l1.1-1.1 2.6 2.6z"/><path d="M1 12h12v1.5H1z"/></svg><span>${fmtB(allSz)}</span></a>` : ""}</summary>
             <div class="vgrid" style="--w:${vert ? 190 : 300}px">${g.set.map(o => `<div class="vcard vid" data-v="${o.i}" data-fmt="${esc(o.x.fmt)}" data-res="${esc(o.x.res)}"><div class="vth" style="--ar:${o.x.ar}"><video class="pv" muted playsinline preload="none"></video><span class="okb">✓</span><span class="cb"></span><div class="bd"><i>${esc(o.x.fmt)}</i>${o.x.res ? `<i>${esc(o.x.res)}</i>` : ""}</div><div class="pl">▶</div></div>
               <div class="m2"><span class="t" title="${esc(o.v.name)}">${esc(o.x.label)}</span><span class="s">${fmtB(o.v.size)}</span>${M.comments ? `<button class="ap" type="button">Approve</button>` : ""}<a href="${file(o.v.path)}">Download</a></div>
               ${M.comments ? `<details class="cm2"><summary>Feedback</summary><form><span class="tc">0:00</span><input placeholder="Your comment at this moment" aria-label="Comment"><button class="pri">Add</button></form><div class="cl"></div></details>` : ""}</div>`).join("")}</div></details>`; }).join("")}
@@ -645,15 +656,26 @@ function lineupInfo() {
   return L.map((x, i) => { const m = String(x.t || "").match(/(\d{1,2})[:.](\d{2})\s*[-–—]\s*(\d{1,2})[:.](\d{2})/), a = st(x.t), nx = L[i + 1] ? st(L[i + 1].t) : st(M.end); return { key: normN(x.n), idx: i, t: m ? hm([+m[1], +m[2]]) + " – " + hm([+m[3], +m[4]]) : a.length ? hm(a) + (nx.length ? " – " + hm(nx) : "") : "" }; });
 }
 function slotFor(name, info) { const k = normN(name); return info.find(s => s.key === k) || info.find(s => s.key && (k.includes(s.key) || s.key.includes(k))) || null; }
-/* the finished audio of a set sits in that artist's folder: play it, download it */
+/* the finished audio of a set sits in that artist's folder: a big waveform to play and seek, and the master to download */
 function audioRows() {
+  const mmss = s => isFinite(s) ? Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0") : "0:00";
   (M.audio || []).forEach(a => {
     const g = String(a.group || "").split(" / ").filter(Boolean), i = g.findIndex(x => /^audio$/i.test(x)), who = i > 0 ? g[i - 1].toLowerCase() : "";
     const art = [...document.querySelectorAll("#vlist details.art")].find(d => d.dataset.a.toLowerCase() === who) || (document.querySelectorAll("#vlist details.art").length === 1 ? document.querySelector("#vlist details.art") : null); if (!art) return;
+    const peaks = Array.isArray(a.peaks) && a.peaks.length > 8 ? a.peaks : null;
     const row = document.createElement("div"); row.className = "au";
-    row.innerHTML = `<button class="pl" type="button" aria-label="Play audio">▶</button><span><b>${esc(a.name.replace(/\.[^.]+$/, ""))}</b><br><em>Audio · ${esc(a.name.split(".").pop())}${a.size ? " · " + fmtB(a.size) : ""}</em></span><a href="${file(a.path)}" data-size="${a.size || 0}">Download audio</a>`;
-    const anchor = art.querySelector(".bar2") || art.querySelector(".body"); anchor.after(row);
-    row.querySelector(".pl").onclick = e => { let au = row.querySelector("audio"); if (!au) { au = document.createElement("audio"); au.controls = true; au.preload = "none"; au.src = demo ? a.path : url("file", { q: { p: a.path } }); row.querySelector("span").after(au); } if (au.paused) { document.querySelectorAll(".au audio").forEach(x => x !== au && x.pause()); au.play().catch(() => {}); e.target.textContent = "❚❚"; } else { au.pause(); e.target.textContent = "▶"; } au.onended = au.onpause = () => { row.querySelector(".pl").textContent = "▶"; }; };
+    row.innerHTML = `<button class="pl" type="button" aria-label="Play audio"><svg class="i-play" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.2v11.6L13.6 8z"/></svg><svg class="i-pause" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.5 2h3v12h-3zM9.5 2h3v12h-3z"/></svg></button><div class="aam"><b>${esc(a.name.replace(/\.[^.]+$/, ""))}</b><em>Audio · ${esc(a.name.split(".").pop())}${a.size ? " · " + fmtB(a.size) : ""}</em></div><a class="adl" href="${file(a.path)}" data-size="${a.size || 0}">Download audio</a>${peaks ? '<canvas class="wv" aria-label="Waveform: click to jump"></canvas>' : '<div class="bar0"><i></i></div>'}<span class="tm">0:00</span>`;
+    art.querySelector(".bar2").after(row);
+    const btn = row.querySelector(".pl"), tm = row.querySelector(".tm"), cv = row.querySelector(".wv"), bar0 = row.querySelector(".bar0");
+    let au = null, pend = null, frac = 0;
+    const draw = () => { if (!cv) { if (bar0) bar0.firstChild.style.width = frac * 100 + "%"; return; } const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, hh = cv.clientHeight; if (!w) return; cv.width = w * dpr; cv.height = hh * dpr; const c = cv.getContext("2d"); c.scale(dpr, dpr); const bw = 3, gap = 2, n = Math.max(20, Math.floor(w / (bw + gap))), cs = getComputedStyle(document.documentElement), on = cs.getPropertyValue("--paper").trim() || "#fff", off = cs.getPropertyValue("--line").trim() || "rgba(235,231,224,.3)";
+      for (let k = 0; k < n; k++) { const lo = Math.floor(k * peaks.length / n), hi = Math.max(lo + 1, Math.floor((k + 1) * peaks.length / n)); let m = 0; for (let q = lo; q < hi; q++) m = Math.max(m, peaks[q]); const bh = Math.max(3, m / 100 * (hh - 6)); c.fillStyle = (k + .5) / n <= frac ? on : off; c.fillRect(k * (bw + gap), (hh - bh) / 2, bw, bh); } };
+    const upd = () => { frac = au && au.duration ? au.currentTime / au.duration : 0; tm.textContent = au ? mmss(au.currentTime) + " / " + mmss(au.duration) : "0:00"; draw(); };
+    const ensure = () => { if (au) return au; au = document.createElement("audio"); au.preload = "auto"; au.src = demo ? a.path : url("file", { q: { p: a.stream || a.path } }); au.addEventListener("timeupdate", upd); au.addEventListener("loadedmetadata", () => { if (pend != null) { au.currentTime = pend * au.duration; pend = null; } upd(); }); au.addEventListener("ended", () => { btn.classList.remove("on"); upd(); }); au.addEventListener("pause", () => { btn.classList.remove("on"); }); au.addEventListener("play", () => { btn.classList.add("on"); document.querySelectorAll(".au").forEach(o => { if (o !== row && o._pause) o._pause(); }); }); row._pause = () => au.pause(); return au; };
+    btn.onclick = () => { const x = ensure(); if (x.paused) x.play().catch(() => {}); else x.pause(); };
+    const seek = e => { const t = cv || bar0, r = t.getBoundingClientRect(), f = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); const x = ensure(); if (x.duration) { x.currentTime = f * x.duration; } else { pend = f; } frac = f; draw(); if (x.paused) x.play().catch(() => {}); };
+    (cv || bar0).addEventListener("click", seek);
+    if (cv) { new ResizeObserver(draw).observe(cv); } draw();
   });
 }
 

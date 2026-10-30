@@ -428,6 +428,11 @@ function heroVideo() {
       list = Object.values(by).map(a => a.sort((p, q) => p.size - q.size)[0]).sort(() => Math.random() - .5).slice(0, 5);
     }
     if (!list.length && M.scope) { const own = V.filter(v => vinfo(v).fmt === want && v.size && vinfo(v).res !== "4K").sort((p, q) => p.size - q.size); list = own.filter(v => v.size < 400e6).slice(0, 3); }   // an artist page: their own clips, even if a bit larger
+    if (!list.length) { // no clip of the right shape: a vertical or square one is cropped to fill the banner (a laptop prefers horizontal, a phone vertical)
+      const rank = f => f === want ? 0 : (want === "16:9" ? ({ "4:3": 1, "4:5": 2, "9:16": 3 }[f] ?? 4) : ({ "4:5": 1, "4:3": 2, "16:9": 3 }[f] ?? 4));
+      const any = V.filter(v => v.size && v.size < 400e6).sort((p, q) => rank(vinfo(p).fmt) - rank(vinfo(q).fmt) || p.size - q.size);
+      list = any.slice(0, M.scope ? 3 : 0);
+    }
     if (!list.length) return;
     const hero = document.querySelector(".hero"); if (!hero || hero.querySelector(".hv")) return;
     const mk = () => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "auto"; v.setAttribute("aria-hidden", "true"); hero.insertBefore(v, hero.querySelector(".in")); return v; };

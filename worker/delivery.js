@@ -68,6 +68,13 @@ const hidden = p => String(p || "").toLowerCase().split("/").some(s => HIDDEN.in
 async function capKey(env, key, max, win) { const k = "cap:" + await sha(key), n = Number(await env.IG.get(k) || 0); if (n >= max) return true; await env.IG.put(k, String(n + 1), { expirationTtl: Math.max(60, win) }); return false; }
 /** A link from a mail asks "are you sure?" first: mail scanners open links, and an opened link must never change anything. */
 const confirmPage = (title, button, origin) => new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${title}</title><body style="margin:0;background:#08080a;color:#ebe7e0;font:16px -apple-system,Helvetica,Arial,sans-serif;display:grid;place-items:center;min-height:100vh"><form method="post" style="text-align:center;padding:24px"><p style="font-size:22px;font-weight:700;margin:0 0 22px">${title}</p><button style="font:inherit;padding:14px 26px;border-radius:99px;border:1px solid #ebe7e0;background:#ebe7e0;color:#08080a;cursor:pointer;letter-spacing:.14em;text-transform:uppercase;font-size:12px;font-weight:700">${button}</button></form></body>`, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'", "X-Frame-Options": "DENY", "Referrer-Policy": "no-referrer" } });
+/** Codes and personal links go out as designed mails like everything else (plain text only when no designer is wired in). */
+const codeMail = (designed, mailVisitor, to, code, what) => designed
+  ? designed(to, { subject: "Your code: " + code, eyebrow: "Your code", heading: code.slice(0, 3) + " " + code.slice(3), intro: `Use this code to open ${what}. It works for 10 minutes.`, note: "If you did not ask for it, you can ignore this mail." })
+  : mailVisitor && mailVisitor(to, "Your code: " + code, `Your code for ${what} is ${code}.\n\nIt works for 10 minutes. If you did not ask for it, you can ignore this mail.\n\nStevy Vergouwen`);
+const linkMail = (designed, mailVisitor, to, name, title, link, lead) => designed
+  ? designed(to, { subject: "Your link: " + title, eyebrow: "Your page", heading: name ? `${name.split(" ")[0]}, your page is ready.` : "Your page is ready.", intro: `${lead} Here is your personal link to ${title}.`, note: "Open it as often as you like, on your own devices. Please do not forward it: Stevy can send a link to anyone who needs one.", cta: { text: "Open my page", href: link } })
+  : mailVisitor && mailVisitor(to, "Your link: " + title, `Hi${name ? " " + name.split(" ")[0] : ""},\n\n${lead} Here is your personal link to ${title}:\n${link}\n\nOpen it as often as you like. Please do not forward it.\n\nStevy Vergouwen`);
 const okMail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
 const allowed = (rec, email) => (rec.allow || []).some(a => { a = String(a).toLowerCase(); return a.startsWith("@") ? email.endsWith(a) : email === a; });
 /** A personal link for one person: their own token, valid for 30 days, so a forwarded link never has to be shared. */
@@ -156,7 +163,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (!SLUG.test(slug) || !okMail(email) || !rec) return json(400, { ok: false }, origin);
     const reqd = JSON.parse(await env.IG.get("delivreq:" + slug + ":" + email) || "null") || { email, name: "" };
     const t = await giveToken(env, slug, email, reqd.name, "", rec.days || 90); await env.IG.delete("delivreq:" + slug + ":" + email);
-    if (mailVisitor) await mailVisitor(email, "Your link: " + rec.title, `Hi${reqd.name ? " " + reqd.name.split(" ")[0] : ""},\n\nHere is your personal link to ${rec.title}:\nhttps://stevyvergouwen.com/d/?c=${slug}&t=${t}\n\nYou can open it as often as you like. Please do not forward it.\n\nStevy Vergouwen`);
+    await linkMail(designed, mailVisitor, email, reqd.name, rec.title, `https://stevyvergouwen.com/d/?c=${slug}&t=${t}`, "Here you go.");
     return json(200, { ok: true }, origin);
   }
   const m = path.match(/^\/delivery\/([a-z0-9]+)(?:\/(thumb|file|zip|feedback|request|approve|review|approve-review|selection|share|live|code-request|code-verify|device-code|device-verify|artist-request|artist-verify|revoke-link))?$/);
@@ -176,7 +183,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (allowed(rec, email)) {
       const code = String(Math.floor(100000 + Math.random() * 900000));
       await env.IG.put("delivotp:" + slug + ":" + email, JSON.stringify({ h: await sha(code), tries: 0 }), { expirationTtl: 600 });
-      if (mailVisitor) await mailVisitor(email, "Your code: " + code, `Your code for ${rec.title} is ${code}.\n\nIt works for 10 minutes. If you did not ask for it, you can ignore this mail.\n\nStevy Vergouwen`);
+      await codeMail(designed, mailVisitor, email, code, rec.title);
     }
     return json(200, { ok: true }, origin);                           // the same answer for everyone: no hints about who has access
   }
@@ -196,7 +203,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     const email = String(b.email || "").toLowerCase().trim().slice(0, 120), name = String(b.name || "").slice(0, 80);
     if (!okMail(email)) return json(400, { ok: false, error: "email" }, origin);
     if (await capKey(env, "req:" + slug + ":" + email, 3, 3600)) return json(200, { ok: true, sent: false }, origin);
-    if (allowed(rec, email)) { const t = await giveToken(env, slug, email, name, "", rec.days || 90); if (mailVisitor) await mailVisitor(email, "Your link: " + rec.title, `Hi${name ? " " + name.split(" ")[0] : ""},\n\nHere is your personal link to ${rec.title}:\n${site}&t=${t}\n\nYou can open it as often as you like. Please do not forward it; Stevy can send a link to anyone who needs one.\n\nStevy Vergouwen`); return json(200, { ok: true, sent: true }, origin); }
+    if (allowed(rec, email)) { const t = await giveToken(env, slug, email, name, "", rec.days || 90); await linkMail(designed, mailVisitor, email, name, rec.title, `${site}&t=${t}`, "Good news: you are on the list."); return json(200, { ok: true, sent: true }, origin); }
     await env.IG.put("delivreq:" + slug + ":" + email, JSON.stringify({ email, name, at: Date.now() }), { expirationTtl: 30 * 86400 });
     const sig = await hmac(env.PRICE_CODE || "x", "approve:" + slug + ":" + email);
     if (notify) await notify({ subject: `Access request: ${rec.title}`, heading: "Someone wants access", intro: `${name || email} (${email}) asked for ${rec.title}${rec.client ? " (" + rec.client + ")" : ""}`, rows: [["Email", email], ["Name", name || "-"], ["Approve", `https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev/delivery/${slug}/approve?e=${encodeURIComponent(email)}&sig=${sig}`]] });
@@ -208,7 +215,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (request.method === "GET") return confirmPage("Give " + email.replace(/[<>&"]/g, "") + " access?", "Approve", origin);
     const reqd = JSON.parse(await env.IG.get("delivreq:" + slug + ":" + email) || "null") || { email, name: "" };
     const t = await giveToken(env, slug, email, reqd.name, "", rec.days || 90); await env.IG.delete("delivreq:" + slug + ":" + email);
-    if (mailVisitor) await mailVisitor(email, "Your link: " + rec.title, `Hi${reqd.name ? " " + reqd.name.split(" ")[0] : ""},\n\nStevy approved your request. Here is your personal link to ${rec.title}:\n${site}&t=${t}\n\nYou can open it as often as you like. Please do not forward it.\n\nStevy Vergouwen`);
+    await linkMail(designed, mailVisitor, email, reqd.name, rec.title, `${site}&t=${t}`, "Stevy approved your request.");
     return new Response(`Approved. ${email} has been sent a personal link.`, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
   }
   if (action === "approve-review") {                                    // from the link in Stevy's mail: show it on the website
@@ -243,7 +250,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
       if (await capKey(env, "artreq:" + ak, 5, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
       const email = String(b.email || "").toLowerCase().trim().slice(0, 120), nm = String(b.name || "").slice(0, 80).trim(); if (!okMail(email)) return json(400, { ok: false, error: "email" }, origin);
       const code = String(Math.floor(100000 + Math.random() * 900000)); await env.IG.put(ak, JSON.stringify({ h: await sha(code), email, name: nm, tries: 0 }), { expirationTtl: 600 });
-      if (mailVisitor) await mailVisitor(email, "Your code: " + code, `Your code for the clips of ${(who.scope || "").split("/").filter(x => !/^clips$/i.test(x)).pop() || rec.title} (${rec.title}) is ${code}.\n\nIt works for 10 minutes. If you did not ask for it, ignore this mail.\n\nStevy Vergouwen`);
+      await codeMail(designed, mailVisitor, email, code, `the clips of ${(who.scope || "").split("/").filter(x => !/^clips$/i.test(x)).pop() || rec.title} (${rec.title})`);
       return json(200, { ok: true }, origin);
     }
     if (await tooMany(env, request, "artver", 20, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
@@ -263,7 +270,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
       if (await tooMany(env, request, "devc", 6, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
       if (await capKey(env, "devc:" + dk, 5, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
       const code = String(Math.floor(100000 + Math.random() * 900000)); await env.IG.put(dk, JSON.stringify({ h: await sha(code), tries: 0 }), { expirationTtl: 600 });
-      if (mailVisitor && okMail(who.email)) await mailVisitor(who.email, "Your code: " + code, `Someone opened your link to ${rec.title} on a new device. Your code is ${code}.\n\nIt works for 10 minutes. If this was not you, ignore this mail and do not share the code.\n\nStevy Vergouwen`);
+      if (okMail(who.email || "")) await codeMail(designed, mailVisitor, who.email, code, `${rec.title} on a new device`);
       return json(200, { ok: true, mail: mask(who.email || "") }, origin);
     }
     if (await tooMany(env, request, "devv", 20, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
@@ -300,7 +307,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     const p = url.searchParams.get("p") || "";
     if (action === "thumb") {
       if (!inside(rec, p, who && who.scope)) return json(403, { error: "path" }, origin);
-      const sizes = ((rec.watermark && !rec.released) || rec.select) ? ["w256h256", "w640h480", "w1024h768"] : ["w256h256", "w640h480", "w1024h768", "w2048h1536"]; const size = sizes.includes(url.searchParams.get("s")) ? url.searchParams.get("s") : "w640h480";
+      const sizes = ((rec.watermark && !rec.released) || rec.select) ? ["w256h256", "w640h480"] : ["w256h256", "w640h480", "w1024h768", "w2048h1536"]; const size = sizes.includes(url.searchParams.get("s")) ? url.searchParams.get("s") : "w640h480";
       const r = await fetch("https://content.dropboxapi.com/2/files/get_thumbnail_v2", { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ resource: { ".tag": "path", path: p }, format: "jpeg", size, mode: "bestfit" }) } });
       if (!r.ok) return json(502, { error: "thumbnail" }, origin);
       return new Response(r.body, { headers: { "Content-Type": "image/jpeg", "Cache-Control": "private, max-age=86400", ...(origin ? { "Access-Control-Allow-Origin": origin } : {}) } });
@@ -368,6 +375,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
       return json(200, { ok: true, count: names.length }, origin);
     }
     if (action === "review" && request.method === "POST") {
+      if (await tooMany(env, request, "review", 6, 3600)) return json(429, { error: "slow down" }, origin);
       let b; try { b = JSON.parse((await request.text()).slice(0, 6000)); } catch { return json(400, { error: "json" }, origin); }
       const rating = Math.max(1, Math.min(5, Math.round(Number(b.rating) || 0))), text = String(b.text || "").slice(0, 1500).trim();
       if (!text || !rating) return json(400, { error: "empty" }, origin);
@@ -375,7 +383,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
       const row = { slug, id, at: new Date().toISOString(), name: String(b.name || (who && who.name) || "").slice(0, 80), company: String(b.company || rec.client || "").slice(0, 80), email: (who && who.email) || "", rating, text, publish: !!b.publish, approved: false, title: rec.title };
       await env.IG.put("delivrev:" + slug + ":" + id, JSON.stringify(row));
       const sig = await hmac(env.PRICE_CODE || "x", "review:" + slug + ":" + id);
-      if (notify) await notify({ subject: `Review: ${rec.title}`, heading: `${"★".repeat(rating)}${"☆".repeat(5 - rating)} review`, intro: `${row.name || row.email || "A client"} reviewed ${rec.title}`, rows: [["Review", text], ["Name", row.name || "-"], ["Company", row.company || "-"], ["May be shown on the website", row.publish ? "yes" : "no"], ...(row.publish ? [["Approve for the website", `https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev/delivery/${slug}/approve-review?id=${id}&sig=${sig}`]] : [])] });
+      if (notify) await notify({ subject: `Review: ${rec.title}`, heading: `${"★".repeat(rating)}${"☆".repeat(5 - rating)} review`, intro: `${row.name || row.email || "A client"} reviewed ${rec.title}`, replyTo: row.email ? [row.name || row.email, row.email] : undefined, rows: [["Review", text], ["Name", row.name || "-"], ["Company", row.company || "-"], ["Delivery", rec.title], ["Client of this delivery", rec.client || "-"], ["Signed in as", row.email || "nobody (open link)"], ["Page", who && who.scope ? "artist page: " + who.scope : "client page"], ["May be shown on the website", row.publish ? "yes" : "no"], ...(row.publish ? [["Approve for the website", `https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev/delivery/${slug}/approve-review?id=${id}&sig=${sig}`]] : [])] });
       return json(200, { ok: true }, origin);
     }
     if (action === "feedback" && request.method === "POST") {         // "Send feedback": one designed mail to Stevy with everything, one thank-you mail to the client (live comments never mail)

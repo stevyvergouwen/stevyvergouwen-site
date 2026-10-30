@@ -2,7 +2,7 @@
    Uses Cloudflare Email Routing's send_email binding: no API key, no third party.
    Setup: see worker/README.md */
 import { EmailMessage } from "cloudflare:email";
-import { handleDelivery, giveToken, deliveryStats } from "./delivery.js";
+import { handleDelivery, giveToken, deliveryStats, adminOk, hit, dbxToken } from "./delivery.js";
 import { handleUpload } from "./upload.js";
 import { handleBrief } from "./brief.js";
 
@@ -253,6 +253,18 @@ async function feedbackRun(env, dry) {
   return out;
 }
 
+/** The whole system in one look: are the pieces the delivery pages depend on still working? Runs every night, and on demand from the Projecten app. */
+async function systemCheck(env) {
+  const checks = []; const add = (name, ok, detail = "") => checks.push({ name, ok: !!ok, detail });
+  try { await env.IG.put("health:ping", String(Date.now()), { expirationTtl: 120 }); add("KV storage", (await env.IG.get("health:ping")) !== null); } catch (e) { add("KV storage", false, String(e.message || e)); }
+  try { const t = await dbxToken(env); add("Dropbox access", !!t); } catch (e) { add("Dropbox access", false, "token refresh failed: " + String(e.message || e)); }
+  try { add("Atomic counters", env.COUNTER ? !(await hit(env, "health:" + Date.now(), 5, 60)) : false, env.COUNTER ? "" : "Durable Object not bound: limits fall back to KV"); } catch (e) { add("Atomic counters", false, String(e.message || e)); }
+  add("Mail (Brevo key)", !!env.BREVO_API_KEY, env.BREVO_API_KEY ? "" : "no key: no mails go out");
+  add("Admin key", !!(env.ADMIN_KEY || env.PRICE_CODE), "");
+  add("Admin key is long", String(env.ADMIN_KEY || "").length >= 32, String(env.ADMIN_KEY || "").length >= 32 ? "" : "set a long ADMIN_KEY secret (32+ characters): PRICE_CODE is short");
+  add("Write access for uploads", !!(env.DBXW_REFRESH), env.DBXW_REFRESH ? "" : "no write-scoped Dropbox app: uploads and nothing else are affected");
+  return { ok: checks.filter(c => !c.detail.startsWith("set a long") && !c.detail.startsWith("no write")).every(c => c.ok), at: new Date().toISOString(), checks };
+}
 /** Atomic counter for rate limits and code guesses: every hit is counted one after the other, so parallel requests cannot slip past a limit. */
 export class Counter {
   constructor(state) { this.state = state; }
@@ -270,7 +282,7 @@ export default {
   async scheduled(event, env, ctx) {
     const h = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Amsterdam", hour: "2-digit", hour12: false }).format(new Date()));
     if (h !== 9) return;
-    ctx.waitUntil(Promise.all([igLoad(env), feedbackRun(env, false), deadRun(env), remindRun(env, false)]));
+    ctx.waitUntil(Promise.all([igLoad(env), feedbackRun(env, false), deadRun(env), remindRun(env, false), (async () => { try { const r = await systemCheck(env); if (!r.ok) await sendNotify(env, { subject: "System check: something needs attention", heading: "A check failed tonight", intro: "The nightly check of the delivery system found a problem.", rows: r.checks.filter(c => !c.ok).map(c => [c.name, c.detail || "failed"]) }); } catch (e) { console.error("system check:", String(e && e.message || e)); } })()]));
   },
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
@@ -306,9 +318,12 @@ export default {
       const feed = await igFeed(env);
       return new Response(JSON.stringify({ posts: feed.posts || [] }), { headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=900", ...(okOrigin ? cors(okOrigin) : { "Access-Control-Allow-Origin": "*" }) } });
     }
+    if (new URL(request.url).pathname === "/delivery-health" && request.method === "GET") {   // from the Projecten app (x-key): is everything the pages rely on working
+      if (!(await adminOk(env, request))) return reply(401, { ok: false }, okOrigin);
+      return reply(200, await systemCheck(env), okOrigin);
+    }
     if (new URL(request.url).pathname === "/delivery-mail" && request.method === "POST") {   // from the Projecten app: the designed delivery mail with a personal link (x-key)
-      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
-      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!(await adminOk(env, request))) return reply(401, { ok: false }, okOrigin);
       if (!env.BREVO_API_KEY) return reply(503, { ok: false, error: "no brevo" }, okOrigin);
       let b; try { b = JSON.parse((await request.text()).slice(0, 20000)); } catch { return reply(400, { ok: false, error: "json" }, okOrigin); }
       const to = String(b.to || "").toLowerCase().trim(), slug = String(b.slug || ""); if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to) || !/^[a-z0-9]{10,40}$/.test(slug)) return reply(400, { ok: false, error: "to or slug" }, okOrigin);
@@ -338,8 +353,7 @@ export default {
       return reply(r.ok ? 200 : 502, { ok: r.ok, preview: !!b.preview }, okOrigin);
     }
     if (new URL(request.url).pathname === "/brief-mail" && request.method === "POST") {   // from the Projecten app: the designed briefing mail for the crew, with a button to the briefing page (x-key)
-      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
-      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!(await adminOk(env, request))) return reply(401, { ok: false }, okOrigin);
       if (!env.BREVO_API_KEY) return reply(503, { ok: false, error: "no brevo" }, okOrigin);
       let b; try { b = JSON.parse((await request.text()).slice(0, 8000)); } catch { return reply(400, { ok: false, error: "json" }, okOrigin); }
       const to = String(b.to || "").toLowerCase().trim(), slug = String(b.slug || ""); if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to) || !/^[a-z0-9]{10,40}$/.test(slug)) return reply(400, { ok: false, error: "to or slug" }, okOrigin);
@@ -354,8 +368,7 @@ export default {
       return reply(r.ok ? 200 : 502, { ok: r.ok, preview: !!b.preview }, okOrigin);
     }
     if (new URL(request.url).pathname === "/feedback-queue" && request.method === "POST") {   // from ~/moneybird/feedback_queue.py: paid, sent invoices -> one feedback mail per invoice
-      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
-      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!(await adminOk(env, request))) return reply(401, { ok: false }, okOrigin);
       let q; try { q = JSON.parse((await request.text()).slice(0, 50000)); } catch { return reply(400, { ok: false, error: "json" }, okOrigin); }
       let added = 0, skipped = 0;
       for (const it of Array.isArray(q.items) ? q.items.slice(0, 200) : []) {
@@ -372,8 +385,7 @@ export default {
       return reply(200, { ok: true, added, skipped, dry: !!q.dry }, okOrigin);
     }
     if (new URL(request.url).pathname === "/sorry-send" && request.method === "POST") {   // one-off apology for the 29-10 feedback mails that greeted "None": same key as /feedback-queue, sends at once, once per address
-      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
-      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!(await adminOk(env, request))) return reply(401, { ok: false }, okOrigin);
       let q; try { q = JSON.parse((await request.text()).slice(0, 50000)); } catch { return reply(400, { ok: false, error: "json" }, okOrigin); }
       const out = { sent: 0, skipped: 0, failed: [] };
       for (const it of Array.isArray(q.items) ? q.items.slice(0, 50) : []) {
@@ -399,8 +411,7 @@ export default {
       return reply(200, { ok: true }, okOrigin);
     }
     if (new URL(request.url).pathname === "/handled" && request.method === "POST") {   // mark a client's requests as answered (stops the reminders); header x-key = price code
-      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
-      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!(await adminOk(env, request))) return reply(401, { ok: false }, okOrigin);
       let h; try { h = JSON.parse((await request.text()).slice(0, 500)); } catch { return reply(400, { ok: false }, okOrigin); }
       const key = "contact:" + String(h.email || "").toLowerCase().trim(); let rec = null; try { rec = JSON.parse(await env.IG.get(key) || "null"); } catch { rec = null; }
       if (!rec) return reply(404, { ok: false, error: "unknown" }, okOrigin);
@@ -408,13 +419,11 @@ export default {
       await env.IG.put(key, JSON.stringify(rec)); return reply(200, { ok: true }, okOrigin);
     }
     if (new URL(request.url).pathname === "/run-reminders" && request.method === "POST") {
-      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
-      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!(await adminOk(env, request))) return reply(401, { ok: false }, okOrigin);
       return reply(200, { ok: true, ...(await remindRun(env, new URL(request.url).searchParams.get("dry") === "1")) }, okOrigin);
     }
     if (new URL(request.url).pathname === "/run-feedback" && request.method === "POST") {   // manual run (header x-key = the price code); ?dry=1 only counts
-      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
-      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!(await adminOk(env, request))) return reply(401, { ok: false }, okOrigin);
       return reply(200, { ok: true, ...(await feedbackRun(env, new URL(request.url).searchParams.get("dry") === "1")) }, okOrigin);
     }
     if (request.method !== "POST") return reply(405, { ok: false, error: "method" }, okOrigin);

@@ -2,7 +2,7 @@
    Needs three secrets from a read-only Dropbox app: DBX_APP_KEY, DBX_APP_SECRET, DBX_REFRESH. Records live in the same KV (IG) under "deliv:<slug>".
    Registration reuses the existing shared key (PRICE_CODE) in the x-key header, like /feedback-queue. Setup: worker/README.md (Delivery pages). */
 const SLUG = /^[a-z0-9]{10,40}$/;
-export const json = (status, body, origin, extra = {}) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer", ...(origin ? { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "Content-Type, x-pass, x-key", "Vary": "Origin" } : {}), ...extra } });
+export const json = (status, body, origin, extra = {}) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer", ...(origin ? { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "Content-Type, x-pass, x-key, x-tok", "Vary": "Origin" } : {}), ...extra } });
 /** At most `max` tries per `win` seconds per IP and bucket; answers true when the call is over the limit. */
 export async function tooMany(env, request, bucket, max, win) {
   const ip = request.headers.get("CF-Connecting-IP") || "x", k = `rl:${bucket}:${ip}`;
@@ -41,6 +41,7 @@ async function manifest(env, rec, scope = "") {
   const photos = new Map(), videos = [], audio = [];
   for (const f of files) {
     const rel = f.path_lower.slice(root + 1); const parts = rel.split("/"); const name = f.name;
+    if (hidden("/" + rel)) continue;
     if (isPhoto(name)) {
       const tier = rec.select ? "preview" : parts.some(p => p === "highres") ? "high" : parts.some(p => p === "lowres" || p === "lowres logo") ? "low" : parts.some(p => p === "previews" || p === "highlights") ? "preview" : "";
       if (!tier) continue;
@@ -59,20 +60,28 @@ async function manifest(env, rec, scope = "") {
 const rnd = n => { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(x => "abcdefghjkmnpqrstuvwxyz23456789"[x % 31]).join(""); };
 const hmac = async (secret, msg) => { const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]); return [...new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(msg)))].map(b => b.toString(16).padStart(2, "0")).join(""); };
 const sha = async t => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(t))))].map(b => b.toString(16).padStart(2, "0")).join("");
+/** A path from the outside is only ever a plain path: no "..", no backslashes, no control characters. */
+const cleanPath = p => typeof p === "string" && p.startsWith("/") && !/[\\\x00-\x1f]/.test(p) && !p.split("/").some(s => s === ".." || s === ".") && p.length < 600;
+const HIDDEN = ["uploads", "raw video", "raw footage", "raw audio", "stacks"];
+const hidden = p => String(p || "").toLowerCase().split("/").some(s => HIDDEN.includes(s));
+/** At most `max` per `win` seconds for one key (an email, a link), answers true when over the limit. */
+async function capKey(env, key, max, win) { const k = "cap:" + await sha(key), n = Number(await env.IG.get(k) || 0); if (n >= max) return true; await env.IG.put(k, String(n + 1), { expirationTtl: Math.max(60, win) }); return false; }
+/** A link from a mail asks "are you sure?" first: mail scanners open links, and an opened link must never change anything. */
+const confirmPage = (title, button, origin) => new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${title}</title><body style="margin:0;background:#08080a;color:#ebe7e0;font:16px -apple-system,Helvetica,Arial,sans-serif;display:grid;place-items:center;min-height:100vh"><form method="post" style="text-align:center;padding:24px"><p style="font-size:22px;font-weight:700;margin:0 0 22px">${title}</p><button style="font:inherit;padding:14px 26px;border-radius:99px;border:1px solid #ebe7e0;background:#ebe7e0;color:#08080a;cursor:pointer;letter-spacing:.14em;text-transform:uppercase;font-size:12px;font-weight:700">${button}</button></form></body>`, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'", "X-Frame-Options": "DENY", "Referrer-Policy": "no-referrer" } });
 const okMail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
 const allowed = (rec, email) => (rec.allow || []).some(a => { a = String(a).toLowerCase(); return a.startsWith("@") ? email.endsWith(a) : email === a; });
 /** A personal link for one person: their own token, valid for 30 days, so a forwarded link never has to be shared. */
 export async function giveToken(env, slug, email, name, scope = "", days = 90, dev = "", link = false) {
   const t = rnd(24), exp = Date.now() + Math.max(1, days) * 86400000; await env.IG.put("delivtok:" + await sha(t), JSON.stringify({ slug, email, name, scope: String(scope || "").replace(/^\/+|\/+$/g, "").slice(0, 200), at: Date.now(), exp, devs: /^[a-z0-9]{10,40}$/.test(dev) ? [dev] : [], ...(link ? { link: true } : {}) }), { expirationTtl: Math.round(days * 86400) }); return t;
 }
-const inside = (rec, p, scope = "") => p && p.toLowerCase().startsWith((rec.path + (scope ? "/" + scope : "")).toLowerCase() + "/");
+const inside = (rec, p, scope = "") => cleanPath(p) && !hidden(p.slice(rec.path.length)) && p.toLowerCase().startsWith((rec.path + (scope ? "/" + scope : "")).toLowerCase() + "/");
 
 export async function handleDelivery(request, env, url, origin, notify, mailVisitor, designed) {
   const path = url.pathname;
   if (path === "/delivery-register" && request.method === "POST") {      // from the Projecten app: slug -> Dropbox folder
     if (!env.PRICE_CODE || !same(request.headers.get("x-key"), env.PRICE_CODE)) return json(401, { ok: false }, origin);
     let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
-    const slug = String(b.slug || ""); if (!SLUG.test(slug) || !String(b.path || "").startsWith("/")) return json(400, { ok: false, error: "slug or path" }, origin);
+    const slug = String(b.slug || ""); if (!SLUG.test(slug) || !cleanPath(String(b.path || "")) || String(b.path).split("/").filter(Boolean).length < 2) return json(400, { ok: false, error: "slug or path" }, origin);
     const rec = { share: b.share !== false, select: Number(b.select) > 0 ? { limit: Math.min(2000, Math.round(Number(b.select))), extra: Number(b.extra) > 0 ? Math.round(Math.min(5000, Number(b.extra)) * 100) / 100 : 0 } : null, scopes: (b.scopes && typeof b.scopes === "object") ? Object.fromEntries(Object.entries(b.scopes).slice(0, 80).map(([k, v]) => [String(k).toLowerCase(), String(v).slice(0, 200)])) : {}, days: Math.max(7, Math.min(3650, Math.round(Number(b.days) || 90))), layout: ["masonry", "grid", "large"].includes(b.layout) ? b.layout : "masonry", mode: ["open", "code", "email"].includes(b.mode) ? b.mode : "email", allow: (Array.isArray(b.allow) ? b.allow : []).map(x => String(x).toLowerCase().trim()).filter(Boolean).slice(0, 60), path: String(b.path).replace(/\/+$/, ""), title: String(b.title || "").slice(0, 120), location: String(b.location || "").slice(0, 160), end: /^\d{1,2}[:.]\d{2}$/.test(String(b.end || "")) ? String(b.end).replace(".", ":") : "", dropbox: /^https:\/\/(www\.)?dropbox\.com\//.test(String(b.dropbox || "")) ? String(b.dropbox).slice(0, 300) : "", lineup: (Array.isArray(b.lineup) ? b.lineup : []).slice(0, 60).map(x => ({ t: String(x.t || "").slice(0, 12), n: String(x.n || "").replace(/\bb2b\b/gi, "B2B").slice(0, 80) })).filter(x => x.n), client: String(b.client || "").slice(0, 80), date: String(b.date || "").slice(0, 10), note: String(b.note || "").slice(0, 600), pass: String(b.pass || "").slice(0, 60), exp: Number(b.exp) || 0 };
     await env.IG.put("deliv:" + slug, JSON.stringify(rec));
     return json(200, { ok: true }, origin);
@@ -150,9 +159,9 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (mailVisitor) await mailVisitor(email, "Your link: " + rec.title, `Hi${reqd.name ? " " + reqd.name.split(" ")[0] : ""},\n\nHere is your personal link to ${rec.title}:\nhttps://stevyvergouwen.com/d/?c=${slug}&t=${t}\n\nYou can open it as often as you like. Please do not forward it.\n\nStevy Vergouwen`);
     return json(200, { ok: true }, origin);
   }
-  const m = path.match(/^\/delivery\/([a-z0-9]+)(?:\/(thumb|file|zip|feedback|request|approve|review|approve-review|selection|code-request|code-verify|device-code|device-verify|artist-request|artist-verify|revoke-link))?$/);
+  const m = path.match(/^\/delivery\/([a-z0-9]+)(?:\/(thumb|file|zip|feedback|request|approve|review|approve-review|selection|share|live|code-request|code-verify|device-code|device-verify|artist-request|artist-verify|revoke-link))?$/);
   if (!m) return null;
-  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin || "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, x-pass, x-key", "Access-Control-Max-Age": "86400" } });
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin, "Vary": "Origin", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, x-pass, x-key, x-tok", "Access-Control-Max-Age": "86400" } });
   const [, slug, action] = m;
   if (!SLUG.test(slug)) return json(404, { error: "not found" }, origin);
   let rec; try { rec = JSON.parse(await env.IG.get("deliv:" + slug) || "null"); } catch { rec = null; }
@@ -163,6 +172,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (await tooMany(env, request, "otp", 8, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
     let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
     const email = String(b.email || "").toLowerCase().trim().slice(0, 120); if (!okMail(email)) return json(400, { ok: false, error: "email" }, origin);
+    if (await capKey(env, "otp:" + slug + ":" + email, 4, 3600)) return json(200, { ok: true }, origin);   // an inbox is never flooded with codes
     if (allowed(rec, email)) {
       const code = String(Math.floor(100000 + Math.random() * 900000));
       await env.IG.put("delivotp:" + slug + ":" + email, JSON.stringify({ h: await sha(code), tries: 0 }), { expirationTtl: 600 });
@@ -185,6 +195,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
     const email = String(b.email || "").toLowerCase().trim().slice(0, 120), name = String(b.name || "").slice(0, 80);
     if (!okMail(email)) return json(400, { ok: false, error: "email" }, origin);
+    if (await capKey(env, "req:" + slug + ":" + email, 3, 3600)) return json(200, { ok: true, sent: false }, origin);
     if (allowed(rec, email)) { const t = await giveToken(env, slug, email, name, "", rec.days || 90); if (mailVisitor) await mailVisitor(email, "Your link: " + rec.title, `Hi${name ? " " + name.split(" ")[0] : ""},\n\nHere is your personal link to ${rec.title}:\n${site}&t=${t}\n\nYou can open it as often as you like. Please do not forward it; Stevy can send a link to anyone who needs one.\n\nStevy Vergouwen`); return json(200, { ok: true, sent: true }, origin); }
     await env.IG.put("delivreq:" + slug + ":" + email, JSON.stringify({ email, name, at: Date.now() }), { expirationTtl: 30 * 86400 });
     const sig = await hmac(env.PRICE_CODE || "x", "approve:" + slug + ":" + email);
@@ -194,6 +205,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
   if (action === "approve") {                                           // from the link in Stevy's mail
     const email = (url.searchParams.get("e") || "").toLowerCase(), sig = url.searchParams.get("sig") || "";
     if (!okMail(email) || !same(sig, await hmac(env.PRICE_CODE || "x", "approve:" + slug + ":" + email))) return new Response("Invalid link", { status: 403 });
+    if (request.method === "GET") return confirmPage("Give " + email.replace(/[<>&"]/g, "") + " access?", "Approve", origin);
     const reqd = JSON.parse(await env.IG.get("delivreq:" + slug + ":" + email) || "null") || { email, name: "" };
     const t = await giveToken(env, slug, email, reqd.name, "", rec.days || 90); await env.IG.delete("delivreq:" + slug + ":" + email);
     if (mailVisitor) await mailVisitor(email, "Your link: " + rec.title, `Hi${reqd.name ? " " + reqd.name.split(" ")[0] : ""},\n\nStevy approved your request. Here is your personal link to ${rec.title}:\n${site}&t=${t}\n\nYou can open it as often as you like. Please do not forward it.\n\nStevy Vergouwen`);
@@ -202,6 +214,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
   if (action === "approve-review") {                                    // from the link in Stevy's mail: show it on the website
     const id = (url.searchParams.get("id") || "").replace(/\D/g, ""), sig = url.searchParams.get("sig") || "";
     if (!id || !same(sig, await hmac(env.PRICE_CODE || "x", "review:" + slug + ":" + id))) return new Response("Invalid link", { status: 403 });
+    if (request.method === "GET") return confirmPage("Show this review on the website?", "Show it", origin);
     const key = "delivrev:" + slug + ":" + id; const r = JSON.parse(await env.IG.get(key) || "null");
     if (!r) return new Response("Not found", { status: 404 });
     r.approved = true; await env.IG.put(key, JSON.stringify(r));
@@ -210,6 +223,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
   if (action === "revoke-link") {                                       // from the link in Stevy's mail: switch one artist link off
     const th = (url.searchParams.get("h") || "").replace(/[^a-f0-9]/g, ""), sig = url.searchParams.get("sig") || "";
     if (!th || !same(sig, await hmac(env.PRICE_CODE || "x", "revoke:" + slug + ":" + th))) return new Response("Invalid link", { status: 403 });
+    if (request.method === "GET") return confirmPage("Switch this artist link off?", "Switch off", origin);
     await env.IG.delete("delivtok:" + th);
     return new Response("Switched off. That artist link no longer opens.", { headers: { "Content-Type": "text/plain; charset=utf-8" } });
   }
@@ -217,8 +231,8 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
   const pass = request.headers.get("x-pass") || url.searchParams.get("k") || "", tok = request.headers.get("x-tok") || url.searchParams.get("t") || "";
   let who = null;
   if (tok) { try { const t = JSON.parse(await env.IG.get("delivtok:" + await sha(tok)) || "null"); if (t && t.slug === slug) who = t; } catch { /* ignore */ } }
+  if (who && who.exp && who.exp < Date.now()) who = null;                // a link has its own end date (checked before it can be renewed)
   if (who && who.seenDay !== new Date().toISOString().slice(0, 10)) { try { const span = (who.link || who.scope ? 60 : (rec.days || 90)) * 86400000, born = who.born || who.at || Date.now(); who.seenDay = new Date().toISOString().slice(0, 10); who.born = born; who.exp = Math.min(Date.now() + span, born + 365 * 86400000); await env.IG.put("delivtok:" + await sha(tok), JSON.stringify(who), { expirationTtl: Math.max(60, Math.round((who.exp - Date.now()) / 1000)) }); } catch { /* ignore */ } }   // coming back keeps the link alive: it only ends after a quiet spell (or a year)
-  if (who && who.exp && who.exp < Date.now()) who = null;                // a link has its own end date
   const mode = rec.mode || (rec.pass ? "code" : "email");
   const dev = /^[a-z0-9]{10,40}$/.test(url.searchParams.get("d") || "") ? url.searchParams.get("d") : "";
   const mask = e => e.replace(/^(.).*(@.*)$/, "$1***$2");
@@ -226,6 +240,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     const ak = "artotp:" + await sha(tok); let b; try { b = JSON.parse((await request.text()).slice(0, 1000)); } catch { return json(400, { ok: false }, origin); }
     if (action === "artist-request") {
       if (await tooMany(env, request, "artreq", 6, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
+      if (await capKey(env, "artreq:" + ak, 5, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
       const email = String(b.email || "").toLowerCase().trim().slice(0, 120), nm = String(b.name || "").slice(0, 80).trim(); if (!okMail(email)) return json(400, { ok: false, error: "email" }, origin);
       const code = String(Math.floor(100000 + Math.random() * 900000)); await env.IG.put(ak, JSON.stringify({ h: await sha(code), email, name: nm, tries: 0 }), { expirationTtl: 600 });
       if (mailVisitor) await mailVisitor(email, "Your code: " + code, `Your code for the clips of ${(who.scope || "").split("/").filter(x => !/^clips$/i.test(x)).pop() || rec.title} (${rec.title}) is ${code}.\n\nIt works for 10 minutes. If you did not ask for it, ignore this mail.\n\nStevy Vergouwen`);
@@ -241,11 +256,12 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (notify) await notify({ subject: `Artist in: ${artist} (${rec.title})`, heading: "An artist opened their page", intro: `${o.name || o.email} (${o.email}) signed in to the clips of ${artist} on ${rec.title}. The link now belongs to that address.`, rows: [["Email", o.email], ["Folder", who.scope]], cta: { text: "Switch this link off", href: `https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev/delivery/${slug}/revoke-link?h=${th}&sig=${await hmac(env.PRICE_CODE || "x", "revoke:" + slug + ":" + th)}` } });
     return json(200, { ok: true }, origin);
   }
-  if (who && who.link && !who.email) return json(401, { error: "artist", title: rec.title, client: rec.client, artist: (who.scope || "").split("/").filter(x => !/^clips$/i.test(x)).pop() || "" }, origin);
+  if (who && who.link && !who.email) return json(401, { error: "artist", title: rec.title, artist: (who.scope || "").split("/").filter(x => !/^clips$/i.test(x)).pop() || "" }, origin);
   if (who && (action === "device-code" || action === "device-verify") && request.method === "POST") {   // a new device must prove it can read the mail of this link
     const dk = "devotp:" + await sha(tok);
     if (action === "device-code") {
       if (await tooMany(env, request, "devc", 6, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
+      if (await capKey(env, "devc:" + dk, 5, 3600)) return json(429, { ok: false, error: "slow down" }, origin);
       const code = String(Math.floor(100000 + Math.random() * 900000)); await env.IG.put(dk, JSON.stringify({ h: await sha(code), tries: 0 }), { expirationTtl: 600 });
       if (mailVisitor && okMail(who.email)) await mailVisitor(who.email, "Your code: " + code, `Someone opened your link to ${rec.title} on a new device. Your code is ${code}.\n\nIt works for 10 minutes. If this was not you, ignore this mail and do not share the code.\n\nStevy Vergouwen`);
       return json(200, { ok: true, mail: mask(who.email || "") }, origin);
@@ -263,11 +279,11 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
   }
   if (who && mode !== "open" && okMail(who.email || "")) {
     if (!(who.devs || []).length && dev && !who.needCode) { who.devs = [dev]; try { await env.IG.put("delivtok:" + await sha(tok), JSON.stringify(who), { expirationTtl: Math.max(60, Math.round(((who.exp || Date.now() + 90 * 86400000) - Date.now()) / 1000)) }); } catch { /* ignore */ } }   // the first device to open a fresh link is the recipient's
-    else if (!dev || !(who.devs || []).includes(dev)) return json(401, { error: "device", mail: mask(who.email), title: rec.title, client: rec.client }, origin);
+    else if (!dev || !(who.devs || []).includes(dev)) return json(401, { error: "device", mail: mask(who.email), title: rec.title }, origin);
   }
   const ok = mode === "open" || !!who || (rec.pass && same(pass, rec.pass));
   if (!ok) { if (pass || tok) { if (await tooMany(env, request, "bad", 30, 3600)) return json(429, { error: "slow down" }, origin); } }
-  if (!ok) return json(401, { error: "access", title: rec.title, client: rec.client, code: !!rec.pass, request: mode === "email" }, origin);
+  if (!ok) return json(401, { error: "access", title: rec.title, code: !!rec.pass, request: mode === "email" }, origin);
   if (who && (action === "zip" || action === "file")) {                  // unusual use: many zips in a day, or the same link from several countries -> one mail to Stevy
     try {
       const uk = "use:" + await sha(tok) + ":" + new Date().toISOString().slice(0, 10), country = (request.cf && request.cf.country) || "";
@@ -292,7 +308,8 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (action === "share" && request.method === "POST") {              // the client copies a link for one artist: that page shows only the artist's own clips and audio
       if (!rec.share) return json(403, { error: "sharing is off" }, origin);
       if (who && who.scope) return json(403, { error: "not allowed" }, origin);
-      if (await tooMany(env, request, "share", 20, 3600)) return json(429, { error: "slow down" }, origin);
+      if (await tooMany(env, request, "share", 80, 3600)) return json(429, { error: "slow down" }, origin);
+      if (await capKey(env, "share:" + tok, 80, 86400) || await capKey(env, "sharedel:" + slug, 240, 86400)) return json(429, { error: "slow down" }, origin);   // a link cannot be used to mail the world
       let b; try { b = JSON.parse((await request.text()).slice(0, 2000)); } catch { return json(400, { error: "json" }, origin); }
       const sub = String(b.scope || "").replace(/[^\p{L}\p{N} _\-|.&\/]/gu, "").split("/").filter(x => x && x !== "." && x !== "..").join("/").slice(0, 200);
       if (!sub) return json(400, { error: "folder" }, origin);
@@ -334,10 +351,11 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     }
     if (action === "zip") {
       const sub = (url.searchParams.get("sub") || "").replace(/[^\p{L}\p{N} _\-|.&\/]/gu, "").split("/").filter(x => x && x !== "." && x !== "..").join("/");
+      if ((!sub && !(who && who.scope)) || hidden("/" + sub)) return json(403, { error: "path" }, origin);
       const folder = sub ? rec.path + "/" + (who && who.scope ? who.scope + "/" : "") + sub : rec.path + (who && who.scope ? "/" + who.scope : "");
       const r = await fetch("https://content.dropboxapi.com/2/files/download_zip", { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ path: folder }) } });
       if (!r.ok) return json(502, { error: "zip" }, origin);
-      return new Response(r.body, { headers: { "Content-Type": "application/zip", "Content-Disposition": `attachment; filename="${(rec.title || "delivery").replace(/[^A-Za-z0-9 _-]/g, "")}.zip"` } });
+      return new Response(r.body, { headers: { "X-Content-Type-Options": "nosniff", "Content-Type": "application/zip", "Content-Disposition": `attachment; filename="${(rec.title || "delivery").replace(/[^A-Za-z0-9 _-]/g, "")}.zip"` } });
     }
     if (action === "selection" && request.method === "POST") {           // the client's picks, up to the limit
       if (!rec.select) return json(400, { error: "no selection" }, origin);

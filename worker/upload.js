@@ -1,10 +1,11 @@
 /* Upload pages: /upload/<slug>... lets people who shot for Stevy upload footage (whole folders, camera angles, recordings) straight into his Dropbox.
    Chunks of 8 MB go through this Worker into a Dropbox upload session, so a flaky connection only repeats one chunk and an interrupted upload can resume.
    Needs a SECOND, write-scoped Dropbox app (files.content.write): secrets DBXW_APP_KEY, DBXW_APP_SECRET, DBXW_REFRESH. Registration: POST /upload-register with x-key = PRICE_CODE. */
-import { dbxToken, json, same } from "./delivery.js";
+import { dbxToken, json, same, tooMany } from "./delivery.js";
 const SLUG = /^[a-z0-9]{10,40}$/;
 const clean = (t, n = 80) => String(t || "").replace(/[\\:*?"<>|\x00-\x1f]/g, "").replace(/\.\.+/g, ".").trim().slice(0, n);
 const relOk = r => String(r || "").split("/").map(x => clean(x, 120)).filter(x => x && x !== ".").join("/").slice(0, 400);
+const RISKY = /\.(exe|bat|cmd|com|scr|msi|dll|js|mjs|jar|vbs|ps1|sh|app|dmg|pkg|html?|svg|php|command|scpt)$/i;   // nothing that runs or renders may land in Stevy's Dropbox
 const content = async (env, endpoint, arg, body) => fetch("https://content.dropboxapi.com/2/files/" + endpoint, { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env, true), "Dropbox-API-Arg": JSON.stringify(arg), "Content-Type": "application/octet-stream" }, body });
 
 export async function handleUpload(request, env, url, origin, notify) {
@@ -18,7 +19,7 @@ export async function handleUpload(request, env, url, origin, notify) {
   }
   const m = path.match(/^\/upload\/([a-z0-9]+)(?:\/(start|chunk|finish|done))?$/);
   if (!m) return null;
-  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin || "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, x-pass", "Access-Control-Max-Age": "86400" } });
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin, "Vary": "Origin", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, x-pass", "Access-Control-Max-Age": "86400" } });
   const [, slug, action] = m; if (!SLUG.test(slug)) return json(404, { error: "not found" }, origin);
   let rec; try { rec = JSON.parse(await env.IG.get("upl:" + slug) || "null"); } catch { rec = null; }
   if (!rec) return json(404, { error: "not found" }, origin);
@@ -29,11 +30,15 @@ export async function handleUpload(request, env, url, origin, notify) {
     if (!action) return json(200, { title: rec.title }, origin);
     if (request.method !== "POST") return json(405, { error: "method" }, origin);
     if (action === "start") {
+      if (await tooMany(env, request, "upstart", 300, 3600)) return json(429, { error: "slow down" }, origin);
+      if (RISKY.test(String(url.searchParams.get("rel") || ""))) return json(415, { error: "type" }, origin);
       const r = await content(env, "upload_session/start", { close: false }, new Uint8Array(0)); if (!r.ok) return json(502, { error: "start" }, origin);
       return json(200, { sid: (await r.json()).session_id, dest: dest(url.searchParams.get("who"), url.searchParams.get("rel")) }, origin);
     }
     const sid = String(url.searchParams.get("sid") || "").slice(0, 80), off = Number(url.searchParams.get("off")) || 0;
     if (action === "chunk") {
+      if (await tooMany(env, request, "upchunk", 4000, 3600)) return json(429, { error: "slow down" }, origin);
+      if (off > 60 * 1024 * 1024 * 1024) return json(413, { error: "too big" }, origin);
       const body = await request.arrayBuffer(); if (body.byteLength > 16 * 1024 * 1024) return json(413, { error: "chunk too big" }, origin);
       const r = await content(env, "upload_session/append_v2", { cursor: { session_id: sid, offset: off }, close: false }, body);
       if (r.status === 409) { const e = await r.json().catch(() => ({})); const c = e && e.error && e.error.correct_offset; if (typeof c === "number") return json(409, { offset: c }, origin); return json(409, { error: "conflict" }, origin); }
@@ -41,7 +46,7 @@ export async function handleUpload(request, env, url, origin, notify) {
       return json(200, { offset: off + body.byteLength }, origin);
     }
     if (action === "finish") {
-      const to = String(url.searchParams.get("dest") || ""); if (!to.startsWith(rec.path + "/UPLOADS/")) return json(403, { error: "path" }, origin);
+      const to = String(url.searchParams.get("dest") || ""); if (!to.startsWith(rec.path + "/UPLOADS/") || to.split("/").some(s => s === ".." || s === ".") || /[\\\x00-\x1f]/.test(to) || RISKY.test(to) || to.length > 700) return json(403, { error: "path" }, origin);
       const r = await content(env, "upload_session/finish", { cursor: { session_id: sid, offset: off }, commit: { path: to, mode: "add", autorename: true, mute: true } }, new Uint8Array(0));
       if (!r.ok) return json(502, { error: "finish" }, origin);
       return json(200, { ok: true }, origin);

@@ -171,6 +171,7 @@ async function saveContact(env, c) {
 }
 // the mail Stevy receives: through Brevo to his own inbox (Email Routing is not used: his mail lives at iCloud). Falls back to Email Routing without a Brevo key.
 async function sendNotify(env, { replyTo, subject, heading, intro, rows, cta: ctaOverride }) {
+  subject = String(subject || "").replace(/[\r\n]+/g, " ").slice(0, 200);
   const { text, html } = mailParts({ heading, eyebrow: "New", intro, rows, sign: false, cta: ctaOverride ? ctaOverride : replyTo ? { text: "Reply to " + (String(replyTo[0]).split(" ")[0] || "them"), href: "mailto:" + replyTo[1] + "?subject=" + encodeURIComponent("Re: " + (subject || "your request")) } : null });
   const to = env.MAIL_TO || "info@stevyvergouwen.com";
   if (env.BREVO_API_KEY) {
@@ -261,9 +262,9 @@ export default {
     const origin = request.headers.get("Origin") || "";
     const okOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
 
-    const dRes = await handleDelivery(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a), (to, subject, text) => brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], subject, textContent: text }, "delivery"), async (to, m) => { const { text, html } = mailParts({ heading: m.heading, eyebrow: m.eyebrow, intro: m.intro, rows: [], note: m.note, cta: m.cta, sign: true, lang: "en" }); return brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: m.subject, htmlContent: html, textContent: text }, "artist page"); }); if (dRes) return dRes;
-    const bRes = await handleBrief(request, env, new URL(request.url), okOrigin || "*"); if (bRes) return bRes;
-    const uRes = await handleUpload(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a)); if (uRes) return uRes;
+    const dRes = await handleDelivery(request, env, new URL(request.url), okOrigin, a => sendNotify(env, a), (to, subject, text) => brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], subject, textContent: text }, "delivery"), async (to, m) => { const { text, html } = mailParts({ heading: m.heading, eyebrow: m.eyebrow, intro: m.intro, rows: [], note: m.note, cta: m.cta, sign: true, lang: "en" }); return brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: m.subject, htmlContent: html, textContent: text }, "artist page"); }); if (dRes) return dRes;
+    const bRes = await handleBrief(request, env, new URL(request.url), okOrigin); if (bRes) return bRes;
+    const uRes = await handleUpload(request, env, new URL(request.url), okOrigin, a => sendNotify(env, a)); if (uRes) return uRes;
     if (request.method === "OPTIONS") return new Response(null, { status: okOrigin ? 204 : 403, headers: okOrigin ? cors(okOrigin) : {} });
     if (request.method === "GET" && new URL(request.url).pathname === "/dl") {   // download for a personal link: 7 days, 5 downloads
       const t = new URL(request.url).searchParams.get("t") || "";

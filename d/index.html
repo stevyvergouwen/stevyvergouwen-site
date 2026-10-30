@@ -267,7 +267,8 @@ const url = (a, p = {}) => demo ? p.demo : `${ENDPOINT}/delivery/${slug}${a ? "/
 let M = null; const fav = new Set(JSON.parse(localStorage.getItem("fv:" + slug) || "[]")); const comments = []; let cur = 0;
 const save = () => { try { localStorage.setItem("fv:" + slug, JSON.stringify([...fav])); } catch {} };
 const thumb = (p, s) => demo ? p : url("thumb", { q: { p, s } });
-const file = p => demo ? p : url("file", { q: { p, dl: 1 } });
+const file = p => demo ? p : url("file", { q: { p, dl: 1 } });   // a download
+const stream = p => demo ? p : url("file", { q: { p } });   // watching or listening: never counted as a download
 const mmss = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
 async function load(pass) {
@@ -363,7 +364,7 @@ function wireVideo() {
   document.querySelectorAll(".vid").forEach(el => {
     const v = M.videos[el.dataset.v], th = el.querySelector(".vth"), f = el.querySelector("form"), cl = el.querySelector(".cl"); let vid = th.querySelector("video.pv");
     io.observe(th);
-    const play = () => { if (th.classList.contains("playing")) return; th.classList.add("playing", "ready"); if (!vid.src) vid.src = file(v.path); vid.muted = false; vid.controls = true; vid.currentTime = 0; vid.play().catch(() => {}); th.style.cursor = "default"; };
+    const play = () => { if (th.classList.contains("playing")) return; th.classList.add("playing", "ready"); if (!vid.src) vid.src = stream(v.path); vid.muted = false; vid.controls = true; vid.currentTime = 0; vid.play().catch(() => {}); th.style.cursor = "default"; };
     th.addEventListener("click", play);
     if (matchMedia("(hover:hover)").matches) { th.addEventListener("mouseenter", () => { if (th.classList.contains("playing") || !th.classList.contains("ready")) return; vid.muted = true; vid.currentTime = 0.6; vid.play().catch(() => {}); }); th.addEventListener("mouseleave", () => { if (th.classList.contains("playing")) return; vid.pause(); vid.currentTime = 0.6; }); }
     if (!f) return;
@@ -426,11 +427,12 @@ function heroVideo() {
       const by = {}; V.forEach(v => { const x = vinfo(v); if (x.fmt === want && v.size && v.size < 160e6 && x.res !== "4K") { (by[x.artist] = by[x.artist] || []).push(v); } });
       list = Object.values(by).map(a => a.sort((p, q) => p.size - q.size)[0]).sort(() => Math.random() - .5).slice(0, 5);
     }
+    if (!list.length && M.scope) { const own = V.filter(v => vinfo(v).fmt === want && v.size && vinfo(v).res !== "4K").sort((p, q) => p.size - q.size); list = own.filter(v => v.size < 400e6).slice(0, 3); }   // an artist page: their own clips, even if a bit larger
     if (!list.length) return;
     const hero = document.querySelector(".hero"); if (!hero || hero.querySelector(".hv")) return;
     const mk = () => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "auto"; v.setAttribute("aria-hidden", "true"); hero.insertBefore(v, hero.querySelector(".in")); return v; };
     const vs = [mk(), mk()]; let cur = 0, n = 0, timer = null;
-    const show = (v, clip) => new Promise(res => { v.loop = list.length === 1; v.addEventListener("canplay", () => res(true), { once: true }); v.addEventListener("error", () => res(false), { once: true }); v.src = file(clip.path) + "#t=0.5"; });
+    const show = (v, clip) => new Promise(res => { v.loop = list.length === 1; v.addEventListener("canplay", () => res(true), { once: true }); v.addEventListener("error", () => res(false), { once: true }); v.src = stream(clip.path) + "#t=0.5"; });
     const next = async () => {
       const v = vs[cur], other = vs[1 - cur], clip = list[n % list.length]; n++;
       const ok = await show(v, clip); if (!ok) { if (n < list.length * 2) return next(); return; }
@@ -686,7 +688,7 @@ function render() {
   { const a = albums().filter(x => x.slug !== slug); a.unshift({ slug, title: M.title, client: M.client || "", at: Date.now() }); put2("sv-albums", JSON.stringify(a.slice(0, 20))); }
   const P = M.photos, V = M.videos; $("#barr").textContent = M.client || "Delivery";
   const date = M.date ? new Date(M.date + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
-  app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc((artistName() ? [M.title, date] : [M.client ? "For " + M.client : "", date]).filter(Boolean).join(" · "))}</div><h1>${esc(artistName() || M.title)}</h1><p class="sub">${esc(deliveredLine())}<span>${esc(deliveredCounts())}</span></p>${M.locked && !M.select ? `<p class="lockn">Preview with watermark. The final files are released after approval.</p>` : ""}${artistName() ? `<p class="note">Thanks for playing at ${esc(M.title)}. Your clips and audio are below, in every format.</p>` : M.note ? `<p class="note">${esc(M.note)}</p>` : ""}${M.location ? `<p class="loc"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5.5 12S10 8 10 5a4.5 4.5 0 10-9 0c0 3 4.5 7 4.5 7z"/><circle cx="5.5" cy="5" r="1.6"/></svg>${esc(M.location)}</p>` : ""}<div class="acts">${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
+  app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc((artistName() ? [M.title, date] : [M.client ? "For " + M.client : "", date]).filter(Boolean).join(" · "))}</div><h1>${esc(artistName() || M.title)}</h1><p class="sub">${esc(deliveredLine())}<span>${esc(deliveredCounts())}</span></p>${M.locked && !M.select ? `<p class="lockn">Preview with watermark. The final files are released after approval.</p>` : ""}${artistName() ? `<p class="note">Thanks for playing at ${esc(M.title)}. Your clips and audio are below.</p>` : M.note ? `<p class="note">${esc(M.note)}</p>` : ""}${M.location ? `<p class="loc"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5.5 12S10 8 10 5a4.5 4.5 0 10-9 0c0 3 4.5 7 4.5 7z"/><circle cx="5.5" cy="5" r="1.6"/></svg>${esc(M.location)}</p>` : ""}<div class="acts">${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
   <main><div class="tabs">${P.length ? `<button class="on" data-t="p">Photos · ${P.length}</button>` : ""}${V.length ? `<button class="${P.length ? "" : "on"}" data-t="v">Video · ${V.length}</button>` : ""}<span class="sp"></span><button id="theme" class="tg" type="button" aria-label="Switch between dark and light" title="Dark / light"><i></i></button></div>
   ${P.length ? `<section class="sec" id="sp"><h2>Photos</h2><div class="view" id="view"><span class="lab">View</span><button data-l="masonry">Masonry</button><button data-l="cells">Grid</button><button data-l="large">Large</button><button id="slide">Slideshow</button><button id="drift">Drift</button><span class="lab" style="margin-left:10px">Size</span><input id="sz" type="range" min="160" max="480" step="10" aria-label="Size"></div><div class="grid" id="grid">${P.map((p, i) => `<figure class="ph" data-i="${i}"><img data-src="${thumb(p.thumb, "w640h480")}" alt="${esc(p.name)}"><div class="tools"><button class="ic heart" data-h="${i}" aria-label="Favourite">♡</button>${M.select ? "" : `<a class="ic" href="${file(p.high || p.low || p.thumb)}" aria-label="Download" data-dl><button class="ic" type="button">↓</button></a>`}</div></figure>`).join("")}</div></section>` : ""}
   ${V.length ? videoHtml(V) : ""}<div class="rv"><p><b style="color:var(--paper)">Happy with the work?</b><br>A short review means a lot, and with your OK it can appear on stevyvergouwen.com.</p><button id="rvb">Leave a review</button></div></main>

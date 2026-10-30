@@ -47,7 +47,7 @@ async function manifest(env, rec, scope = "") {
       if (tier === "high") p.high = f.path_display; else if (tier === "low" && !/logo/.test(rel)) p.low = f.path_display; else if (tier === "preview") p.preview = f.path_display;
       photos.set(key, p);
     } else if (isVideo(name) && !parts.some(p => ["stacks", "audio", "raw video", "raw footage"].includes(p))) {
-      videos.push({ id: f.id, name, path: f.path_display, size: f.size, group: parts.slice(0, -1).filter(p => !/^\d+x\d+$/.test(p)).join(" / ") });
+      videos.push({ id: f.id, name, path: f.path_display, size: f.size, group: f.path_display.slice(rec.path.length + 1).split("/").slice(0, -1).filter(p => !/^\d+x\d+$/i.test(p)).join(" / ") });
     }
   }
   const list = [...photos.values()].filter(p => p.high || p.low || p.preview).map(p => ({ id: p.id, name: p.name, thumb: p.low || p.preview || p.high, high: p.high || null, low: p.low || null })).sort((a, b) => a.name.localeCompare(b.name));
@@ -211,7 +211,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
       return Response.redirect(j.link, 302);
     }
     if (action === "zip") {
-      const sub = (url.searchParams.get("sub") || "").replace(/[^A-Za-z0-9 _\-|.&]/g, "");
+      const sub = (url.searchParams.get("sub") || "").replace(/[^\p{L}\p{N} _\-|.&\/]/gu, "").split("/").filter(x => x && x !== "." && x !== "..").join("/");
       const folder = sub ? rec.path + "/" + (who && who.scope ? who.scope + "/" : "") + sub : rec.path + (who && who.scope ? "/" + who.scope : "");
       const r = await fetch("https://content.dropboxapi.com/2/files/download_zip", { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ path: folder }) } });
       if (!r.ok) return json(502, { error: "zip" }, origin);

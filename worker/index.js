@@ -4,6 +4,7 @@
 import { EmailMessage } from "cloudflare:email";
 import { handleDelivery, giveToken } from "./delivery.js";
 import { handleUpload } from "./upload.js";
+import { handleBrief } from "./brief.js";
 
 const ALLOWED_ORIGINS = ["https://stevyvergouwen.com", "https://www.stevyvergouwen.com"];
 const FROM = "aanvraag@stevyvergouwen.com";     // must be an address on a domain with Email Routing
@@ -261,6 +262,7 @@ export default {
     const okOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
 
     const dRes = await handleDelivery(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a), (to, subject, text) => brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], subject, textContent: text }, "delivery")); if (dRes) return dRes;
+    const bRes = await handleBrief(request, env, new URL(request.url), okOrigin || "*"); if (bRes) return bRes;
     const uRes = await handleUpload(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a)); if (uRes) return uRes;
     if (request.method === "OPTIONS") return new Response(null, { status: okOrigin ? 204 : 403, headers: okOrigin ? cors(okOrigin) : {} });
     if (request.method === "GET" && new URL(request.url).pathname === "/dl") {   // download for a personal link: 7 days, 5 downloads
@@ -299,11 +301,37 @@ export default {
       const scope = String(b.scope || "").slice(0, 200); let drec = null; try { drec = JSON.parse(await env.IG.get("deliv:" + slug) || "null"); } catch { drec = null; } if (!drec) return reply(404, { ok: false, error: "no such delivery" }, okOrigin); const tok = b.preview ? "" : await giveToken(env, slug, to, String(b.name || ""), scope, drec.days || 365);
       const link = `https://stevyvergouwen.com/d/?c=${slug}${tok ? "&t=" + tok : ""}`;
       const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 12).map(r => [String(r[0] || "").slice(0, 60), String(r[1] || "").slice(0, 80)]);
+      const feedback = b.kind === "feedback";
+      if (feedback) {
+        const link2 = `https://stevyvergouwen.com/d/?c=${slug}${tok ? "&t=" + tok : ""}&review=1`;
+        const { text, html } = mailParts({ heading: nl ? "Hoe vond je het?" : "How did it go?", eyebrow: "Feedback",
+          intro: nl ? `Hi${first ? " " + first : ""}, bedankt voor het vertrouwen bij ${title}. Laat even weten wat je ervan vond. Moet er nog iets aangepast worden, schrijf het gewoon op je pagina. Een korte review helpt me ook enorm.` : `Hi ${first}, thank you for trusting me with ${title}. Let me know how it went. If something should change, just write it on your page. A short review helps me a lot too.`,
+          rows: [], note: nl ? "Je pagina met alle bestanden blijft beschikbaar via deze link. Downloaden kan daar ook nog." : "Your page with all the files stays available through this link. You can still download there.",
+          cta: { text: nl ? "Geef feedback" : "Give feedback", href: link2 }, sign: true, lang: nl ? "nl" : "en" });
+        const r2 = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: b.preview ? "info@stevyvergouwen.com" : to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: (b.preview ? "[Preview] " : "") + (nl ? `Hoe vond je ${title}?` : `How was ${title}?`), htmlContent: html, textContent: text }, "feedback mail");
+        return reply(r2.ok ? 200 : 502, { ok: r2.ok, preview: !!b.preview }, okOrigin);
+      }
       const { text, html } = mailParts({ heading: nl ? `Je ${wat} staan klaar.` : `Your ${wat} are ready.`, eyebrow: nl ? "Oplevering" : "Delivery",
         intro: nl ? `Hi${first ? " " + first : ""}, de ${wat} van ${title} staan voor je klaar. Bekijk ze, download ze en vink je favorieten aan op je eigen pagina.` : `Hi ${first}, the ${wat} from ${title} are ready for you. View them, download them and mark your favourites on your own page.`,
         rows, note: nl ? "Deze link is persoonlijk: open hem zo vaak als je wilt. Moet er iets anders? Laat het achter op de pagina; bij een video kun je reageren op het exacte moment. Een korte review helpt me enorm." : "This link is personal: open it as often as you like. Should something change? Leave it on the page; on a video you can comment at the exact moment. A short review helps me a lot.",
         cta: { text: nl ? "Bekijk je oplevering" : "View your delivery", href: link }, sign: true, lang: nl ? "nl" : "en" });
       const r = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: b.preview ? "info@stevyvergouwen.com" : to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: (b.preview ? "[Preview] " : "") + (nl ? `Je ${wat} van ${title}` : `Your ${wat} from ${title}`), htmlContent: html, textContent: text }, "delivery mail");
+      return reply(r.ok ? 200 : 502, { ok: r.ok, preview: !!b.preview }, okOrigin);
+    }
+    if (new URL(request.url).pathname === "/brief-mail" && request.method === "POST") {   // from the Projecten app: the designed briefing mail for the crew, with a button to the briefing page (x-key)
+      const kk = String(request.headers.get("x-key") || ""), want = String(env.PRICE_CODE || ""); let df = kk.length ^ want.length; for (let i = 0; i < Math.max(kk.length, want.length); i++) df |= (kk.charCodeAt(i) || 0) ^ (want.charCodeAt(i) || 0);
+      if (!want || df !== 0) return reply(401, { ok: false }, okOrigin);
+      if (!env.BREVO_API_KEY) return reply(503, { ok: false, error: "no brevo" }, okOrigin);
+      let b; try { b = JSON.parse((await request.text()).slice(0, 8000)); } catch { return reply(400, { ok: false, error: "json" }, okOrigin); }
+      const to = String(b.to || "").toLowerCase().trim(), slug = String(b.slug || ""); if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to) || !/^[a-z0-9]{10,40}$/.test(slug)) return reply(400, { ok: false, error: "to or slug" }, okOrigin);
+      if (!(await env.IG.get("brief:" + slug))) return reply(404, { ok: false, error: "no such briefing" }, okOrigin);
+      const nl = b.lang === "nl", first = String(b.name || "").split(" ")[0] || (nl ? "" : "there"), title = String(b.title || "").slice(0, 120);
+      const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 8).map(r => [String(r[0] || "").slice(0, 40), String(r[1] || "").slice(0, 100)]).filter(r => r[1]);
+      const { text, html } = mailParts({ heading: nl ? `Je briefing voor ${title}.` : `Your briefing for ${title}.`, eyebrow: "Briefing",
+        intro: nl ? `Hi${first ? " " + first : ""}, alles wat je nodig hebt voor ${title} staat op één pagina: line-up, camera-angles, contactgegevens, voorbeeldfoto's en waar je je beelden uploadt.` : `Hi ${first}, everything you need for ${title} is on one page: line-up, camera angles, contacts, reference photos and where to upload your footage.`,
+        rows, note: nl ? "Zit er iets niet goed of mis je iets? Stuur me een berichtje. Deze pagina wordt bijgewerkt als er iets verandert, dus open altijd dezelfde link." : "Is something off or missing? Message me. This page is updated when something changes, so always open the same link.",
+        cta: { text: nl ? "Open de briefing" : "Open the briefing", href: `https://stevyvergouwen.com/b/?c=${slug}` }, sign: true, lang: nl ? "nl" : "en" });
+      const r = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: b.preview ? "info@stevyvergouwen.com" : to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: (b.preview ? "[Preview] " : "") + (nl ? `Briefing: ${title}` : `Briefing: ${title}`), htmlContent: html, textContent: text }, "briefing mail");
       return reply(r.ok ? 200 : 502, { ok: r.ok, preview: !!b.preview }, okOrigin);
     }
     if (new URL(request.url).pathname === "/feedback-queue" && request.method === "POST") {   // from ~/moneybird/feedback_queue.py: paid, sent invoices -> one feedback mail per invoice

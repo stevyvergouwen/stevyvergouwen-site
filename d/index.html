@@ -58,6 +58,33 @@ main{padding:0 var(--pad) 140px}
 .vid .t{font:700 15px var(--sans);letter-spacing:-.01em;margin:0 0 2px;word-break:break-word}
 .vid .g{color:var(--dim);font-size:10px;letter-spacing:.16em;text-transform:uppercase}
 .vid form{display:flex;gap:8px;margin-top:12px}
+.sec h2{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}.sec h2 small{flex:1 1 280px;min-width:0}
+@media (max-width:760px){.art .am{order:5;flex:1 1 100%;white-space:normal;line-height:1.7}.art .as{margin-left:auto}.fh a{margin-left:0}.vbar .tot{margin-left:0;flex:1 1 100%}}
+.vbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 18px}.vbar .lab{color:var(--dim);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-right:2px}
+.vbar .tot{margin-left:auto;color:var(--dim);font-size:11px;letter-spacing:.12em}
+.chip{font:inherit;color:var(--dim);background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:11px;letter-spacing:.14em;cursor:pointer;transition:border-color .2s,color .2s}
+.chip.on{color:var(--ink);background:var(--paper);border-color:var(--paper)}.chip:hover{border-color:var(--paper)}
+.art{border:1px solid var(--faint);border-radius:6px;margin-bottom:14px;background:var(--ink2);overflow:hidden}
+.art>summary{list-style:none;cursor:pointer;display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:16px 18px}
+.art>summary::-webkit-details-marker{display:none}
+.art .an{font:700 clamp(1.05rem,2.4vw,1.35rem) var(--sans);letter-spacing:-.02em;flex:1 1 220px}
+.art .am{color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.art .as{color:var(--blue);font-size:12px;letter-spacing:.08em}
+.art .ch{transition:transform .25s;color:var(--dim)}.art[open] .ch{transform:rotate(90deg)}
+.art .body{padding:4px 18px 18px;border-top:1px solid var(--faint)}
+.fg{margin-top:18px}.fh{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.fh b{font:700 14px var(--sans);letter-spacing:0}.fh span{color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase}.fh a{margin-left:auto;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.vgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(var(--w,300px),1fr))}
+.vcard{border:1px solid var(--faint);border-radius:4px;overflow:hidden;background:var(--ink)}
+.vth{position:relative;aspect-ratio:var(--ar,16/9);background:#000;display:grid;place-items:center;cursor:pointer}
+.vth video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.vth .pl{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.5);display:grid;place-items:center;font-size:15px;color:#fff;transition:transform .2s,background .2s}.vth:hover .pl{transform:scale(1.08);background:rgba(91,132,255,.4)}
+.vth .bd{position:absolute;left:8px;top:8px;display:flex;gap:5px}.vth .bd i{font-style:normal;font-size:9px;letter-spacing:.14em;background:rgba(0,0,0,.6);color:#fff;border-radius:99px;padding:3px 8px}
+.vcard .m2{padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.vcard .m2 .t{font:700 13px var(--sans);letter-spacing:0;flex:1 1 auto}.vcard .m2 .s{color:var(--dim);font-size:10px;letter-spacing:.1em}
+.vcard .m2 a{color:var(--blue);font-size:10px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
+.vcard details.cm2{border-top:1px solid var(--faint);padding:8px 12px}.vcard details.cm2 summary{cursor:pointer;color:var(--dim);font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+.vcard form{display:flex;gap:8px;margin-top:10px}
+
 input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent;border:1px solid var(--line);border-radius:4px;padding:10px 12px;letter-spacing:.02em}
 .cm{display:flex;gap:10px;margin-top:8px;color:var(--dim);cursor:pointer}.cm b{color:var(--blue);font-weight:500}
 .fb{position:fixed;left:0;right:0;bottom:0;z-index:60;padding-bottom:max(14px,env(safe-area-inset-bottom))!important;background:rgba(8,8,10,.92);backdrop-filter:blur(12px);border-top:1px solid var(--faint);padding:14px var(--pad);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
@@ -125,7 +152,14 @@ const file = p => demo ? p : url("file", { q: { p, dl: 1 } });
 const mmss = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
 async function load(pass) {
+  if (demo && q.get("manifest")) return await (await fetch(q.get("manifest"))).json();
   if (demo) {
+    if (q.get("multicam")) {
+      const A = ["MESLOW B2B ALOÏS", "KOEN AKKERMANS B2B ROYKO", "BART ALBA B2B ALOÏS", "UZEEL B2B ALOÏS"], F = [["16X9", "HD", 220], ["16X9", "4K", 900], ["9X16", "HD", 90], ["4X5", "HD", 110], ["4X3", "HD", 100]], vids = [];
+      A.forEach(a => F.forEach(([f, r, mb]) => [1, 2, 3, 4].forEach(n => vids.push({ id: a + f + r + n, name: `${a.replace(/[^A-Z]/g, "")}-WINEONLYRAVE-@stevyvergouwen-${f}-${r}_0${n}.mp4`, path: `/${a}/CLIPS/${f}/x_${r}_0${n}.mp4`, group: `${a} / CLIPS`, size: (mb + n * 17) * 1e6 }))));
+      const n = ["20260812-2255-glitch-stevyvergouwen-01297","20260813-2056-glitch-stevyvergouwen-02419","20260814-2154-glitch-stevyvergouwen-00615"];
+      return { select: null, title: "Wine Only Rave, Den Bosch", client: "Wine Only Rave", date: "2026-10-02", note: "Multicam clips per DJ set, in every format.", photos: n.map((x, i) => ({ id: x + i, name: x, thumb: `/media/bg/${x}.jpg`, high: `/media/bg/${x}.jpg`, low: `/media/bg/${x}.jpg` })), videos: vids };
+    }
     const n = ["20260812-2255-glitch-stevyvergouwen-01297","20260813-2056-glitch-stevyvergouwen-02419","20260814-2154-glitch-stevyvergouwen-00615","20260815-0400-glitch-stevyvergouwen-05245","20260829-1956-rr26-stevyvergouwen-07719","20260829-1957-rr26-stevyvergouwen-07778","20260829-2000-rr26-stevyvergouwen-07851","20260829-2109-rr26-stevyvergouwen-09322"];
     return { select: q.get("demosel") ? { limit: +q.get("demosel") } : null, title: "Demo album", client: "Preview", date: "2026-10-29", note: "This is a preview with sample photos. Real deliveries load straight from Dropbox.", photos: [...n, ...n, ...n].map((x, i) => ({ id: x + i, name: x, thumb: `/media/bg/${x}.jpg`, high: `/media/bg/${x}.jpg`, low: `/media/bg/${x}.jpg` })), videos: [{ id: "v1", name: "alois-azure-1-loop.mp4", path: "/media/clips/alois-azure-1-loop.mp4", group: "Clips" }] };
   }
@@ -149,6 +183,55 @@ function gate(info, msg) {
   if (rf) rf.onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Sending…"; try { if (demo || q.has("demogate")) { $("#gm").textContent = "Demo: Stevy would be asked now."; return; } const r = await fetch(`${ENDPOINT}/delivery/${slug}/request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: $("#rn").value, email: $("#re").value }) }); if (!r.ok) throw 0; $("#gm").textContent = "Thanks. Stevy has been asked, you get an email once it is approved."; } catch { $("#gm").textContent = "That did not work. Try again."; } };
   if (gf) gf.onsubmit = async e => { e.preventDefault(); const v = $("#gp").value; sessionStorage.setItem("dp:" + slug, v); try { M = await load(v); render(); } catch (x) { gate(x.gate || info, x.gate ? "That code is not right." : x.msg); } };
 }
+
+const fmtB = b => !b ? "" : b >= 1e9 ? (b / 1e9).toFixed(1) + " GB" : Math.max(1, Math.round(b / 1e6)) + " MB";
+function vinfo(v) {
+  const parts = String(v.path || "").split("/"), rf = parts.find(x => /^\d+x\d+$/i.test(x)) || "";
+  const m = /(\d+)X(\d+)/i.exec(rf || v.name || ""), res = /[-_ ](4K|UHD|HD)(?=[_.\- ]|$)/i.exec(v.name || "");
+  const g = String(v.group || "").split(" / ").filter(Boolean), ci = g.findIndex(x => /^clips$/i.test(x)), artist = ci > 0 ? g[ci - 1] : (g[0] && ci !== 0 ? g[g.length - 1] : "All clips");
+  const asub = ci > 0 ? g.slice(0, ci).join("/") : "";
+  const n = /[_-](\d{1,3})\.[a-z0-9]+$/i.exec(v.name || "");
+  return { fmt: m ? m[1] + ":" + m[2] : "Other", ar: m ? m[1] + " / " + m[2] : "16 / 9", res: res ? res[1].toUpperCase() : "", artist, asub, sub: g.join("/"), rf, label: n ? "Clip " + n[1] : (v.name || "").replace(/\.[a-z0-9]+$/i, "") };
+}
+function videoHtml(V) {
+  const I = V.map(vinfo), arts = [...new Set(I.map(x => x.artist))].sort((a, b) => a.localeCompare(b));
+  const fmts = [...new Set(I.map(x => x.fmt))].sort((a, b) => ({ "16:9": 0, "9:16": 1, "4:5": 2, "4:3": 3 }[a] ?? 9) - ({ "16:9": 0, "9:16": 1, "4:5": 2, "4:3": 3 }[b] ?? 9)), ress = [...new Set(I.map(x => x.res).filter(Boolean))];
+  const tot = V.reduce((s, v) => s + (v.size || 0), 0), single = arts.length === 1;
+  const zip = sub => demo ? "#" : url("zip", { q: { sub } });
+  const chips = (k, list) => list.length > 1 ? `<span class="lab">${k === "fmt" ? "Format" : "Quality"}</span><button class="chip on" data-k="${k}" data-val="">All</button>${list.map(x => `<button class="chip" data-k="${k}" data-val="${esc(x)}">${esc(x)}</button>`).join("")}` : "";
+  return `<section class="sec" id="sv" style="margin-top:56px"><h2>Video <small>by artist and format. Open a clip to watch it, comment at the exact moment, download one clip or a whole folder.</small></h2>
+    <div class="vbar">${chips("fmt", fmts)}${chips("res", ress)}<span class="tot" id="vtot">${V.length} clips · ${fmtB(tot)}</span></div>
+    <div id="vlist">${arts.map(a => {
+      const mine = V.map((v, i) => ({ v, i, x: I[i] })).filter(o => o.x.artist === a), size = mine.reduce((s, o) => s + (o.v.size || 0), 0);
+      const mf = [...new Set(mine.map(o => o.x.fmt))].filter(f => fmts.includes(f)).sort((p, q) => fmts.indexOf(p) - fmts.indexOf(q));
+      const counts = mf.map(f => `${f} · ${mine.filter(o => o.x.fmt === f).length}`).join("  /  ");
+      return `<details class="art" data-a="${esc(a)}" ${single || arts.length <= 2 ? "open" : ""}><summary><span class="an">${esc(a)}</span><span class="am">${counts}</span><span class="as">${fmtB(size)}</span><span class="ch">›</span></summary><div class="body">
+        <div class="fh" style="margin-top:14px"><span>${mine.length} clips</span>${mine[0].x.asub ? `<a href="${zip(mine[0].x.asub)}">Download all · ${fmtB(size)}</a>` : ""}</div>
+        ${mf.flatMap(f => { const inF = mine.filter(o => o.x.fmt === f), rs = [...new Set(inF.map(o => o.x.res))].sort((p, q) => ({ "HD": 0, "4K": 1 }[p] ?? 5) - ({ "HD": 0, "4K": 1 }[q] ?? 5)); return rs.map((r, ri) => ({ f, r, ri, nr: rs.length, set: inF.filter(o => o.x.res === r), all: inF })); }).map(g => {
+          const sz = g.set.reduce((s, o) => s + (o.v.size || 0), 0), allSz = g.all.reduce((s, o) => s + (o.v.size || 0), 0), vert = /^(9:16|4:5)$/.test(g.f), rfn = g.set[0].x.rf, title = g.f + (g.r ? " · " + g.r : "");
+          return `<div class="fg" data-f="${esc(g.f)}"><div class="fh"><b>${esc(title)}</b><span>${g.set.length} clips · ${fmtB(sz)}</span>${rfn && g.ri === 0 ? `<a href="${zip(g.set[0].x.sub + "/" + rfn)}">Download ${esc(g.f)}${g.nr > 1 ? ", all qualities" : ""} · ${fmtB(allSz)}</a>` : ""}</div>
+            <div class="vgrid" style="--w:${vert ? 190 : 300}px">${g.set.map(o => `<div class="vcard vid" data-v="${o.i}" data-fmt="${esc(o.x.fmt)}" data-res="${esc(o.x.res)}"><div class="vth" style="--ar:${o.x.ar}"><div class="bd"><i>${esc(o.x.fmt)}</i>${o.x.res ? `<i>${esc(o.x.res)}</i>` : ""}</div><div class="pl">▶</div></div>
+              <div class="m2"><span class="t" title="${esc(o.v.name)}">${esc(o.x.label)}</span><span class="s">${fmtB(o.v.size)}</span><a href="${file(o.v.path)}">Download</a></div>
+              <details class="cm2"><summary>Comment</summary><form><input placeholder="Comment at the current time" aria-label="Comment"><button class="pri">Add</button></form><div class="cl"></div></details></div>`).join("")}</div></div>`; }).join("")}
+      </div></details>`; }).join("")}</div></section>`;
+}
+function wireVideo() {
+  document.querySelectorAll(".vid").forEach(el => {
+    const v = M.videos[el.dataset.v], th = el.querySelector(".vth"), f = el.querySelector("form"), cl = el.querySelector(".cl"); let vid = null;
+    th.onclick = () => { if (vid) return; vid = document.createElement("video"); vid.controls = true; vid.autoplay = true; vid.playsInline = true; vid.preload = "auto"; vid.src = file(v.path); th.innerHTML = ""; th.appendChild(vid); th.style.cursor = "default"; };
+    f.onsubmit = e => { e.preventDefault(); const i = f.querySelector("input"); if (!i.value.trim()) return; comments.push({ file: v.name, t: vid ? vid.currentTime : 0, text: i.value.trim() }); i.value = ""; draw(); stat(); };
+    const draw = () => { cl.innerHTML = comments.filter(c => c.file === v.name).map(c => `<div class="cm" data-t="${c.t}"><b>${mmss(c.t)}</b><span>${esc(c.text)}</span></div>`).join(""); cl.querySelectorAll(".cm").forEach(c => c.onclick = () => { if (!vid) th.click(); setTimeout(() => { vid.currentTime = +c.dataset.t; vid.play(); }, 200); }); };
+  });
+  const st = { fmt: "", res: "" };
+  const apply = () => {
+    let shown = 0, bytes = 0;
+    document.querySelectorAll(".vid").forEach(c => { const ok = (!st.fmt || c.dataset.fmt === st.fmt) && (!st.res || c.dataset.res === st.res); c.style.display = ok ? "" : "none"; if (ok) { shown++; bytes += M.videos[c.dataset.v].size || 0; } });
+    document.querySelectorAll(".fg").forEach(g => { g.style.display = [...g.querySelectorAll(".vid")].some(c => c.style.display !== "none") ? "" : "none"; });
+    document.querySelectorAll(".art").forEach(a => { a.style.display = [...a.querySelectorAll(".vid")].some(c => c.style.display !== "none") ? "" : "none"; });
+    const t = $("#vtot"); if (t) t.textContent = `${shown} clips · ${fmtB(bytes)}`;
+  };
+  document.querySelectorAll(".chip").forEach(b => b.onclick = () => { st[b.dataset.k] = b.dataset.val; document.querySelectorAll(`.chip[data-k="${b.dataset.k}"]`).forEach(x => x.classList.toggle("on", x === b)); apply(); });
+}
 function render() {
   { const a = albums().filter(x => x.slug !== slug); a.unshift({ slug, title: M.title, client: M.client || "", at: Date.now() }); put2("sv-albums", JSON.stringify(a.slice(0, 20))); }
   const P = M.photos, V = M.videos; $("#barr").textContent = M.client || "Delivery";
@@ -156,7 +239,7 @@ function render() {
   app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc([M.client, date].filter(Boolean).join(" · "))}</div><h1>${esc(M.title)}</h1>${M.note ? `<p class="note">${esc(M.note)}</p>` : ""}<div class="acts">${P.length && !M.select ? `<a href="${demo ? "#" : url("zip", { q: { sub: "" } })}"><button class="pri" type="button">Download everything</button></a>` : ""}${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
   <main><div class="tabs">${P.length ? `<button class="on" data-t="p">Photos · ${P.length}</button>` : ""}${V.length ? `<button class="${P.length ? "" : "on"}" data-t="v">Video · ${V.length}</button>` : ""}<span class="sp"></span><button id="theme" aria-label="Dark or light">Light / dark</button></div>
   ${P.length ? `<section class="sec" id="sp"><h2>Photos <small>click a photo to open, ♡ to mark a favourite</small></h2><div class="view" id="view"><span class="lab">View</span><button data-l="masonry">Masonry</button><button data-l="cells">Grid</button><button data-l="large">Large</button><button id="slide">Slideshow</button><span class="lab" style="margin-left:10px">Size</span><input id="sz" type="range" min="160" max="480" step="10" aria-label="Size"></div><div class="grid" id="grid">${P.map((p, i) => `<figure class="ph" data-i="${i}"><img data-src="${thumb(p.thumb, "w640h480")}" alt="${esc(p.name)}"><div class="tools"><button class="ic heart" data-h="${i}" aria-label="Favourite">♡</button>${M.select ? "" : `<a class="ic" href="${file(p.high || p.low || p.thumb)}" aria-label="Download" data-dl><button class="ic" type="button">↓</button></a>`}</div></figure>`).join("")}</div></section>` : ""}
-  ${V.length ? `<section class="sec" id="sv" style="margin-top:56px"><h2>Video <small>comment on a moment to leave feedback at that time</small></h2><div class="vids">${V.map((v, i) => `<div class="vid" data-v="${i}"><video controls preload="metadata" src="${file(v.path)}"></video><div class="m"><div class="t">${esc(v.name)}</div><div class="g">${esc(v.group)}</div><form><input placeholder="Comment at the current time" aria-label="Comment"><button class="pri">Add</button></form><div class="cl"></div><div style="margin-top:12px"><a href="${file(v.path)}"><button type="button">Download</button></a></div></div></div>`).join("")}</div></section>` : ""}<div class="rv"><p><b style="color:var(--paper)">Happy with the work?</b><br>A short review means a lot, and with your OK it can appear on stevyvergouwen.com.</p><button id="rvb">Leave a review</button></div></main>
+  ${V.length ? videoHtml(V) : ""}<div class="rv"><p><b style="color:var(--paper)">Happy with the work?</b><br>A short review means a lot, and with your OK it can appear on stevyvergouwen.com.</p><button id="rvb">Leave a review</button></div></main>
   <div class="fb"><div class="st" id="fst"></div><div class="acts"><button class="pri" id="fsend">Send feedback or approve</button></div></div>`;
   wire(); stat();
 }
@@ -165,9 +248,7 @@ function wire() {
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const im = e.target.querySelector("img"); if (im && !im.src) im.src = im.dataset.src; e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "300px" }); document.querySelectorAll(".ph").forEach((f, i) => { f.style.transitionDelay = (i % 8) * 40 + "ms"; io.observe(f); });
   document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => { document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x === b)); ($(b.dataset.t === "p" ? "#sp" : "#sv")).scrollIntoView({ behavior: "smooth" }); });
   document.querySelectorAll(".ph").forEach(f => f.onclick = e => { if (e.target.closest("[data-h]")) { const id = M.photos[f.dataset.i].id; toggle(id); return; } if (e.target.closest("[data-dl]")) return; open(+f.dataset.i); });
-  document.querySelectorAll(".vid").forEach(el => { const v = M.videos[el.dataset.v], vid = el.querySelector("video"), f = el.querySelector("form"), cl = el.querySelector(".cl");
-    f.onsubmit = e => { e.preventDefault(); const i = f.querySelector("input"); if (!i.value.trim()) return; comments.push({ file: v.name, t: vid.currentTime, text: i.value.trim() }); i.value = ""; draw(); stat(); };
-    const draw = () => { cl.innerHTML = comments.filter(c => c.file === v.name).map(c => `<div class="cm" data-t="${c.t}"><b>${mmss(c.t)}</b><span>${esc(c.text)}</span></div>`).join(""); cl.querySelectorAll(".cm").forEach(c => c.onclick = () => { vid.currentTime = +c.dataset.t; vid.play(); }); }; });
+  wireVideo();
   $("#fsend").onclick = () => { $("#sh").textContent = M.select ? "Send my selection" : "Send feedback"; $("#sa").textContent = M.select ? "Send selection" : "Approve"; $("#sc").style.display = M.select ? "none" : ""; $("#fnote").parentElement.style.display = M.select ? "none" : ""; $("#sp").textContent = M.select ? `${fav.size} of ${M.select.limit} picked` : ""; $("#sheet").classList.add("on"); };
   // view: layout, size, theme, slideshow (remembered on this device; the default layout comes from the delivery)
   const store = (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } }, put = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
@@ -183,7 +264,7 @@ function wire() {
   // review
   let stars = 0; const paint = () => document.querySelectorAll("#stars button").forEach(b => { b.textContent = +b.dataset.n <= stars ? "★" : "☆"; b.classList.toggle("on", +b.dataset.n <= stars); });
   document.querySelectorAll("#stars button").forEach(b => b.onclick = () => { stars = +b.dataset.n; paint(); });
-  $("#rvb").onclick = () => $("#rsheet").classList.add("on"); $("#rx").onclick = () => $("#rsheet").classList.remove("on");
+  $("#rvb").onclick = () => $("#rsheet").classList.add("on"); if (q.get("review") === "1") setTimeout(() => $("#rsheet").classList.add("on"), 900); $("#rx").onclick = () => $("#rsheet").classList.remove("on");
   $("#rs").onclick = async () => { if (!stars || !$("#rt").value.trim()) { $("#rmsg").textContent = "Pick the stars and write a few words."; return; } $("#rmsg").textContent = "Sending…";
     try { if (!demo) { const r = await fetch(url("review"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ rating: stars, text: $("#rt").value, name: $("#rn2").value, company: $("#rc").value, publish: $("#rp").checked }) }); if (!r.ok) throw 0; } $("#rmsg").textContent = "Thank you, that means a lot."; setTimeout(() => $("#rsheet").classList.remove("on"), 1800); }
     catch { $("#rmsg").textContent = "Sending failed. Please try again."; } };

@@ -261,7 +261,7 @@ export default {
     const origin = request.headers.get("Origin") || "";
     const okOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
 
-    const dRes = await handleDelivery(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a), (to, subject, text) => brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], subject, textContent: text }, "delivery")); if (dRes) return dRes;
+    const dRes = await handleDelivery(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a), (to, subject, text) => brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], subject, textContent: text }, "delivery"), async (to, m) => { const { text, html } = mailParts({ heading: m.heading, eyebrow: m.eyebrow, intro: m.intro, rows: [], note: m.note, cta: m.cta, sign: true, lang: "en" }); return brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: m.subject, htmlContent: html, textContent: text }, "artist page"); }); if (dRes) return dRes;
     const bRes = await handleBrief(request, env, new URL(request.url), okOrigin || "*"); if (bRes) return bRes;
     const uRes = await handleUpload(request, env, new URL(request.url), okOrigin || "*", a => sendNotify(env, a)); if (uRes) return uRes;
     if (request.method === "OPTIONS") return new Response(null, { status: okOrigin ? 204 : 403, headers: okOrigin ? cors(okOrigin) : {} });

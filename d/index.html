@@ -27,18 +27,123 @@ a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:999px;padding:11px 20px;cursor:pointer;letter-spacing:.16em;text-transform:uppercase;font-size:11px;transition:background .2s,color .2s,border-color .2s,transform .25s cubic-bezier(.2,.7,.1,1)}
 button:hover{border-color:var(--paper)}button.on,button.pri{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
-.bar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:18px var(--pad) 26px;background:linear-gradient(var(--ink) 40%,transparent);font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+.bar{position:fixed;top:0;left:0;right:0;z-index:50;box-sizing:border-box;height:56px;display:flex;justify-content:space-between;align-items:center;padding:0 var(--pad);background:linear-gradient(rgba(8,8,10,.75),transparent);font-size:11px;letter-spacing:.22em;text-transform:uppercase;transition:background .3s}
+.bar.sc{background:var(--ink)}
 .hero{position:relative;min-height:78svh;display:flex;align-items:flex-end;padding:120px var(--pad) 48px;overflow:hidden;border-bottom:1px solid var(--faint)}
 .hero .bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.5;transform:scale(1.04);animation:drift 24s ease-in-out infinite alternate}
 @keyframes drift{to{transform:scale(1.12) translate(-1.5%,1%)}}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--ink) 4%,transparent 70%)}
 .hero .in{position:relative;z-index:2;max-width:1100px}
+.bar .dl{display:flex;align-items:center;gap:14px}
+.bar .dlb{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--paper);border-radius:999px;padding:8px 16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:transform .2s,background .2s}.bar .dlb:hover{transform:translateY(-1px)}
+.dlp{position:fixed;top:56px;right:var(--pad);z-index:70;width:min(420px,calc(100vw - 2*var(--pad)));max-height:min(70svh,560px);overflow:auto;background:rgba(17,17,20,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:8px;box-shadow:0 24px 60px rgba(0,0,0,.55);padding:14px;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .25s,transform .25s}
+.dlp.on{opacity:1;transform:none;pointer-events:auto}
+.dlp h4{margin:10px 6px 6px;font:400 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}.dlp h4:first-child{margin-top:2px}
+.dlp a{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:4px;text-decoration:none;color:var(--paper);border-bottom:1px solid var(--faint)}.dlp a:hover{background:rgba(235,231,224,.06)}
+.dlp a span{flex:1 1 auto;font:700 13px var(--sans);letter-spacing:-.01em}.dlp a span em{display:block;font:400 10px var(--mono);font-style:normal;letter-spacing:.1em;color:var(--dim);margin-top:2px;text-transform:uppercase}.dlp a small{color:var(--blue);font-size:11px;letter-spacing:.06em}
+.dlp .n{color:var(--dim);font-size:10px;line-height:1.6;margin:10px 6px 2px}
+@media (prefers-reduced-motion:reduce){.dlp{transition:none}}
+.vth{background:linear-gradient(110deg,#0b0b0e 30%,#18181d 50%,#0b0b0e 70%) 0 0/220% 100%;animation:shim 1.8s linear infinite}
+.vth.ready,.vth.playing{animation:none;background:#000}@keyframes shim{to{background-position:-220% 0}}
+.vth video.pv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;opacity:0;transition:opacity .6s ease}
+.vth.ready video.pv{opacity:1}.vth.playing video.pv{object-fit:contain}
+.vth.playing .pl,.vth.playing .bd{display:none}
+.vth .pl{z-index:2}.vth .bd{z-index:2}
+details.fg>summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:8px 0}details.fg>summary::-webkit-details-marker{display:none}
+details.fg>summary .ch2{transition:transform .25s;color:var(--dim);font-size:12px}details.fg[open]>summary .ch2{transform:rotate(90deg)}
+details.fg>summary b{font:700 14px var(--sans)}details.fg>summary span.c{color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+details.fg>summary a{margin-left:auto}
+.art .bar2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}.art .bar2 button{font:inherit;color:var(--dim);background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}.art .bar2 button:hover{color:var(--paper);border-color:var(--paper)}
+.shf{display:none;gap:8px;flex-wrap:wrap;align-items:flex-end;margin:10px 0 2px;padding:12px;border:1px solid var(--faint);border-radius:6px;background:var(--ink)}.shf.on{display:flex}
+.shf button{font:inherit;color:var(--paper);background:none;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}.shf button.pri{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.shf input{flex:1 1 180px;min-width:0;font:inherit;color:var(--paper);background:transparent;border:1px solid var(--line);border-radius:4px;padding:9px 10px}.shf .m{flex:1 1 100%;font-size:11px;color:var(--blue)}
+.nzo{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px;background:rgba(6,6,8,.62);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);opacity:0;pointer-events:none;transition:opacity .5s ease}
+.nzo.on{opacity:1;pointer-events:auto}
+.nz{position:relative;width:min(460px,100%);padding:clamp(28px,5vw,44px);border:1px solid var(--line);border-radius:10px;background:var(--ink2);box-shadow:0 40px 100px rgba(0,0,0,.6);transform:translateY(18px) scale(.98);transition:transform .7s cubic-bezier(.2,.9,.2,1.05)}
+.nzo.on .nz{transform:none}
+.nzo.corner{inset:auto 18px 18px auto;display:block;padding:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;width:min(360px,calc(100vw - 36px));pointer-events:none}
+.nzo.corner.on{pointer-events:none}.nzo.corner .nz{pointer-events:auto;width:100%;padding:22px 22px 20px;box-shadow:0 24px 70px rgba(0,0,0,.55)}
+.nzo.corner h2{font-size:1.5rem;margin:6px 0 8px}.nzo.corner p{font-size:12px;margin:0 0 12px}
+@media (max-width:560px){.nzo.corner{inset:auto 12px 76px 12px;width:auto}}
+.nz .eb{color:var(--blue);font-size:10px;letter-spacing:.24em;text-transform:uppercase}
+.nz h2{margin:14px 0 14px;font:700 clamp(2.2rem,8vw,3.2rem)/.95 var(--sans);letter-spacing:-.045em;min-height:2em}
+.nz p{margin:0 0 26px;color:var(--dim);font-size:12.5px;line-height:1.7;max-width:36ch}
+.nz .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.nz .go{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--paper);border-radius:999px;padding:13px 24px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:transform .2s}.nz .go:hover{transform:translateY(-1px)}
+.nz .no{font:inherit;color:var(--dim);background:none;border:0;padding:13px 10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}.nz .no:hover{color:var(--paper)}
+.nz .x{position:absolute;top:12px;right:14px;border:0;background:none;color:var(--dim);font-size:20px;line-height:1;padding:6px 8px;cursor:pointer;letter-spacing:0;text-transform:none}
+@media (prefers-reduced-motion:reduce){.nzo,.nz{transition:none}}
+.hero .sub{margin:0 0 14px;font:400 clamp(12px,1.5vw,14px)/1.5 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--paper)}.hero .sub span{margin-left:14px;color:var(--dim)}
+.tabs .tg{width:36px;height:36px;padding:0;border-radius:50%;display:grid;place-items:center;flex:0 0 36px;letter-spacing:0}
+.tg i{display:block;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--paper);background:linear-gradient(90deg,var(--paper) 50%,transparent 50%);transition:transform .6s cubic-bezier(.2,.9,.2,1.1)}
+.tg.sw i{transform:rotate(180deg)}.tg:hover i{transform:scale(1.12)}.tg.sw:hover i{transform:rotate(180deg) scale(1.12)}
+#gdrift{position:fixed;inset:0;z-index:95;perspective:900px;perspective-origin:50% 46%;overflow:hidden;touch-action:none;cursor:grab;background:var(--ink)}
+#gdrift .dw{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;will-change:transform}
+#gdrift .dp{position:absolute;left:0;top:0;display:block;opacity:0;visibility:hidden;background:#111;transition:opacity .5s linear;backface-visibility:hidden;will-change:opacity}
+#gdrift .dp img{width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none}
+#gdrift .dx{position:fixed;top:16px;right:var(--pad);z-index:2;font:inherit;color:var(--paper);background:rgba(8,8,10,.6);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+#gdrift .dc{position:fixed;left:clamp(18px,3vw,44px);bottom:26px;font:600 11px var(--mono);letter-spacing:.18em;color:rgba(240,238,232,.7);pointer-events:none}
+#gdrift .dh{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);pointer-events:none}
+.locked [data-dl],.locked #lbd,.locked .dlb{display:none!important}.lockn{margin:0 0 12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.fb .pbar{display:block;height:3px;background:var(--faint);border-radius:99px;overflow:hidden;margin:8px 0 0;min-width:140px}.fb .pbar i{display:block;height:100%;width:0;background:var(--blue);transition:width .45s ease}
+.fb.full .pbar i{background:var(--paper)}
+.nz ol{margin:0 0 22px;padding:0;list-style:none;counter-reset:s;display:grid;gap:12px}
+.nz ol li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;font-size:13px;line-height:1.55;color:var(--paper)}
+.nz ol li::before{content:counter(s);flex:0 0 26px;height:26px;border-radius:50%;border:1px solid var(--blue);color:var(--blue);display:grid;place-items:center;font:700 12px var(--sans)}
+.nz .small{color:var(--dim);font-size:11px;line-height:1.6;margin:-6px 0 22px}
+.hero .note{max-width:58ch;margin:0 0 14px;font:400 clamp(15px,1.7vw,18px)/1.7 var(--sans);letter-spacing:0;text-transform:none;color:rgba(235,231,224,.86);text-wrap:pretty}
+.hero .loc{display:flex;align-items:center;gap:8px;margin:0 0 22px;font:400 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}.hero .loc svg{flex:0 0 auto}
+.bar .rvl{margin-left:auto;font:inherit;color:var(--paper);background:none;border:1px solid var(--line);border-radius:999px;padding:8px 14px;margin-right:12px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s,border-color .2s}.bar .rvl:hover{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+@media (max-width:560px){.bar .rvl{margin-right:8px;font-size:9px;padding:7px 11px}}
+.vcard .ap{font:inherit;color:var(--dim);background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .25s}
+.vcard .ap:hover{color:var(--paper);border-color:var(--paper)}
+.vcard.okd{border-color:var(--blue)}.vcard.okd .ap{color:var(--ink);background:var(--blue);border-color:var(--blue)}
+.vth .okb{position:absolute;right:8px;top:8px;z-index:3;width:26px;height:26px;border-radius:50%;background:var(--blue);color:var(--ink);display:none;place-items:center;font:700 14px/1 var(--sans);box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.vcard.okd .vth .okb{display:grid;animation:okpop .4s cubic-bezier(.2,1.4,.4,1)}@keyframes okpop{from{transform:scale(.3);opacity:0}}
+.vth .cb{position:absolute;right:8px;bottom:8px;z-index:3;display:none;font:700 10px var(--mono);letter-spacing:.1em;background:rgba(0,0,0,.65);color:#fff;border-radius:99px;padding:3px 9px}.vth .cb.on{display:block}
+.vcard form .tc{align-self:center;font:700 11px var(--mono);letter-spacing:.06em;color:var(--blue);white-space:nowrap;padding:0 4px}
+.cl .cm{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-top:1px solid var(--faint);cursor:pointer}.cl .cm b{flex:0 0 auto;font:700 11px var(--mono);color:var(--blue)}.cl .cm span{flex:1 1 auto;font-size:12px;line-height:1.5;word-break:break-word}
+.cl .cm .cd{flex:0 0 auto;border:0;background:none;color:var(--dim);font-size:16px;line-height:1;padding:2px 6px;cursor:pointer;letter-spacing:0;text-transform:none}.cl .cm .cd:hover{color:var(--paper)}
+.fb .gl{font:inherit;color:var(--dim);background:none;border:0;border-bottom:1px solid var(--line);padding:3px 0;font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;margin-right:14px}.fb .gl:hover{color:var(--paper)}
+.thx{position:fixed;left:50%;bottom:clamp(76px,11vh,110px);z-index:85;width:min(540px,calc(100vw - 28px));padding:22px 24px 20px;border:1px solid var(--line);border-radius:10px;background:var(--ink2);box-shadow:0 30px 80px rgba(0,0,0,.6);transform:translate(-50%,18px);opacity:0;pointer-events:none;transition:transform .7s cubic-bezier(.2,.9,.2,1.05),opacity .5s ease}
+.thx.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.thx .eb{color:var(--blue);font-size:10px;letter-spacing:.24em;text-transform:uppercase}
+.thx h3{margin:8px 0 10px;font:700 clamp(1.5rem,5vw,2rem)/1 var(--sans);letter-spacing:-.04em;min-height:1.1em}
+.thx p{margin:0 0 8px;color:var(--dim);font-size:12.5px;line-height:1.65}.thx p b{color:var(--paper);font-weight:700}
+.thx .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.thx .row a,.thx .row button{font:inherit;color:var(--paper);background:none;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s}
+.thx .row .pri{background:var(--paper);color:var(--ink);border-color:var(--paper)}.thx .row a:hover,.thx .row button:hover{border-color:var(--paper)}
+.thx .x{position:absolute;top:8px;right:10px;border:0;background:none;color:var(--dim);font-size:18px;line-height:1;padding:6px 8px;cursor:pointer;letter-spacing:0;text-transform:none}
+@media (prefers-reduced-motion:reduce){.thx{transition:none}}
+.art .bar2 button[data-share]{color:var(--paper);border-color:var(--blue);background:rgba(91,132,255,.12)}.art .bar2 button[data-share]:hover{background:var(--blue);color:var(--ink)}
+.au{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 4px;padding:12px 14px;border:1px solid var(--faint);border-radius:6px;background:var(--ink)}
+.au b{font:700 13px var(--sans);letter-spacing:-.01em}.au em{font:400 10px var(--mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.au .pl{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--paper);cursor:pointer;font-size:12px;flex:none}.au .pl:hover{border-color:var(--paper)}
+.au audio{flex:1 1 220px;min-width:0;height:34px}.au a{margin-left:auto;color:var(--blue);font-size:11px;letter-spacing:.08em;text-decoration:none}
+.locked .au a{display:none}
+#barr{display:none!important}
+.art .at{flex:0 0 auto;min-width:104px;font:400 11px var(--mono);letter-spacing:.1em;color:var(--blue);white-space:nowrap}
+@media (max-width:760px){.art .at{flex:1 1 100%;order:-1;min-width:0;font-size:10px}}
+.nofb [data-h],.nofb .fb,.nofb #fst{display:none!important}
+.nudge{position:fixed;right:clamp(14px,3vw,34px);bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:12px;max-width:min(380px,calc(100vw - 28px));padding:12px 14px 12px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(17,17,20,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--paper);cursor:pointer;box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(24px) scale(.96);opacity:0;pointer-events:none;transition:transform .7s cubic-bezier(.2,.9,.2,1.15),opacity .6s ease}
+.nudge.on{transform:none;opacity:1;pointer-events:auto}
+.nudge .st{position:relative;flex:0 0 38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:var(--ink);font-size:17px;line-height:1}
+.nudge .st::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--blue);opacity:0;animation:nudgepulse 2.6s ease-out infinite}
+@keyframes nudgepulse{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.5);opacity:0}}
+.nudge .st i{font-style:normal;display:inline-block;animation:nudgespin 6s ease-in-out infinite}
+@keyframes nudgespin{0%,70%,100%{transform:rotate(0) scale(1)}80%{transform:rotate(25deg) scale(1.2)}90%{transform:rotate(-12deg) scale(1.1)}}
+.nudge b{display:block;font:700 14px/1.25 var(--sans);letter-spacing:-.01em}.nudge small{display:block;color:var(--dim);font-size:10px;letter-spacing:.1em;margin-top:2px}
+.nudge .x{margin-left:2px;border:0;padding:6px 8px;color:var(--dim);font-size:15px;line-height:1;letter-spacing:0;text-transform:none;border-radius:50%;background:none}
+@media (prefers-reduced-motion:reduce){.nudge,.nudge .st::after,.nudge .st i{animation:none;transition:none}}
+.hero .hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s ease;filter:brightness(.6) saturate(1.1) contrast(1.05);transform:scale(1.04)}.hero .hv.on{opacity:1}.hero .bg{transition:opacity 1.2s ease}.hero.hasvid .bg{opacity:0!important}
+.hero h1 span[aria-hidden]{will-change:opacity}
+
 .eyebrow{color:var(--dim);letter-spacing:.22em;text-transform:uppercase;font-size:11px}
 h1{margin:12px 0 18px;font:700 clamp(2.4rem,8vw,6.5rem)/.95 var(--sans);letter-spacing:-.04em;text-wrap:balance}
 .note{max-width:60ch;color:var(--dim);margin:0 0 24px;text-wrap:pretty}
 .acts{display:flex;gap:10px;flex-wrap:wrap}
 main{padding:0 var(--pad) 140px}
-.tabs{position:sticky;top:46px;z-index:40;display:flex;gap:8px;padding:16px 0;background:linear-gradient(var(--ink) 70%,transparent);margin-bottom:12px}
+.tabs{position:sticky;top:56px;z-index:40;display:flex;gap:8px;padding:12px 0;background:var(--ink);box-shadow:0 0 0 100vmax var(--ink);clip-path:inset(0 -100vmax);margin-bottom:12px}
 .sec{padding-top:12px}
 .sec h2{margin:0 0 18px;font:700 clamp(1.4rem,3vw,2rem)/1.1 var(--sans);letter-spacing:-.025em;display:flex;gap:14px;align-items:baseline}
 .sec h2 small{font:400 11px var(--mono);color:var(--dim);letter-spacing:.18em;text-transform:uppercase}
@@ -105,7 +210,7 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 @media (hover:none){.ph:hover img{transform:none}}
 .shim{background:linear-gradient(90deg,var(--ink2),#1b1b20,var(--ink2));background-size:200% 100%;animation:sh 1.4s linear infinite}@keyframes sh{to{background-position:-200% 0}}
 .mine{margin-top:26px;text-align:left}.mine a{display:block;padding:14px 0;border-top:1px solid var(--faint)}.mine b{display:block;font:700 1.1rem var(--sans);letter-spacing:-.01em}.mine span{color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
-@media (prefers-reduced-motion:reduce){.hero .bg{animation:none}.ph{transition:none;opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.hero .hv{display:none}.hero .bg{animation:none}.ph{transition:none;opacity:1;transform:none}}
 
 [data-theme="light"]{--ink:#f4f1ec;--ink2:#e9e5de;--paper:#141414;--dim:#6d6a64;--faint:#d6d1c8;--line:rgba(20,20,20,.24);--blue:#2f55d4}
 [data-theme="light"] .hero::after{background:linear-gradient(to top,var(--ink) 4%,transparent 70%)}
@@ -132,7 +237,7 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 <div id="app"></div>
 <div class="lb" id="lb" role="dialog" aria-label="Photo"><button class="x" id="lbx">Close</button><button class="p ic" id="lbp" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="n ic" id="lbn" aria-label="Next">›</button><div class="bt"><button id="lbh">♡ Favourite</button><a id="lbd" href="#"><button class="pri" type="button">Download</button></a></div></div>
 <div class="sheet" id="rsheet"><div class="c"><h3>Leave a review</h3><p class="eyebrow">How was working together?</p><div class="stars" id="stars"><button data-n="1" aria-label="1 star">☆</button><button data-n="2" aria-label="2 stars">☆</button><button data-n="3" aria-label="3 stars">☆</button><button data-n="4" aria-label="4 stars">☆</button><button data-n="5" aria-label="5 stars">☆</button></div><label>Your review<textarea id="rt" rows="5"></textarea></label><label>Your name<input id="rn2" autocomplete="name"></label><label>Company or role (optional)<input id="rc"></label><label class="chk"><input type="checkbox" id="rp"> You may show this review (with my name) on stevyvergouwen.com</label><div class="acts" style="margin-top:18px"><button class="pri" id="rs">Send review</button><button id="rx">Cancel</button></div><div class="msg" id="rmsg"></div></div></div>
-<div class="sheet" id="sheet"><div class="c"><h3 id="sh">Send feedback</h3><p class="eyebrow" id="sp"></p><label>Your name<input id="fn" autocomplete="name"></label><label>Note<textarea id="fnote" rows="4" placeholder="Anything we should change, or any shots you loved?"></textarea></label><div class="acts" style="margin-top:18px"><button class="pri" id="sa">Approve</button><button id="sc">Request changes</button><button id="sx">Cancel</button></div><div class="msg" id="smsg"></div></div></div>
+<div class="sheet" id="sheet"><div class="c"><h3 id="sh">Send feedback</h3><p class="eyebrow" id="sp"></p><label>Your name<input id="fn" autocomplete="name"></label><label id="femw">Your email, for a copy<input id="fem" type="email" autocomplete="email" placeholder="you@company.com"></label><label>Note<textarea id="fnote" rows="4" placeholder="Anything we should change, or any shots you loved?"></textarea></label><div class="acts" style="margin-top:18px"><button class="pri" id="sa">Approve</button><button id="sc">Request changes</button><button id="sx">Cancel</button></div><div class="msg" id="smsg"></div></div></div>
 <script>
 (() => {
 const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
@@ -144,7 +249,8 @@ if (q.get("t")) { try { localStorage.setItem("dt:" + slug, q.get("t")); } catch 
 const rem = (k, d = "") => { try { return localStorage.getItem(k) || d; } catch { return d; } }, put2 = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
 const albums = () => { try { return JSON.parse(rem("sv-albums", "[]")); } catch { return []; } };
 const tk = () => { try { return localStorage.getItem("dt:" + slug) || ""; } catch { return ""; } };
-const url = (a, p = {}) => demo ? p.demo : `${ENDPOINT}/delivery/${slug}${a ? "/" + a : ""}?${new URLSearchParams({ ...p.q, k: kk(), t: tk() })}`;
+const DEV = (() => { let v = ""; try { v = localStorage.getItem("sv-dev") || ""; if (!v) { v = Array.from(crypto.getRandomValues(new Uint8Array(12)), b => (b % 36).toString(36)).join(""); localStorage.setItem("sv-dev", v); } } catch (e) { v = v || "nostorage00000"; } return v; })();
+const url = (a, p = {}) => demo ? p.demo : `${ENDPOINT}/delivery/${slug}${a ? "/" + a : ""}?${new URLSearchParams({ ...p.q, k: kk(), t: tk(), d: DEV })}`;
 let M = null; const fav = new Set(JSON.parse(localStorage.getItem("fv:" + slug) || "[]")); const comments = []; let cur = 0;
 const save = () => { try { localStorage.setItem("fv:" + slug, JSON.stringify([...fav])); } catch {} };
 const thumb = (p, s) => demo ? p : url("thumb", { q: { p, s } });
@@ -152,7 +258,7 @@ const file = p => demo ? p : url("file", { q: { p, dl: 1 } });
 const mmss = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
 async function load(pass) {
-  if (demo && q.get("manifest")) return await (await fetch(q.get("manifest"))).json();
+  if (demo && q.get("manifest")) { const m = await (await fetch(q.get("manifest"))).json(); if (q.get("fb")) m.comments = true; if (q.get("wm")) { m.watermark = true; m.locked = true; m.videos = []; m.wm = "STEVYVERGOUWEN.COM"; } if (q.get("sel")) { m.select = { limit: +q.get("sel"), extra: +q.get("extra") || 0 }; m.videos = []; m.watermark = true; m.locked = true; } return m; }
   if (demo) {
     if (q.get("multicam")) {
       const A = ["MESLOW B2B ALOÏS", "KOEN AKKERMANS B2B ROYKO", "BART ALBA B2B ALOÏS", "UZEEL B2B ALOÏS"], F = [["16X9", "HD", 220], ["16X9", "4K", 900], ["9X16", "HD", 90], ["4X5", "HD", 110], ["4X3", "HD", 100]], vids = [];
@@ -170,6 +276,19 @@ async function load(pass) {
 }
 function gate(info, msg) {
   info = info || {};
+  if (info.error === "artist") {   // an artist's own link: fill in the email, a code proves it, then the link is theirs
+    app.innerHTML = `<div class="gate"><div style="width:min(420px,100%)"><div class="eyebrow">${esc(info.title || "Delivery")}</div><h1 style="font-size:clamp(1.8rem,6vw,2.6rem);margin:10px 0 6px">${esc(info.artist || "Your clips")}</h1><p class="note" style="margin:0 auto 22px">These are your clips and audio. Fill in your email: you get a code by mail, and this device stays signed in.</p><form id="af" style="display:flex;flex-direction:column;gap:10px;text-align:left"><input id="an" placeholder="Your name" autocomplete="name"><input id="ae" type="email" placeholder="Your email" autocomplete="email" required><button class="pri">Send me a code</button></form><form id="ac" style="display:none;flex-direction:column;gap:10px;text-align:left"><input id="ao" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" style="letter-spacing:.4em;text-align:center;font-size:1.3rem"><button class="pri">Open my page</button></form><div class="msg" id="gm"></div></div></div>`;
+    $("#af").onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Sending…"; try { const r = await fetch(url("artist-request"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: $("#an").value, email: $("#ae").value }) }); if (!r.ok) throw 0; $("#af").style.display = "none"; $("#ac").style.display = "flex"; $("#ao").focus(); $("#gm").textContent = "A code is on its way. It works for 10 minutes."; } catch (x) { $("#gm").textContent = "That did not work. Check the address and try again."; } };
+    $("#ac").onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Checking…"; try { const r = await fetch(url("artist-verify"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: $("#ao").value }) }); if (!r.ok) { $("#gm").textContent = r.status === 429 ? "Too many tries. Wait a while." : "That code is not right."; return; } M = await load(); render(); } catch (x) { $("#gm").textContent = x.msg || "That did not work."; } };
+    return;
+  }
+  if (info.error === "device") {   // a personal link on a new device: a code to the mail of that link
+    app.innerHTML = `<div class="gate"><div style="width:min(420px,100%)"><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:clamp(1.8rem,6vw,2.6rem);margin:10px 0 6px">${esc(info.title || "Delivery")}</h1><p class="note" style="margin:0 auto 22px">New device. To keep this delivery private, we sent a 6-digit code to ${esc(info.mail || "your email")}. Fill it in and this device stays signed in.</p><form id="df" style="display:flex;flex-direction:column;gap:10px;text-align:left"><input id="dc" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" style="letter-spacing:.4em;text-align:center;font-size:1.3rem"><button class="pri">Open</button></form><p class="note" style="margin-top:18px"><a href="#" id="dr" style="text-decoration:underline">Send the code again</a></p><div class="msg" id="gm"></div></div></div>`;
+    const send = async () => { try { const r = await fetch(url("device-code"), { method: "POST" }); $("#gm").textContent = r.ok ? "Code sent. It works for 10 minutes." : "Could not send a code. Try again in a minute."; } catch (x) { $("#gm").textContent = "Could not send a code."; } };
+    send(); $("#dr").onclick = e => { e.preventDefault(); send(); };
+    $("#df").onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Checking…"; try { const r = await fetch(url("device-verify"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: $("#dc").value }) }); if (!r.ok) { $("#gm").textContent = r.status === 429 ? "Too many tries. Wait a while." : "That code is not right."; return; } M = await load(); render(); } catch (x) { $("#gm").textContent = x.msg || "That did not work."; } };
+    return;
+  }
   app.innerHTML = `<div class="gate"><div style="width:min(420px,100%)"><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:clamp(1.8rem,6vw,2.6rem);margin:10px 0 6px">${esc(info.title || "Delivery")}</h1><p class="note" style="margin:0 auto 22px">${esc(info.client ? info.client + ". " : "")}This delivery is private. Sign in with your email address: you get a code by mail, and this device stays signed in.</p>
   <form id="ef" style="display:flex;flex-direction:column;gap:10px;text-align:left"><input id="em" type="email" placeholder="Your email" autocomplete="email" value="${esc(rem("sv-email"))}" required><button class="pri">Send me a code</button></form>
   <form id="cf" style="display:none;flex-direction:column;gap:10px;text-align:left"><input id="cd" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" style="letter-spacing:.4em;text-align:center;font-size:1.3rem"><button class="pri">Open</button></form>
@@ -178,7 +297,7 @@ function gate(info, msg) {
   <div class="msg" id="gm">${esc(msg || "")}</div></div></div>`;
   const ef = $("#ef"), cf = $("#cf"), rf = $("#rf"), gf = $("#gf"); let mail = "";
   ef.onsubmit = async e => { e.preventDefault(); mail = $("#em").value.trim(); put2("sv-email", mail); $("#gm").textContent = "Sending…"; try { if (!(demo || q.has("demogate"))) { const r = await fetch(`${ENDPOINT}/delivery/${slug}/code-request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail }) }); if (!r.ok) throw 0; } ef.style.display = "none"; cf.style.display = "flex"; $("#cd").focus(); $("#gm").textContent = "If this address has access, a code is on its way. It works for 10 minutes."; } catch { $("#gm").textContent = "That did not work. Check the address and try again."; } };
-  cf.onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Checking…"; try { if (demo || q.has("demogate")) { $("#gm").textContent = "Demo: in real life you are in now."; return; } const r = await fetch(`${ENDPOINT}/delivery/${slug}/code-verify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail, code: $("#cd").value }) }); const j = await r.json().catch(() => ({})); if (!r.ok || !j.token) { $("#gm").textContent = r.status === 429 ? "Too many tries. Wait a while." : "That code is not right."; return; } try { localStorage.setItem("dt:" + slug, j.token); } catch {} M = await load(); render(); } catch (x) { $("#gm").textContent = x.msg || "That did not work."; } };
+  cf.onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Checking…"; try { if (demo || q.has("demogate")) { $("#gm").textContent = "Demo: in real life you are in now."; return; } const r = await fetch(`${ENDPOINT}/delivery/${slug}/code-verify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail, code: $("#cd").value, dev: DEV }) }); const j = await r.json().catch(() => ({})); if (!r.ok || !j.token) { $("#gm").textContent = r.status === 429 ? "Too many tries. Wait a while." : "That code is not right."; return; } try { localStorage.setItem("dt:" + slug, j.token); } catch {} M = await load(); render(); } catch (x) { $("#gm").textContent = x.msg || "That did not work."; } };
   if ($("#rq")) $("#rq").onclick = e => { e.preventDefault(); rf.style.display = "flex"; };
   if (rf) rf.onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Sending…"; try { if (demo || q.has("demogate")) { $("#gm").textContent = "Demo: Stevy would be asked now."; return; } const r = await fetch(`${ENDPOINT}/delivery/${slug}/request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: $("#rn").value, email: $("#re").value }) }); if (!r.ok) throw 0; $("#gm").textContent = "Thanks. Stevy has been asked, you get an email once it is approved."; } catch { $("#gm").textContent = "That did not work. Try again."; } };
   if (gf) gf.onsubmit = async e => { e.preventDefault(); const v = $("#gp").value; sessionStorage.setItem("dp:" + slug, v); try { M = await load(v); render(); } catch (x) { gate(x.gate || info, x.gate ? "That code is not right." : x.msg); } };
@@ -189,38 +308,79 @@ function vinfo(v) {
   const parts = String(v.path || "").split("/"), rf = parts.find(x => /^\d+x\d+$/i.test(x)) || "";
   const m = /(\d+)X(\d+)/i.exec(rf || v.name || ""), res = /[-_ ](4K|UHD|HD)(?=[_.\- ]|$)/i.exec(v.name || "");
   const g = String(v.group || "").split(" / ").filter(Boolean), ci = g.findIndex(x => /^clips$/i.test(x)), artist = ci > 0 ? g[ci - 1] : (g[0] && ci !== 0 ? g[g.length - 1] : "All clips");
-  const asub = ci > 0 ? g.slice(0, ci).join("/") : "";
+  const asub = ci > 0 ? g.slice(0, ci + 1).join("/") : "";
   const n = /[_-](\d{1,3})\.[a-z0-9]+$/i.exec(v.name || "");
   return { fmt: m ? m[1] + ":" + m[2] : "Other", ar: m ? m[1] + " / " + m[2] : "16 / 9", res: res ? res[1].toUpperCase() : "", artist, asub, sub: g.join("/"), rf, label: n ? "Clip " + n[1] : (v.name || "").replace(/\.[a-z0-9]+$/i, "") };
 }
 function videoHtml(V) {
-  const I = V.map(vinfo), arts = [...new Set(I.map(x => x.artist))].sort((a, b) => a.localeCompare(b));
+  const I = V.map(vinfo), arts = [...new Set(I.map(x => x.artist))].sort((a, b) => a.localeCompare(b)), LU = lineupInfo();
+  if (LU.length && !M.scope) arts.sort((a, b) => ((slotFor(a, LU) || { idx: 999 }).idx - (slotFor(b, LU) || { idx: 999 }).idx) || a.localeCompare(b));
   const fmts = [...new Set(I.map(x => x.fmt))].sort((a, b) => ({ "16:9": 0, "9:16": 1, "4:5": 2, "4:3": 3 }[a] ?? 9) - ({ "16:9": 0, "9:16": 1, "4:5": 2, "4:3": 3 }[b] ?? 9)), ress = [...new Set(I.map(x => x.res).filter(Boolean))];
   const tot = V.reduce((s, v) => s + (v.size || 0), 0), single = arts.length === 1;
-  const zip = sub => demo ? "#" : url("zip", { q: { sub } });
+  const zip = sub => demo ? "#" : url("zip", { q: { sub: M.scope && sub.toLowerCase().startsWith(M.scope.toLowerCase()) ? sub.slice(M.scope.length).replace(/^\//, "") : sub } });
   const chips = (k, list) => list.length > 1 ? `<span class="lab">${k === "fmt" ? "Format" : "Quality"}</span><button class="chip on" data-k="${k}" data-val="">All</button>${list.map(x => `<button class="chip" data-k="${k}" data-val="${esc(x)}">${esc(x)}</button>`).join("")}` : "";
-  return `<section class="sec" id="sv" style="margin-top:56px"><h2>Video <small>by artist and format. Open a clip to watch it, comment at the exact moment, download one clip or a whole folder.</small></h2>
+  return `<section class="sec" id="sv" style="margin-top:56px"><h2>Video</h2>
     <div class="vbar">${chips("fmt", fmts)}${chips("res", ress)}<span class="tot" id="vtot">${V.length} clips · ${fmtB(tot)}</span></div>
     <div id="vlist">${arts.map(a => {
       const mine = V.map((v, i) => ({ v, i, x: I[i] })).filter(o => o.x.artist === a), size = mine.reduce((s, o) => s + (o.v.size || 0), 0);
       const mf = [...new Set(mine.map(o => o.x.fmt))].filter(f => fmts.includes(f)).sort((p, q) => fmts.indexOf(p) - fmts.indexOf(q));
       const counts = mf.map(f => `${f} · ${mine.filter(o => o.x.fmt === f).length}`).join("  /  ");
-      return `<details class="art" data-a="${esc(a)}" ${single || arts.length <= 2 ? "open" : ""}><summary><span class="an">${esc(a)}</span><span class="am">${counts}</span><span class="as">${fmtB(size)}</span><span class="ch">›</span></summary><div class="body">
-        <div class="fh" style="margin-top:14px"><span>${mine.length} clips</span>${mine[0].x.asub ? `<a href="${zip(mine[0].x.asub)}">Download all · ${fmtB(size)}</a>` : ""}</div>
+      return `<details class="art" data-a="${esc(a)}" ${single || arts.length <= 2 ? "open" : ""}><summary>${(() => { const s = M.scope ? null : slotFor(a, LU); return s && s.t ? `<span class="at">${esc(s.t)}</span>` : ""; })()}<span class="an">${esc(a)}</span><span class="am">${counts}</span><span class="as">${fmtB(size)}</span><span class="ch">›</span></summary><div class="body">
+        <div class="bar2"><span class="c" style="color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase">${mine.length} clips</span><button type="button" data-x="open">Expand formats</button><button type="button" data-x="close">Collapse formats</button>${M.comments ? `<button type="button" data-apall="1">Approve all</button>` : ""}${M.share && !M.scope && arts.length > 1 ? `<button type="button" data-share="${esc(mine[0].x.asub.replace(/\/CLIPS$/i, ""))}" data-name="${esc(a)}">Send artist their content</button>` : ""}</div>${M.share && !M.scope && arts.length > 1 ? `<form class="shf" data-for="${esc(a)}"><span class="m" style="flex:1 1 100%;color:var(--dim)">Thanks for playing: send ${esc(a)} their own content page, with only their clips and audio. Mail it to them, or copy the link.</span><input name="to" type="email" placeholder="Artist email" aria-label="Artist email"><button class="pri" type="submit">Send</button><button type="button" data-copy>Copy link</button><span class="m r" style="flex:1 1 100%"></span></form>` : ""}<div class="fh" style="margin-top:6px">${mine[0].x.asub ? `<a href="${zip(mine[0].x.asub)}" data-size="${size}">Download all clips · ${fmtB(size)}</a>` : ""}</div>
         ${mf.flatMap(f => { const inF = mine.filter(o => o.x.fmt === f), rs = [...new Set(inF.map(o => o.x.res))].sort((p, q) => ({ "HD": 0, "4K": 1 }[p] ?? 5) - ({ "HD": 0, "4K": 1 }[q] ?? 5)); return rs.map((r, ri) => ({ f, r, ri, nr: rs.length, set: inF.filter(o => o.x.res === r), all: inF })); }).map(g => {
           const sz = g.set.reduce((s, o) => s + (o.v.size || 0), 0), allSz = g.all.reduce((s, o) => s + (o.v.size || 0), 0), vert = /^(9:16|4:5)$/.test(g.f), rfn = g.set[0].x.rf, title = g.f + (g.r ? " · " + g.r : "");
-          return `<div class="fg" data-f="${esc(g.f)}"><div class="fh"><b>${esc(title)}</b><span>${g.set.length} clips · ${fmtB(sz)}</span>${rfn && g.ri === 0 ? `<a href="${zip(g.set[0].x.sub + "/" + rfn)}">Download ${esc(g.f)}${g.nr > 1 ? ", all qualities" : ""} · ${fmtB(allSz)}</a>` : ""}</div>
-            <div class="vgrid" style="--w:${vert ? 190 : 300}px">${g.set.map(o => `<div class="vcard vid" data-v="${o.i}" data-fmt="${esc(o.x.fmt)}" data-res="${esc(o.x.res)}"><div class="vth" style="--ar:${o.x.ar}"><div class="bd"><i>${esc(o.x.fmt)}</i>${o.x.res ? `<i>${esc(o.x.res)}</i>` : ""}</div><div class="pl">▶</div></div>
-              <div class="m2"><span class="t" title="${esc(o.v.name)}">${esc(o.x.label)}</span><span class="s">${fmtB(o.v.size)}</span><a href="${file(o.v.path)}">Download</a></div>
-              <details class="cm2"><summary>Comment</summary><form><input placeholder="Comment at the current time" aria-label="Comment"><button class="pri">Add</button></form><div class="cl"></div></details></div>`).join("")}</div></div>`; }).join("")}
+          return `<details class="fg" data-f="${esc(g.f)}" ${g.ri === 0 && g.f === mf[0] ? "open" : ""}><summary class="fh"><span class="ch2">›</span><b>${esc(title)}</b><span class="c">${g.set.length} clips · ${fmtB(sz)}</span>${rfn && g.ri === 0 ? `<a href="${zip(g.set[0].x.sub + "/" + rfn)}" data-size="${allSz}">Download ${esc(g.f)}${g.nr > 1 ? ", all qualities" : ""} · ${fmtB(allSz)}</a>` : ""}</summary>
+            <div class="vgrid" style="--w:${vert ? 190 : 300}px">${g.set.map(o => `<div class="vcard vid" data-v="${o.i}" data-fmt="${esc(o.x.fmt)}" data-res="${esc(o.x.res)}"><div class="vth" style="--ar:${o.x.ar}"><video class="pv" muted playsinline preload="none"></video><span class="okb">✓</span><span class="cb"></span><div class="bd"><i>${esc(o.x.fmt)}</i>${o.x.res ? `<i>${esc(o.x.res)}</i>` : ""}</div><div class="pl">▶</div></div>
+              <div class="m2"><span class="t" title="${esc(o.v.name)}">${esc(o.x.label)}</span><span class="s">${fmtB(o.v.size)}</span>${M.comments ? `<button class="ap" type="button">Approve</button>` : ""}<a href="${file(o.v.path)}">Download</a></div>
+              ${M.comments ? `<details class="cm2"><summary>Feedback</summary><form><span class="tc">0:00</span><input placeholder="Your comment at this moment" aria-label="Comment"><button class="pri">Add</button></form><div class="cl"></div></details>` : ""}</div>`).join("")}</div></details>`; }).join("")}
       </div></details>`; }).join("")}</div></section>`;
 }
 function wireVideo() {
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a[data-size]"); if (!a || a.dataset.warned) return;
+    const sz = +a.dataset.size; if (sz < 4e9) return;
+    if (!confirm(`This is a large download (${fmtB(sz)}). It starts straight away and runs in your browser, so keep this tab open and stay on a good connection. A single clip or one format is faster and can be repeated if it stops.\n\nStart the download?`)) { e.preventDefault(); return; }
+  });
+  /* a preview frame on every clip: the video loads its first frame only when the card comes into view */
+  const queue = []; let busy = 0; const MAXQ = 3;
+  const pump = () => { while (busy < MAXQ && queue.length) { const job = queue.shift(); busy++; let done = false; const fin = () => { if (done) return; done = true; busy--; pump(); };
+    job.vd.preload = "metadata"; job.vd.addEventListener("loadeddata", () => { job.th.classList.add("ready"); fin(); }, { once: true }); job.vd.addEventListener("error", fin, { once: true }); setTimeout(fin, 7000); job.vd.src = job.src; } };
+  const io = new IntersectionObserver(es => es.forEach(en => { if (!en.isIntersecting) return; const th = en.target, vd = th.querySelector("video.pv"); io.unobserve(th); if (!vd || vd.src) return;
+    const vid = th.closest(".vid"); queue.push({ th, vd, src: file(M.videos[vid.dataset.v].path) + "#t=0.6" }); pump(); }), { rootMargin: "240px" });
   document.querySelectorAll(".vid").forEach(el => {
-    const v = M.videos[el.dataset.v], th = el.querySelector(".vth"), f = el.querySelector("form"), cl = el.querySelector(".cl"); let vid = null;
-    th.onclick = () => { if (vid) return; vid = document.createElement("video"); vid.controls = true; vid.autoplay = true; vid.playsInline = true; vid.preload = "auto"; vid.src = file(v.path); th.innerHTML = ""; th.appendChild(vid); th.style.cursor = "default"; };
-    f.onsubmit = e => { e.preventDefault(); const i = f.querySelector("input"); if (!i.value.trim()) return; comments.push({ file: v.name, t: vid ? vid.currentTime : 0, text: i.value.trim() }); i.value = ""; draw(); stat(); };
-    const draw = () => { cl.innerHTML = comments.filter(c => c.file === v.name).map(c => `<div class="cm" data-t="${c.t}"><b>${mmss(c.t)}</b><span>${esc(c.text)}</span></div>`).join(""); cl.querySelectorAll(".cm").forEach(c => c.onclick = () => { if (!vid) th.click(); setTimeout(() => { vid.currentTime = +c.dataset.t; vid.play(); }, 200); }); };
+    const v = M.videos[el.dataset.v], th = el.querySelector(".vth"), f = el.querySelector("form"), cl = el.querySelector(".cl"); let vid = th.querySelector("video.pv");
+    io.observe(th);
+    const play = () => { if (th.classList.contains("playing")) return; th.classList.add("playing", "ready"); if (!vid.src) vid.src = file(v.path); vid.muted = false; vid.controls = true; vid.currentTime = 0; vid.play().catch(() => {}); th.style.cursor = "default"; };
+    th.addEventListener("click", play);
+    if (matchMedia("(hover:hover)").matches) { th.addEventListener("mouseenter", () => { if (th.classList.contains("playing") || !th.classList.contains("ready")) return; vid.muted = true; vid.currentTime = 0.6; vid.play().catch(() => {}); }); th.addEventListener("mouseleave", () => { if (th.classList.contains("playing")) return; vid.pause(); vid.currentTime = 0.6; }); }
+    if (!f) return;
+    const tc = el.querySelector(".tc"), cb = th.querySelector(".cb"), ap = el.querySelector(".ap"), det = el.querySelector("details.cm2");
+    const nowT = () => th.classList.contains("playing") && vid ? vid.currentTime : 0;
+    vid.addEventListener("timeupdate", () => { if (tc && th.classList.contains("playing")) tc.textContent = mmss(vid.currentTime); });
+    const draw = () => {
+      if (!cl) return; const mine = comments.filter(c => c.file === v.name).sort((a, b) => a.t - b.t);
+      cl.innerHTML = mine.map(c => `<div class="cm" data-id="${esc(c.id)}"><b>${mmss(c.t)}</b><span>${esc(c.text)}</span><button class="cd" type="button" aria-label="Delete this comment" title="Delete">×</button></div>`).join("");
+      cl.querySelectorAll(".cm").forEach(n => { const c = comments.find(x => x.id === n.dataset.id);
+        n.onclick = () => { if (!c) return; play(); setTimeout(() => { vid.currentTime = c.t; vid.play(); }, 250); };
+        n.querySelector(".cd").onclick = e => { e.stopPropagation(); const i = comments.findIndex(x => x.id === n.dataset.id); if (i > -1) comments.splice(i, 1); draw(); stat(); saveFb(); }; });
+      if (cb) { cb.textContent = mine.length + (mine.length === 1 ? " comment" : " comments"); cb.classList.toggle("on", mine.length > 0); } if (det && mine.length) det.open = true;
+    };
+    const paint = () => { el.classList.toggle("okd", appr.has(v.name)); if (ap) ap.textContent = appr.has(v.name) ? "✓ Approved" : "Approve"; };
+    fbDraw.push(() => { draw(); paint(); }); draw(); paint();
+    if (ap) ap.onclick = () => { if (appr.has(v.name)) appr.delete(v.name); else appr.add(v.name); paint(); stat(); saveFb(); };
+    f.onsubmit = e => { e.preventDefault(); const i = f.querySelector("input"); if (!i.value.trim()) return; comments.push({ id: String(Date.now()) + Math.random().toString(36).slice(2, 5), file: v.name, t: nowT(), text: i.value.trim(), at: Date.now() }); i.value = ""; draw(); stat(); saveFb(); };
+  });
+  document.querySelectorAll(".bar2 button[data-apall]").forEach(b => b.onclick = () => { b.closest(".art").querySelectorAll(".vid").forEach(c => appr.add(M.videos[c.dataset.v].name)); fbDraw.forEach(f => f()); stat(); saveFb(); });
+  /* open or close all formats of an artist */
+  document.querySelectorAll(".bar2 button[data-x]").forEach(b => b.onclick = () => { const art = b.closest(".art"); art.querySelectorAll("details.fg").forEach(d => { d.open = b.dataset.x === "open"; }); });
+  /* the client can send an artist their own page */
+  document.querySelectorAll(".bar2 button[data-share]").forEach(b => b.onclick = () => { const f = b.closest(".body").querySelector(`.shf[data-for="${CSS.escape(b.dataset.name)}"]`); if (f) { f.classList.toggle("on"); const i = f.querySelector("input"); if (f.classList.contains("on") && i) i.focus(); } });
+  document.querySelectorAll(".shf").forEach(f => {
+    const body = f.closest(".body"), sb = body.querySelector("button[data-share]"), m = f.querySelector(".m.r"), scope = sb.dataset.share, name = sb.dataset.name;
+    const call = async to => { const r = await fetch(url("share"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ scope, name, to }) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || "failed"); return j; };
+    const fail = x => { m.textContent = x.message === "sharing is off" ? "Sharing is not switched on for this delivery." : x.message === "mail" ? "That email address does not look right." : "That did not work. Try again in a minute."; };
+    f.onsubmit = async e => { e.preventDefault(); const to = f.querySelector("[name=to]").value.trim(); if (!to) { m.textContent = "Fill in an email address, or use Copy link."; return; } m.textContent = "Sending…"; try { if (!demo) await call(to); m.textContent = `Sent. ${name} gets a mail with their own page and signs in with a code.`; f.querySelector("[name=to]").value = ""; } catch (x) { fail(x); } };
+    f.querySelector("[data-copy]").onclick = async () => { m.textContent = "Making the link…"; try { const link = demo ? "https://stevyvergouwen.com/d/?demo=artist" : (await call("")).link; let ok = false; try { await navigator.clipboard.writeText(link); ok = true; } catch (x) { /* by hand below */ } m.innerHTML = ok ? `Link copied. Send it to ${esc(name)}: they fill in their email and get a code.` : `Copy this link and send it to ${esc(name)}:<br><input readonly value="${esc(link)}" style="margin-top:6px;width:100%" onclick="this.select()">`; } catch (x) { fail(x); } };
   });
   const st = { fmt: "", res: "" };
   const apply = () => {
@@ -232,24 +392,286 @@ function wireVideo() {
   };
   document.querySelectorAll(".chip").forEach(b => b.onclick = () => { st[b.dataset.k] = b.dataset.val; document.querySelectorAll(`.chip[data-k="${b.dataset.k}"]`).forEach(x => x.classList.toggle("on", x === b)); apply(); });
 }
+
+/* title flicker, as on stevyvergouwen.com: each letter blinks on and off a few times at its own moment, then stays on */
+function flickerTitle(el) {
+  if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const txt = el.textContent.trim(); if (txt.length < 2) return;
+  el.setAttribute("aria-label", txt); el.textContent = ""; const letters = [];
+  txt.split(" ").forEach((word, wi, all) => {
+    const w = document.createElement("span"); w.style.cssText = "display:inline-block;white-space:nowrap"; w.setAttribute("aria-hidden", "true");
+    [...word].forEach(ch => { const s = document.createElement("span"); s.textContent = ch; s.style.opacity = "0"; w.appendChild(s); letters.push(s); });
+    el.appendChild(w); if (wi < all.length - 1) el.appendChild(document.createTextNode(" "));
+  });
+  letters.forEach(c => { let t = 150 + Math.random() * 1100; const n = 2 + Math.floor(Math.random() * 3);
+    for (let k = 0; k < n; k++) { setTimeout(() => c.style.opacity = "1", t); t += 35 + Math.random() * 70; setTimeout(() => c.style.opacity = "0", t); t += 40 + Math.random() * 110; }
+    setTimeout(() => c.style.opacity = "1", t); });
+  setTimeout(() => letters.forEach(c => c.style.opacity = "1"), 2600);
+}
+/* a dimmed looping video behind the title: a file called banner/header/loop/hero if there is one, else the smallest landscape clip under 160 MB */
+function heroVideo() {
+  try {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || (navigator.connection && navigator.connection.saveData)) return;
+    const V = M.videos || []; if (!V.length) return;
+    const phone = matchMedia("(max-width: 760px)").matches, want = phone ? "9:16" : "16:9";   // a phone gets vertical clips, once they are delivered
+    const named = V.filter(v => /(^|[^a-z])(banner|header|loop|hero)([^a-z]|$)/i.test(v.name || "")).filter(v => { const vert = /(vertical|9x16|mobile|phone)/i.test(v.name || "") || vinfo(v).fmt === "9:16"; return phone ? vert : !vert; });
+    let list = named.slice(0, 6);
+    if (!list.length) { // up to five web clips of the right shape from different artists, the smallest of each
+      const by = {}; V.forEach(v => { const x = vinfo(v); if (x.fmt === want && v.size && v.size < 160e6 && x.res !== "4K") { (by[x.artist] = by[x.artist] || []).push(v); } });
+      list = Object.values(by).map(a => a.sort((p, q) => p.size - q.size)[0]).sort(() => Math.random() - .5).slice(0, 5);
+    }
+    if (!list.length) return;
+    const hero = document.querySelector(".hero"); if (!hero || hero.querySelector(".hv")) return;
+    const mk = () => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "auto"; v.setAttribute("aria-hidden", "true"); hero.insertBefore(v, hero.querySelector(".in")); return v; };
+    const vs = [mk(), mk()]; let cur = 0, n = 0, timer = null;
+    const show = (v, clip) => new Promise(res => { v.loop = list.length === 1; v.addEventListener("canplay", () => res(true), { once: true }); v.addEventListener("error", () => res(false), { once: true }); v.src = file(clip.path) + "#t=0.5"; });
+    const next = async () => {
+      const v = vs[cur], other = vs[1 - cur], clip = list[n % list.length]; n++;
+      const ok = await show(v, clip); if (!ok) { if (n < list.length * 2) return next(); return; }
+      v.currentTime = 0.5; v.play().catch(() => {}); v.classList.add("on"); hero.classList.add("hasvid"); other.classList.remove("on");
+      setTimeout(() => { if (!other.classList.contains("on")) { other.pause(); } }, 1500);
+      cur = 1 - cur; if (list.length > 1) timer = setTimeout(next, 9000);
+    };
+    setTimeout(next, 600);
+  } catch (e) { /* the photo stays */ }
+}
+
+/* a quiet nudge after a while: liked the work? leave a review for the website */
+function reviewNudge() {
+  try {
+    const K = "sv-nudge-" + slug, till = +(localStorage.getItem(K) || 0); if (!demo && till > Date.now()) return;
+    if (document.querySelector(".nzo")) return;
+    const o = document.createElement("div"); o.className = "nzo corner"; o.setAttribute("role", "dialog"); o.setAttribute("aria-labelledby", "nzt");
+    o.innerHTML = '<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">Stevy Vergouwen</div><h2 id="nzt">Liked our collab?</h2><p>A short review on my website means a lot. It takes a minute, and with your OK it appears on stevyvergouwen.com.</p><div class="row"><button class="go" type="button">Leave a review</button><button class="no" type="button">Not now</button></div></div>';
+    document.body.appendChild(o);
+    const later = d => { try { localStorage.setItem(K, String(Date.now() + d * 864e5)); } catch (e) {} o.classList.remove("on"); setTimeout(() => o.remove(), 700); };
+    o.querySelector(".x").onclick = () => later(14); o.querySelector(".no").onclick = () => later(14);
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && o.classList.contains("on")) later(14); });
+    o.querySelector(".go").onclick = () => { later(60); const r = document.getElementById("rsheet"); if (r) setTimeout(() => r.classList.add("on"), 350); };
+    let shown = false; const show = () => { if (shown || document.querySelector(".thx")) return; shown = true; o.classList.add("on"); flickerTitle(o.querySelector("h2")); };
+    const t0 = Date.now(); let seen = 0, deep = 0, user = false;   // a little time on the page, and a real person browsed: scrolled a bit or opened things
+    const ready = () => Date.now() - t0 > 120000 && user && (deep > innerHeight * 3 || seen >= 4);
+    const check = () => { if (!shown && ready()) show(); };
+    if (q.get("nudge")) setTimeout(show, 2500);
+    ["wheel", "touchmove", "keydown"].forEach(ev => addEventListener(ev, () => { user = true; }, { passive: true }));
+    addEventListener("scroll", () => { if (user) { deep = Math.max(deep, scrollY); check(); } }, { passive: true });
+    document.addEventListener("click", e => { if (e.isTrusted && e.target.closest(".ph,.vcard,.vid,summary,.chip")) { seen++; user = true; check(); } });
+    setInterval(check, 5000);
+  } catch (e) { /* no popup */ }
+}
+
+/* "Download all" top right: safe zips of photos and of each artist's clips (a zip of the whole folder would be too large) */
+function downloadAll() {
+  const bar = document.querySelector(".bar"); if (!bar) return;
+  let dl = bar.querySelector(".dl"); if (dl) { const r0 = dl.querySelector("#barr"); if (r0) bar.appendChild(r0); dl.remove(); } const old = document.querySelector(".dlp"); if (old) old.remove();
+  const P = M.photos || [], V = M.videos || []; if (M.select || M.locked || (!P.length && !V.length)) return;
+  const root = M.root || (demo ? "/dd-media" : ""), rel = p => root ? String(p).slice(root.length).replace(/^\//, "") : String(p).replace(/^\/[^/]*\//, "");
+  const dir = p => rel(p).split("/").slice(0, -1).join("/");
+  const hi = P.find(x => x.high), lo = P.find(x => x.low && x.low !== (hi && hi.high));
+  const zip = sub => demo ? "#" : url("zip", { q: { sub: M.scope && sub.toLowerCase().startsWith(M.scope.toLowerCase()) ? sub.slice(M.scope.length).replace(/^\//, "") : sub } });
+  const parent = hi && lo ? dir(hi.high).split("/").slice(0, -1).join("/") : "";
+  const nHi = P.filter(x => x.high).length, nLo = P.filter(x => x.low).length, ontbreekt = P.filter(x => !x.high || !x.low).length;
+  const I = V.map(vinfo), arts = [...new Set(I.map(x => x.artist))].sort((a, b) => a.localeCompare(b));
+  const artRows = arts.map(a => { const mine = V.map((v, i) => ({ v, x: I[i] })).filter(o => o.x.artist === a), sz = mine.reduce((s, o) => s + (o.v.size || 0), 0); return mine[0].x.asub ? { a, sz, href: zip(mine[0].x.asub) } : null; }).filter(Boolean);
+  const row = (t, sub, href, size) => `<a href="${href}"${size ? ` data-size="${size}"` : ""}><span>${esc(t)}${sub ? `<em>${esc(sub)}</em>` : ""}</span><small>${esc(size ? fmtB(size) : "")}</small></a>`;
+  const photoAll = parent ? row("Photos, as in the folder", `HighRes + LowRes · ${P.length} photos`, zip(parent)) : "";
+  const photoHi = hi ? row("High resolution only", `${nHi} photos`, zip(dir(hi.high))) : "";
+  const photoLo = lo ? row("Web size only", `${nLo} photos`, zip(dir(lo.low))) : "";
+  const parts = [photoAll || photoHi].filter(Boolean).concat(artRows.map(r => row(r.a, "clips", r.href, r.sz)));
+  const totVid = V.reduce((s, v) => s + (v.size || 0), 0);
+  dl = document.createElement("div"); dl.className = "dl";
+  const right = bar.querySelector("#barr"); right.parentNode.insertBefore(dl, right); dl.appendChild(right);
+  const b = document.createElement("button"); b.className = "dlb"; b.type = "button"; b.textContent = "Download all"; b.setAttribute("aria-haspopup", "true"); dl.appendChild(b);
+  const panel = document.createElement("div"); panel.className = "dlp"; panel.setAttribute("role", "menu");
+  panel.innerHTML = `<h4>Everything, as in the Dropbox folder</h4>${parts.join("")}<p class="n">In parts, because one zip of this size is not possible. Every part keeps the folder structure, so unzipped they fit together.</p>`
+    + (P.length ? `<h4>Photos only</h4>${photoAll}${photoHi}${photoLo}<p class="n">${ontbreekt ? `Checked: ${ontbreekt} photo${ontbreekt === 1 ? " has" : "s have"} no matching ${nHi < nLo ? "high resolution" : "web size"} file yet.` : `Checked: all ${P.length} photos are there in high resolution and in web size.`}</p>` : "")
+    + (M.dropbox ? `<h4>Prefer Dropbox?</h4><a href="${esc(M.dropbox)}" target="_blank" rel="noopener"><span>Open in Dropbox<em>The same folder, in your own Dropbox</em></span><small>↗</small></a>` : "")
+    + (artRows.length ? `<h4>Video only, per artist · ${fmtB(totVid)}</h4>${artRows.map(r => row(r.a, "", r.href, r.sz)).join("")}` : "");
+  document.body.appendChild(panel);
+  const close = () => panel.classList.remove("on");
+  b.onclick = e => { e.stopPropagation(); panel.classList.toggle("on"); };
+  document.addEventListener("click", e => { if (!panel.contains(e.target)) close(); }); document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+}
+
+/* one short line on what was delivered */
+function deliveredLine() {
+  const P = (M.photos || []).length, V = (M.videos || []).length, parts = [];
+  if (M.select) return "Photo selection";
+  if (V) parts.push(V >= 12 ? "Full video production" : "Video");
+  if (P) parts.push("Photography");
+  return parts.join(" + ");
+}
+function deliveredCounts() { const P = (M.photos || []).length, V = (M.videos || []).length; return [V ? V + " clips" : "", P ? P + " photos" : ""].filter(Boolean).join(" · "); }
+
+/* Drift, as on the Explore page of the website: the photos float in a dark 3D space, scroll, drag or arrow keys fly through them */
+function openDrift() {
+  const P = M.photos || []; if (!P.length) return; const old = document.getElementById("gdrift"); if (old) old.remove();
+  const root = document.createElement("div"); root.id = "gdrift"; root.setAttribute("role", "dialog"); root.setAttribute("aria-label", "Photos in a 3D flythrough");
+  root.innerHTML = '<div class="dw"></div><button class="dx" type="button">Close</button><div class="dc"></div><div class="dh">Scroll or drag to fly through</div>';
+  document.body.appendChild(root); document.body.style.overflow = "hidden";
+  const world = root.querySelector(".dw"), count = root.querySelector(".dc"), small = matchMedia("(max-width: 760px)").matches;
+  let seed = 20261022; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const SP = small ? 340 : 300;
+  const items = P.map((p, i) => { const w = small ? 190 : 320, h = w * 1.28, side = i % 2 ? 1 : -1;
+    const it = { w, h, x: side * (small ? 70 + rnd() * 90 : 170 + rnd() * 380) + (rnd() - .5) * 60, y: (rnd() - .5) * (small ? 300 : 420), z: -(i + 1.2) * SP, ry: -side * (4 + rnd() * 9), rz: (rnd() - .5) * 3, src: thumb(p.thumb, "w1024h768"), loaded: false, on: false };
+    const a = document.createElement("div"); a.className = "dp"; a.style.cssText = `width:${w}px;height:${h}px;margin:${-h / 2}px 0 0 ${-w / 2}px;transform:translate3d(${it.x}px,${it.y}px,${it.z}px) rotateY(${it.ry}deg) rotateZ(${it.rz}deg)`;
+    a.innerHTML = "<img alt='' draggable='false' decoding='async'>"; it.el = a; it.img = a.firstChild; world.appendChild(a); return it; });
+  const LIM = -items[items.length - 1].z + 220, FADE = small ? 1500 : 2000;
+  let cam = 0, target = 0, raf = 0, drag = null, alive = true;
+  const frame = () => {
+    raf = 0; if (!alive) return; const d = target - cam; cam += d * .075; if (Math.abs(d) < .3) cam = target;
+    const t = performance.now() / 1000;
+    world.style.transform = `translate3d(${(Math.sin(t * .35) * 10).toFixed(2)}px,${(Math.cos(t * .28) * 6).toFixed(2)}px,${cam.toFixed(2)}px) rotateY(${(Math.sin(t * .22) * .5).toFixed(3)}deg)`;
+    let best = -1, bd = 1e9;
+    items.forEach((it, i) => { const ahead = -(it.z + cam); let o = 0; if (ahead > -80 && ahead < FADE) o = Math.min(1, (FADE - ahead) / 700, (ahead + 80) / 260);
+      const on = o > .01; if (on !== it.on) { it.on = on; it.el.style.visibility = on ? "visible" : "hidden"; }
+      if (on) { if (!it.loaded && ahead < FADE + 900) { setImg(it.img, it.src); it.loaded = true; } it.el.style.opacity = o.toFixed(2); const sc = Math.abs(ahead - 600) + Math.abs(it.x) * .6; if (ahead > 150 && sc < bd) { bd = sc; best = i; } } });
+    if (best >= 0) count.textContent = String(best + 1).padStart(2, "0") + " / " + items.length;
+    raf = requestAnimationFrame(frame);
+  };
+  const kick = () => { if (!raf && alive) raf = requestAnimationFrame(frame); };
+  const go = v => { target = Math.max(0, Math.min(LIM, v)); kick(); };
+  const onWheel = e => { e.preventDefault(); go(target + e.deltaY * 1.1); };
+  const onKey = e => { if (e.key === "Escape") close(); else if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(target + SP * 1.5); } else if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(target - SP * 1.5); } };
+  const down = e => { drag = { y: e.clientY, t: target }; }, move = e => { if (drag) go(drag.t + (drag.y - e.clientY) * 2.4); }, up = () => { drag = null; };
+  const close = () => { alive = false; root.remove(); document.body.style.overflow = ""; removeEventListener("wheel", onWheel); removeEventListener("keydown", onKey); removeEventListener("pointermove", move); removeEventListener("pointerup", up); };
+  addEventListener("wheel", onWheel, { passive: false }); addEventListener("keydown", onKey); root.addEventListener("pointerdown", down); addEventListener("pointermove", move); addEventListener("pointerup", up);
+  root.querySelector(".dx").onclick = close; kick();
+}
+
+/* watermark for portraits, presskits and selections: the photo is drawn with the mark burned in, so a saved image carries it too */
+const wmCache = new Map();
+function wmSrc(src) {
+  if (!M.watermark) return Promise.resolve(src);
+  if (wmCache.has(src)) return wmCache.get(src);
+  const pr = new Promise(res => { const im = new Image(); im.crossOrigin = "anonymous";
+    im.onload = () => { try {
+      const w = Math.min(1024, im.naturalWidth), r = w / im.naturalWidth, c = document.createElement("canvas"); c.width = w; c.height = Math.round(im.naturalHeight * r);
+      const x = c.getContext("2d"); x.drawImage(im, 0, 0, c.width, c.height);
+      const t = String(M.wm || "STEVYVERGOUWEN.COM").toUpperCase(), fs = Math.max(14, Math.round(c.width / 22));
+      x.save(); x.translate(c.width / 2, c.height / 2); x.rotate(-0.42); x.font = `700 ${fs}px "Helvetica Neue",Helvetica,Arial,sans-serif`; x.textAlign = "center"; x.textBaseline = "middle";
+      const step = fs * 4.2, span = Math.hypot(c.width, c.height);
+      for (let yy = -span; yy < span; yy += step) for (let xx = -span; xx < span; xx += fs * t.length * 0.9 + fs * 3) { x.lineWidth = Math.max(1, fs / 14); x.strokeStyle = "rgba(0,0,0,.28)"; x.strokeText(t, xx + ((yy / step) % 2 ? fs * 5 : 0), yy); x.fillStyle = "rgba(255,255,255,.34)"; x.fillText(t, xx + ((yy / step) % 2 ? fs * 5 : 0), yy); }
+      x.restore(); res(c.toDataURL("image/jpeg", .82)); } catch (e) { res(src); } };
+    im.onerror = () => res(src); im.src = src; });
+  wmCache.set(src, pr); return pr;
+}
+const setImg = (el, src) => wmSrc(src).then(u => { el.src = u; });
+
+/* the guide for a client who has to choose: three steps, once per visit */
+function selGuide() {
+  if (!M.select) return; const K = "sv-selguide-" + slug; try { if (sessionStorage.getItem(K)) return; } catch (e) {}
+  const n = M.select.limit, o = document.createElement("div"); o.className = "nzo"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); o.setAttribute("aria-labelledby", "sgt");
+  o.innerHTML = `<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">Client selection</div><h2 id="sgt">Choose your ${n} favourites</h2><ol><li>Look through the photos. Tap one to see it bigger.</li><li>Tap the heart on the ones you want, up to ${n}.${M.select.extra ? ` Want more? Extra photos are ${eurT(M.select.extra)} each.` : ""}</li><li>Press Send my selection. I edit those and send you the finals.</li></ol><p class="small">The photos here carry a watermark. The final photos come without it.</p><div class="row"><button class="go" type="button">Start choosing</button></div></div>`;
+  document.body.appendChild(o);
+  const done = () => { try { sessionStorage.setItem(K, "1"); } catch (e) {} o.classList.remove("on"); setTimeout(() => o.remove(), 600); };
+  o.querySelector(".x").onclick = done; o.querySelector(".go").onclick = done; o.addEventListener("click", e => { if (e.target === o) done(); });
+  setTimeout(() => { o.classList.add("on"); flickerTitle(o.querySelector("h2")); }, 500);
+}
+
+addEventListener("scroll", () => { const b = document.querySelector(".bar"); if (b) b.classList.toggle("sc", scrollY > 40); }, { passive: true });
+/* a review can always be left, not only through the popup */
+function reviewLink() {
+  const bar = document.querySelector(".bar"); if (!bar || M.select) return; if (bar.querySelector(".rvl")) return;
+  const b = document.createElement("button"); b.className = "rvl"; b.type = "button"; b.textContent = "Leave a review";
+  b.onclick = () => { const r = document.getElementById("rsheet"); if (r) r.classList.add("on"); };
+  const anchor = bar.querySelector(".dl") || bar.querySelector("#barr"); anchor.parentNode.insertBefore(b, anchor);
+}
+
+/* feedback: comments at a time stamp, approvals, saved on this device and sent live to Stevy as they happen */
+const appr = new Set(); const vidId = (() => { let v = rem("sv-vid"); if (!v) { v = Math.random().toString(36).slice(2, 12); put2("sv-vid", v); } return v; })();
+const FBK = "sv-fb2-" + slug; let liveT = 0, fbDraw = [];
+function loadFb() { try { const d = JSON.parse(localStorage.getItem(FBK) || "{}"); (d.comments || []).forEach(c => comments.push({ ...c, id: c.id || String(c.at) + Math.random().toString(36).slice(2, 5) })); (d.approved || []).forEach(a => appr.add(a)); } catch (e) {} }
+function saveFb() { put2(FBK, JSON.stringify({ comments, approved: [...appr] })); liveSend(); }
+function liveSend() {
+  if (demo || !M || !M.comments) return; clearTimeout(liveT);
+  liveT = setTimeout(() => { fetch(url("live", { q: { v: vidId } }), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ name: ($("#fn") && $("#fn").value) || rem("sv-name"), comments, approved: [...appr] }) }).catch(() => {}); }, 900);
+}
+async function restoreFb() {
+  if (demo || !M.comments) return;
+  try { const r = await fetch(url("live", { q: { v: vidId } }), { headers: { "x-pass": kk(), "x-tok": tk() } }); if (!r.ok) return; const d = await r.json();
+    let ch = false; (d.comments || []).forEach(c => { if (!comments.some(x => x.file === c.file && x.text === c.text && Math.abs(x.t - c.t) < 0.5)) { comments.push({ ...c, id: String(c.at) + Math.random().toString(36).slice(2, 5) }); ch = true; } });
+    (d.approved || []).forEach(a => { if (!appr.has(a)) { appr.add(a); ch = true; } }); if (ch) { fbDraw.forEach(f => f()); stat(); put2(FBK, JSON.stringify({ comments, approved: [...appr] })); } } catch (e) {}
+}
+/* the guide: what to do, in four steps */
+function fbGuide(force) {
+  if (!M.comments) return; const K = "sv-fbguide-" + slug; try { if (!force && sessionStorage.getItem(K)) return; } catch (e) {}
+  if (document.querySelector(".nzo.fg")) return;
+  const o = document.createElement("div"); o.className = "nzo fg"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); o.setAttribute("aria-labelledby", "fgt");
+  o.innerHTML = `<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">Your feedback</div><h2 id="fgt">Review the video</h2><ol><li>Open a clip and watch it. Take your time.</li><li>Pause where something should change and write it down: it is saved at that exact moment.</li><li>Press Approve on every clip that is good. A check mark appears on it.</li><li>When you are done, press Send feedback. Stevy sees your notes as you write them.</li></ol><p class="small">You can change or delete a comment, and take back an approval, until you are done.</p><div class="row"><button class="go" type="button">Start</button></div></div>`;
+  document.body.appendChild(o); const done = () => { try { sessionStorage.setItem(K, "1"); } catch (e) {} o.classList.remove("on"); setTimeout(() => o.remove(), 600); };
+  o.querySelector(".x").onclick = done; o.querySelector(".go").onclick = done; o.addEventListener("click", e => { if (e.target === o) done(); });
+  setTimeout(() => { o.classList.add("on"); flickerTitle(o.querySelector("h2")); }, force ? 50 : 700);
+}
+
+/* after a download: a short thank-you, a tag, and a nudge to pass the word on */
+function thanksAfterDownload() {
+  if (M.select || M.locked) return;
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a[href*='dl=1'],a[href*='/zip'],a[data-size],.dlp a,.m2 a,#lbd,.fh a"); if (!a || a.closest(".thx")) return;
+    const K = "sv-thx-" + slug; try { if (!demo && +(localStorage.getItem(K) || 0) > Date.now()) return; } catch (x) {}
+    setTimeout(showThanks, 1400);
+  });
+}
+function showThanks() {
+  if (document.querySelector(".thx,.nzo.on")) return; const K = "sv-thx-" + slug; try { localStorage.setItem(K, String(Date.now() + 12 * 36e5)); } catch (x) {}
+  const t = document.createElement("div"); t.className = "thx"; t.setAttribute("role", "status");
+  t.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><div class="eb">Thank you</div><h3>Enjoy the files.</h3><p>Would be amazing if you tag me when you post them: <b>@stevyvergouwen</b>.</p><p>Love to work together again soon. If you liked it, spread the word.</p><div class="row"><button class="pri" type="button" data-c>Copy my handle</button><a href="https://stevyvergouwen.com/" target="_blank" rel="noopener">See what else I do</a><button type="button" data-r>Leave a review</button></div>';
+  document.body.appendChild(t); requestAnimationFrame(() => t.classList.add("on")); flickerTitle(t.querySelector("h3"));
+  const close = () => { t.classList.remove("on"); setTimeout(() => t.remove(), 700); };
+  t.querySelector(".x").onclick = close; setTimeout(close, 22000);
+  t.querySelector("[data-c]").onclick = async e => { try { await navigator.clipboard.writeText("@stevyvergouwen"); e.target.textContent = "Copied"; } catch (x) { e.target.textContent = "@stevyvergouwen"; } };
+  t.querySelector("[data-r]").onclick = () => { close(); const r = document.getElementById("rsheet"); if (r) r.classList.add("on"); };
+}
+
+/* the timetable lives in the video list: each artist carries its set time, in running order */
+const normN = s => String(s || "").toLowerCase().replace(/\bb2b\b/g, "b2b").replace(/[^a-z0-9]+/g, "");
+function lineupInfo() {
+  const L = (M.lineup || []).filter(x => x.n); const st = t => (/(\d{1,2})[:.](\d{2})/.exec(t || "") || []).slice(1, 3).map(Number), hm = a => a.length ? String(a[0]).padStart(2, "0") + ":" + String(a[1]).padStart(2, "0") : "";
+  return L.map((x, i) => { const m = String(x.t || "").match(/(\d{1,2})[:.](\d{2})\s*[-–—]\s*(\d{1,2})[:.](\d{2})/), a = st(x.t), nx = L[i + 1] ? st(L[i + 1].t) : st(M.end); return { key: normN(x.n), idx: i, t: m ? hm([+m[1], +m[2]]) + " – " + hm([+m[3], +m[4]]) : a.length ? hm(a) + (nx.length ? " – " + hm(nx) : "") : "" }; });
+}
+function slotFor(name, info) { const k = normN(name); return info.find(s => s.key === k) || info.find(s => s.key && (k.includes(s.key) || s.key.includes(k))) || null; }
+/* the finished audio of a set sits in that artist's folder: play it, download it */
+function audioRows() {
+  (M.audio || []).forEach(a => {
+    const g = String(a.group || "").split(" / ").filter(Boolean), i = g.findIndex(x => /^audio$/i.test(x)), who = i > 0 ? g[i - 1].toLowerCase() : "";
+    const art = [...document.querySelectorAll("#vlist details.art")].find(d => d.dataset.a.toLowerCase() === who) || (document.querySelectorAll("#vlist details.art").length === 1 ? document.querySelector("#vlist details.art") : null); if (!art) return;
+    const row = document.createElement("div"); row.className = "au";
+    row.innerHTML = `<button class="pl" type="button" aria-label="Play audio">▶</button><span><b>${esc(a.name.replace(/\.[^.]+$/, ""))}</b><br><em>Audio · ${esc(a.name.split(".").pop())}${a.size ? " · " + fmtB(a.size) : ""}</em></span><a href="${file(a.path)}" data-size="${a.size || 0}">Download audio</a>`;
+    const fh = art.querySelector(".fh"); (fh || art.querySelector(".body")).after(row);
+    row.querySelector(".pl").onclick = e => { let au = row.querySelector("audio"); if (!au) { au = document.createElement("audio"); au.controls = true; au.preload = "none"; au.src = demo ? a.path : url("file", { q: { p: a.path } }); row.querySelector("span").after(au); } if (au.paused) { document.querySelectorAll(".au audio").forEach(x => x !== au && x.pause()); au.play().catch(() => {}); e.target.textContent = "❚❚"; } else { au.pause(); e.target.textContent = "▶"; } au.onended = au.onpause = () => { row.querySelector(".pl").textContent = "▶"; }; };
+  });
+}
+
+/* a personal artist page: the page says the artist's name */
+function artistName() { return M.scope ? String(M.scope).split("/").filter(x => !/^clips$/i.test(x)).pop().replace(/\bb2b\b/gi, "B2B") : ""; }
 function render() {
   { const a = albums().filter(x => x.slug !== slug); a.unshift({ slug, title: M.title, client: M.client || "", at: Date.now() }); put2("sv-albums", JSON.stringify(a.slice(0, 20))); }
   const P = M.photos, V = M.videos; $("#barr").textContent = M.client || "Delivery";
   const date = M.date ? new Date(M.date + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
-  app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc([M.client, date].filter(Boolean).join(" · "))}</div><h1>${esc(M.title)}</h1>${M.note ? `<p class="note">${esc(M.note)}</p>` : ""}<div class="acts">${P.length && !M.select ? `<a href="${demo ? "#" : url("zip", { q: { sub: "" } })}"><button class="pri" type="button">Download everything</button></a>` : ""}${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
-  <main><div class="tabs">${P.length ? `<button class="on" data-t="p">Photos · ${P.length}</button>` : ""}${V.length ? `<button class="${P.length ? "" : "on"}" data-t="v">Video · ${V.length}</button>` : ""}<span class="sp"></span><button id="theme" aria-label="Dark or light">Light / dark</button></div>
-  ${P.length ? `<section class="sec" id="sp"><h2>Photos <small>click a photo to open, ♡ to mark a favourite</small></h2><div class="view" id="view"><span class="lab">View</span><button data-l="masonry">Masonry</button><button data-l="cells">Grid</button><button data-l="large">Large</button><button id="slide">Slideshow</button><span class="lab" style="margin-left:10px">Size</span><input id="sz" type="range" min="160" max="480" step="10" aria-label="Size"></div><div class="grid" id="grid">${P.map((p, i) => `<figure class="ph" data-i="${i}"><img data-src="${thumb(p.thumb, "w640h480")}" alt="${esc(p.name)}"><div class="tools"><button class="ic heart" data-h="${i}" aria-label="Favourite">♡</button>${M.select ? "" : `<a class="ic" href="${file(p.high || p.low || p.thumb)}" aria-label="Download" data-dl><button class="ic" type="button">↓</button></a>`}</div></figure>`).join("")}</div></section>` : ""}
+  app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc((artistName() ? [M.title, date] : [M.client ? "For " + M.client : "", date]).filter(Boolean).join(" · "))}</div><h1>${esc(artistName() || M.title)}</h1><p class="sub">${esc(deliveredLine())}<span>${esc(deliveredCounts())}</span></p>${M.locked && !M.select ? `<p class="lockn">Preview with watermark. The final files are released after approval.</p>` : ""}${M.note ? `<p class="note">${esc(M.note)}</p>` : ""}${M.location ? `<p class="loc"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5.5 12S10 8 10 5a4.5 4.5 0 10-9 0c0 3 4.5 7 4.5 7z"/><circle cx="5.5" cy="5" r="1.6"/></svg>${esc(M.location)}</p>` : ""}<div class="acts">${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
+  <main><div class="tabs">${P.length ? `<button class="on" data-t="p">Photos · ${P.length}</button>` : ""}${V.length ? `<button class="${P.length ? "" : "on"}" data-t="v">Video · ${V.length}</button>` : ""}<span class="sp"></span><button id="theme" class="tg" type="button" aria-label="Switch between dark and light" title="Dark / light"><i></i></button></div>
+  ${P.length ? `<section class="sec" id="sp"><h2>Photos</h2><div class="view" id="view"><span class="lab">View</span><button data-l="masonry">Masonry</button><button data-l="cells">Grid</button><button data-l="large">Large</button><button id="slide">Slideshow</button><button id="drift">Drift</button><span class="lab" style="margin-left:10px">Size</span><input id="sz" type="range" min="160" max="480" step="10" aria-label="Size"></div><div class="grid" id="grid">${P.map((p, i) => `<figure class="ph" data-i="${i}"><img data-src="${thumb(p.thumb, "w640h480")}" alt="${esc(p.name)}"><div class="tools"><button class="ic heart" data-h="${i}" aria-label="Favourite">♡</button>${M.select ? "" : `<a class="ic" href="${file(p.high || p.low || p.thumb)}" aria-label="Download" data-dl><button class="ic" type="button">↓</button></a>`}</div></figure>`).join("")}</div></section>` : ""}
   ${V.length ? videoHtml(V) : ""}<div class="rv"><p><b style="color:var(--paper)">Happy with the work?</b><br>A short review means a lot, and with your OK it can appear on stevyvergouwen.com.</p><button id="rvb">Leave a review</button></div></main>
-  <div class="fb"><div class="st" id="fst"></div><div class="acts"><button class="pri" id="fsend">Send feedback or approve</button></div></div>`;
-  wire(); stat();
+  <div class="fb"><div class="st" id="fst"></div>${(M.select || M.comments) ? `<span class="pbar"><i id="fpb"></i></span>` : ""}<div class="acts">${M.comments && !M.select ? `<button class="gl" id="fguide" type="button">Guide</button>` : ""}<button class="pri" id="fsend">Send feedback or approve</button></div></div>`;
+  wire(); stat(); document.body.classList.toggle("nofb", !(M.select || M.comments)); document.body.classList.toggle("locked", !!M.locked); if (!(M.select || M.comments)) document.querySelectorAll("#sp h2 small").forEach(el => { el.textContent = "click a photo to open it"; }); if (M.comments && !comments.length && !appr.size) loadFb(); fbDraw.forEach(f => f()); stat(); restoreFb(); fbGuide(false); thanksAfterDownload(); downloadAll(); reviewLink(); flickerTitle(document.querySelector(".hero h1")); heroVideo(); selGuide(); audioRows(); if (!M.select) reviewNudge();
 }
-function stat() { $("#fst").textContent = M.select ? `${fav.size} / ${M.select.limit} picked` : `${fav.size} favourite${fav.size === 1 ? "" : "s"} · ${comments.length} comment${comments.length === 1 ? "" : "s"}`; const fs = $("#fsend"); if (fs) fs.textContent = M.select ? "Send my selection" : "Send feedback or approve"; document.querySelectorAll(".ph").forEach(f => f.classList.toggle("fav", fav.has(M.photos[f.dataset.i].id))); document.querySelectorAll(".heart").forEach(h => h.textContent = fav.has(M.photos[h.dataset.h].id) ? "♥" : "♡"); }
+const eurT = n => "€" + (Math.round(n * 100) / 100).toLocaleString("nl-NL", { minimumFractionDigits: n % 1 ? 2 : 0 });
+function stat() { if (M.comments && !M.select) { const n = (M.videos || []).length, pb = $("#fpb"); if (pb && n) pb.style.width = Math.min(100, appr.size / n * 100) + "%"; const fbx = $(".fb"); if (fbx) fbx.classList.toggle("full", n > 0 && appr.size >= n); const fs0 = $("#fst"); if (fs0) fs0.textContent = `${appr.size} / ${n} videos approved · ${comments.length} comment${comments.length === 1 ? "" : "s"}`; } if (M.select) { const lim = M.select.limit, pb = $("#fpb"); if (pb) pb.style.width = Math.min(100, fav.size / lim * 100) + "%"; const fbx = $(".fb"); if (fbx) fbx.classList.toggle("full", fav.size >= lim); } $("#fst").textContent = M.select ? (fav.size > M.select.limit ? `${M.select.limit} included + ${fav.size - M.select.limit} extra: ${eurT((fav.size - M.select.limit) * M.select.extra)} extra in total` : fav.size === M.select.limit ? `${fav.size} / ${M.select.limit} chosen. That is your selection: send it${M.select.extra ? `, or add more for ${eurT(M.select.extra)} each` : ", or swap one"}.` : `${fav.size} / ${M.select.limit} chosen, ${M.select.limit - fav.size} to go`) : (M.comments ? `${appr.size} / ${(M.videos || []).length} videos approved · ${comments.length} comment${comments.length === 1 ? "" : "s"}` : `${fav.size} favourite${fav.size === 1 ? "" : "s"}`); const fs = $("#fsend"); if (fs) fs.textContent = M.select ? "Send my selection" : "Send feedback or approve"; document.querySelectorAll(".ph").forEach(f => f.classList.toggle("fav", fav.has(M.photos[f.dataset.i].id))); document.querySelectorAll(".heart").forEach(h => h.textContent = fav.has(M.photos[h.dataset.h].id) ? "♥" : "♡"); }
 function wire() {
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const im = e.target.querySelector("img"); if (im && !im.src) im.src = im.dataset.src; e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "300px" }); document.querySelectorAll(".ph").forEach((f, i) => { f.style.transitionDelay = (i % 8) * 40 + "ms"; io.observe(f); });
-  document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => { document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x === b)); ($(b.dataset.t === "p" ? "#sp" : "#sv")).scrollIntoView({ behavior: "smooth" }); });
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const im = e.target.querySelector("img"); if (im && !im.src) setImg(im, im.dataset.src); e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "300px" }); document.querySelectorAll(".ph").forEach((f, i) => { f.style.transitionDelay = (i % 8) * 40 + "ms"; io.observe(f); });
+  const showTab = (t, scroll) => {
+    document.querySelectorAll(".tabs button[data-t]").forEach(x => x.classList.toggle("on", x.dataset.t === t));
+    const sp = $("#sp"), sv = $("#sv"); if (sp) sp.style.display = t === "p" ? "" : "none"; if (sv) sv.style.display = t === "v" ? "" : "none";
+    try { sessionStorage.setItem("dtab:" + slug, t); } catch (e) {}
+    if (scroll) { const tb = $(".tabs"); window.scrollTo({ top: Math.max(0, tb.getBoundingClientRect().top + scrollY - 64), behavior: "auto" }); }
+  };
+  document.querySelectorAll(".tabs button[data-t]").forEach(b => b.onclick = () => showTab(b.dataset.t, true));
+  { const hasP = (M.photos || []).length, hasV = (M.videos || []).length; let t = hasV >= 12 || !hasP ? "v" : "p"; try { const s = sessionStorage.getItem("dtab:" + slug); if (s === "p" && hasP || s === "v" && hasV) t = s; } catch (e) {} showTab(t, false); }
   document.querySelectorAll(".ph").forEach(f => f.onclick = e => { if (e.target.closest("[data-h]")) { const id = M.photos[f.dataset.i].id; toggle(id); return; } if (e.target.closest("[data-dl]")) return; open(+f.dataset.i); });
   wireVideo();
-  $("#fsend").onclick = () => { $("#sh").textContent = M.select ? "Send my selection" : "Send feedback"; $("#sa").textContent = M.select ? "Send selection" : "Approve"; $("#sc").style.display = M.select ? "none" : ""; $("#fnote").parentElement.style.display = M.select ? "none" : ""; $("#sp").textContent = M.select ? `${fav.size} of ${M.select.limit} picked` : ""; $("#sheet").classList.add("on"); };
+  if ($("#fguide")) $("#fguide").onclick = () => fbGuide(true);
+  $("#fsend").onclick = () => { $("#sh").textContent = M.select ? "Send my selection" : "Send feedback"; $("#sa").textContent = M.select ? "Send selection" : "Approve"; $("#sc").style.display = M.select ? "none" : ""; $("#fnote").parentElement.style.display = M.select ? "none" : ""; try { if (!$("#fem").value) $("#fem").value = rem("sv-email") || ""; } catch (e) {} $("#sp").textContent = M.select ? `${fav.size} of ${M.select.limit} picked` : ""; $("#sheet").classList.add("on"); };
   // view: layout, size, theme, slideshow (remembered on this device; the default layout comes from the delivery)
   const store = (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } }, put = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
   const g = $("#grid"), sz = $("#sz");
@@ -260,7 +682,9 @@ function wire() {
     sz.value = store("dv-size", "260"); sz.oninput = () => { put("dv-size", sz.value); apply(); }; apply();
     $("#slide").onclick = () => { open(0); clearInterval(window.__sl); window.__sl = setInterval(() => open(cur + 1), 4000); };
   }
-  $("#theme").onclick = () => { const t = document.documentElement.dataset.theme === "light" ? "dark" : "light"; document.documentElement.dataset.theme = t; put("dv-theme", t); };
+  if ($("#drift")) $("#drift").onclick = openDrift;
+  $("#theme").onclick = () => { const t = document.documentElement.dataset.theme === "light" ? "dark" : "light"; document.documentElement.dataset.theme = t; put("dv-theme", t); $("#theme").classList.toggle("sw", t === "light"); };
+  $("#theme").classList.toggle("sw", document.documentElement.dataset.theme === "light");
   // review
   let stars = 0; const paint = () => document.querySelectorAll("#stars button").forEach(b => { b.textContent = +b.dataset.n <= stars ? "★" : "☆"; b.classList.toggle("on", +b.dataset.n <= stars); });
   document.querySelectorAll("#stars button").forEach(b => b.onclick = () => { stars = +b.dataset.n; paint(); });
@@ -269,8 +693,8 @@ function wire() {
     try { if (!demo) { const r = await fetch(url("review"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ rating: stars, text: $("#rt").value, name: $("#rn2").value, company: $("#rc").value, publish: $("#rp").checked }) }); if (!r.ok) throw 0; } $("#rmsg").textContent = "Thank you, that means a lot."; setTimeout(() => $("#rsheet").classList.remove("on"), 1800); }
     catch { $("#rmsg").textContent = "Sending failed. Please try again."; } };
 }
-function open(i) { cur = (i + M.photos.length) % M.photos.length; const p = M.photos[cur]; [cur + 1, cur - 1].forEach(j => { const n = M.photos[(j + M.photos.length) % M.photos.length]; if (n) new Image().src = thumb(n.thumb, "w2048h1536"); }); $("#lb").classList.add("on"); $("#lbi").src = thumb(p.thumb, "w2048h1536"); $("#lbh").textContent = fav.has(p.id) ? (M.select ? "♥ Picked" : "♥ Favourite") : (M.select ? "♡ Pick" : "♡ Favourite"); $("#lbd").href = file(p.high || p.low || p.thumb); $("#lbd").style.display = M.select ? "none" : ""; document.body.style.overflow = "hidden"; }
-function toggle(id) { if (fav.has(id)) fav.delete(id); else { if (M.select && fav.size >= M.select.limit) { $("#fst").textContent = `Limit reached: ${M.select.limit}. Remove one to pick another.`; return; } fav.add(id); } save(); stat(); }
+function open(i) { const big = M.watermark ? "w1024h768" : "w2048h1536"; cur = (i + M.photos.length) % M.photos.length; const p = M.photos[cur]; [cur + 1, cur - 1].forEach(j => { const n = M.photos[(j + M.photos.length) % M.photos.length]; if (n && !M.watermark) new Image().src = thumb(n.thumb, big); }); $("#lb").classList.add("on"); setImg($("#lbi"), thumb(p.thumb, big)); $("#lbh").textContent = fav.has(p.id) ? (M.select ? "♥ Picked" : "♥ Favourite") : (M.select ? "♡ Pick" : "♡ Favourite"); $("#lbd").href = file(p.high || p.low || p.thumb); $("#lbd").style.display = (M.select || M.locked) ? "none" : ""; document.body.style.overflow = "hidden"; }
+function toggle(id) { if (fav.has(id)) fav.delete(id); else { if (M.select && fav.size >= M.select.limit && !M.select.extra) { $("#fst").textContent = `Limit reached: ${M.select.limit}. Remove one to pick another. Want more? Ask Stevy.`; return; } fav.add(id); } save(); stat(); }
 const closeLb = () => { clearInterval(window.__sl); $("#lb").classList.remove("on"); document.body.style.overflow = ""; };
 let tx = 0; $("#lb").addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true }); $("#lb").addEventListener("touchend", e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) open(cur + (dx < 0 ? 1 : -1)); }, { passive: true });
 $("#lbd").addEventListener("click", async e => { if (!(navigator.canShare && matchMedia("(hover:none)").matches)) return; const p = M.photos[cur]; try { e.preventDefault(); const b = await (await fetch(file(p.high || p.low || p.thumb))).blob(); const f = new File([b], p.name + ".jpg", { type: b.type || "image/jpeg" }); if (navigator.canShare({ files: [f] })) await navigator.share({ files: [f] }); else location.href = file(p.high || p.low || p.thumb); } catch { location.href = file(p.high || p.low || p.thumb); } });
@@ -279,10 +703,22 @@ $("#lbh").onclick = () => { toggle(M.photos[cur].id); open(cur); };
 document.addEventListener("keydown", e => { if (!$("#lb").classList.contains("on")) return; if (e.key === "Escape") closeLb(); if (e.key === "ArrowLeft") open(cur - 1); if (e.key === "ArrowRight") open(cur + 1); });
 $("#sx").onclick = () => $("#sheet").classList.remove("on");
 async function send(decision) {
-  const body = { name: $("#fn").value, note: $("#fnote").value, decision, favorites: M.photos.filter(p => fav.has(p.id)).map(p => p.name), comments };
+  const what = M.comments || (M.videos || []).length ? "videos" : "photos", email = ($("#fem").value || "").trim();
+  const body = { name: $("#fn").value, note: $("#fnote").value, email, what, decision, favorites: M.photos.filter(p => fav.has(p.id)).map(p => p.name), comments, approved: [...appr] };
   $("#smsg").textContent = "Sending…";
-  try { if (!demo) { const r = await fetch(url("feedback"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify(body) }); if (!r.ok) throw 0; } $("#smsg").textContent = decision === "approved" ? "Thank you, approved." : "Thank you, Stevy will get back to you."; setTimeout(() => $("#sheet").classList.remove("on"), 1600); }
+  try { if (!demo) { const r = await fetch(url("feedback"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify(body) }); if (!r.ok) throw 0; } if (email) put2("sv-email", email); $("#smsg").textContent = ""; $("#sheet").classList.remove("on"); sentThanks(decision, what, !!email); }
   catch { $("#smsg").textContent = "Sending failed. Please try again or reply to Stevy by mail."; }
+}
+/* after "Send feedback": a proper thank-you, what happens next, and a way to leave a review */
+function sentThanks(decision, what, mailed) {
+  document.querySelector(".nzo.sent")?.remove(); const first = (($("#fn").value || "").trim().split(" ")[0]);
+  const o = document.createElement("div"); o.className = "nzo sent"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true");
+  const ok = decision === "approved";
+  o.innerHTML = `<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">${ok ? "Approved" : "Feedback received"}</div><h2>${ok ? "Thank you" : "Thanks for your feedback"}${first ? ", " + first.replace(/[<>&]/g, "") : ""}.</h2><p>${ok ? "All good then. Enjoy the " + what + ", and tag me when you post them." : "I am going to look into it and get back to you soon with the improved " + what + "."}</p>${mailed ? '<p class="small">A copy is on its way to your inbox.</p>' : ""}<div class="row"><button class="go" type="button">Leave a review</button><button class="no" type="button">Close</button></div></div>`;
+  document.body.appendChild(o); requestAnimationFrame(() => o.classList.add("on")); flickerTitle(o.querySelector("h2"));
+  const close = () => { o.classList.remove("on"); setTimeout(() => o.remove(), 700); };
+  o.querySelector(".x").onclick = close; o.querySelector(".no").onclick = close; o.addEventListener("click", e => { if (e.target === o) close(); });
+  o.querySelector(".go").onclick = () => { close(); const r = document.getElementById("rsheet"); if (r) setTimeout(() => r.classList.add("on"), 350); };
 }
 async function sendSel() {
   $("#smsg").textContent = "Sending…";
@@ -292,7 +728,7 @@ async function sendSel() {
 $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").onclick = () => send("changes");
 (async () => {
   if (!slug && !demo) { const a = albums(); app.innerHTML = `<div class="gate"><div style="width:min(460px,100%)"><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem;margin:10px 0 6px">${a.length ? "Your albums" : "Open your link"}</h1><p class="note" style="margin:0 auto">${a.length ? "Opened on this device. Tap to go back in." : "Use the link from your mail or message. Albums you open are listed here afterwards."}</p><div class="mine">${a.map(x => `<a href="/d/?c=${esc(x.slug)}"><b>${esc(x.title || "Delivery")}</b><span>${esc(x.client)}</span></a>`).join("")}</div></div></div>`; return; }
-  try { M = await load(kk()); render(); } catch (x) { x.gate ? gate(x.gate) : (app.innerHTML = `<div class="gate"><div><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem">${esc(x.msg || "Something went wrong.")}</h1></div></div>`); }
+  try { M = await load(kk()); render(); } catch (x) { if (!x.gate) console.error("delivery page:", x); x.gate ? gate(x.gate) : (app.innerHTML = `<div class="gate"><div><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem">${esc(x.msg || "Something went wrong.")}</h1></div></div>`); }
 })();
 })();
 </script>

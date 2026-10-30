@@ -1,12 +1,12 @@
 /* Crew briefing pages: /brief/<slug> serves one job's briefing (JSON) and /brief-img/<slug>/<id> its reference photos, for the page at /b/?c=<slug>.
    The link itself is the key (long random slug, noindex). Registration comes from the Projecten app with x-key = PRICE_CODE; records live in KV (IG) under "brief:<slug>" and "briefimg:<slug>:<id>", gone after 150 days. */
-import { json, same, tooMany } from "./delivery.js";
+import { json, tooMany, adminOk } from "./delivery.js";
 const SLUG = /^[a-z0-9]{10,40}$/, ID = /^[a-z0-9]{4,24}$/;
 const TTL = 150 * 86400;
 export async function handleBrief(request, env, url, origin) {
   const path = url.pathname;
   if ((path === "/brief-register" || path === "/brief-img-put") && request.method === "POST") {
-    if (!env.PRICE_CODE || !same(request.headers.get("x-key"), env.PRICE_CODE)) return json(401, { ok: false }, origin);
+    if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
     if (path === "/brief-register") {
       let b; try { b = JSON.parse((await request.text()).slice(0, 300000)); } catch { return json(400, { ok: false }, origin); }
       const slug = String(b.slug || ""); if (!SLUG.test(slug) || typeof b.doc !== "object" || !b.doc) return json(400, { ok: false, error: "slug or doc" }, origin);

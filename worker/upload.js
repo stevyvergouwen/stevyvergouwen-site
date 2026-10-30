@@ -1,7 +1,7 @@
 /* Upload pages: /upload/<slug>... lets people who shot for Stevy upload footage (whole folders, camera angles, recordings) straight into his Dropbox.
    Chunks of 8 MB go through this Worker into a Dropbox upload session, so a flaky connection only repeats one chunk and an interrupted upload can resume.
    Needs a SECOND, write-scoped Dropbox app (files.content.write): secrets DBXW_APP_KEY, DBXW_APP_SECRET, DBXW_REFRESH. Registration: POST /upload-register with x-key = PRICE_CODE. */
-import { dbxToken, json, same, tooMany } from "./delivery.js";
+import { dbxToken, json, same, tooMany, capKey, adminOk } from "./delivery.js";
 const SLUG = /^[a-z0-9]{10,40}$/;
 const clean = (t, n = 80) => String(t || "").replace(/[\\:*?"<>|\x00-\x1f]/g, "").replace(/\.\.+/g, ".").trim().slice(0, n);
 const relOk = r => String(r || "").split("/").map(x => clean(x, 120)).filter(x => x && x !== ".").join("/").slice(0, 400);
@@ -11,7 +11,7 @@ const content = async (env, endpoint, arg, body) => fetch("https://content.dropb
 export async function handleUpload(request, env, url, origin, notify) {
   const path = url.pathname;
   if (path === "/upload-register" && request.method === "POST") {
-    if (!env.PRICE_CODE || !same(request.headers.get("x-key"), env.PRICE_CODE)) return json(401, { ok: false }, origin);
+    if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
     let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
     const slug = String(b.slug || ""); if (!SLUG.test(slug) || !String(b.path || "").startsWith("/")) return json(400, { ok: false, error: "slug or path" }, origin);
     await env.IG.put("upl:" + slug, JSON.stringify({ path: String(b.path).replace(/\/+$/, ""), title: String(b.title || "").slice(0, 120), pass: String(b.pass || "").slice(0, 60), exp: Number(b.exp) || 0 }));
@@ -39,6 +39,7 @@ export async function handleUpload(request, env, url, origin, notify) {
     if (action === "chunk") {
       if (await tooMany(env, request, "upchunk", 4000, 3600)) return json(429, { error: "slow down" }, origin);
       if (off > 60 * 1024 * 1024 * 1024) return json(413, { error: "too big" }, origin);
+      if (await capKey(env, "upslug:" + slug, 12000, 86400)) return json(429, { error: "daily limit" }, origin);   // about 200 GB a day per upload link
       const body = await request.arrayBuffer(); if (body.byteLength > 16 * 1024 * 1024) return json(413, { error: "chunk too big" }, origin);
       const r = await content(env, "upload_session/append_v2", { cursor: { session_id: sid, offset: off }, close: false }, body);
       if (r.status === 409) { const e = await r.json().catch(() => ({})); const c = e && e.error && e.error.correct_offset; if (typeof c === "number") return json(409, { offset: c }, origin); return json(409, { error: "conflict" }, origin); }

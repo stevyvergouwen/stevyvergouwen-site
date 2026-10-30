@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev; media-src 'self' blob: https://*.dropboxusercontent.com https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev; connect-src 'self' https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
@@ -54,7 +55,7 @@ details.fg>summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-it
 details.fg>summary .ch2{transition:transform .25s;color:var(--dim);font-size:12px}details.fg[open]>summary .ch2{transform:rotate(90deg)}
 details.fg>summary b{font:700 14px var(--sans)}details.fg>summary span.c{color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
 details.fg>summary a{margin-left:auto}
-.art .bar2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}.art .bar2 button{font:inherit;color:var(--dim);background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}.art .bar2 button:hover{color:var(--paper);border-color:var(--paper)}
+.art .bar2{display:flex;gap:12px 10px;align-items:center;flex-wrap:wrap;margin:18px 0 16px}.art .bar2 button{font:inherit;color:var(--dim);background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}.art .bar2 button:hover{color:var(--paper);border-color:var(--paper)}
 .shf{display:none;gap:8px;flex-wrap:wrap;align-items:flex-end;margin:10px 0 2px;padding:12px;border:1px solid var(--faint);border-radius:6px;background:var(--ink)}.shf.on{display:flex}
 .shf button{font:inherit;color:var(--paper);background:none;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}.shf button.pri{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 .shf input{flex:1 1 180px;min-width:0;font:inherit;color:var(--paper);background:transparent;border:1px solid var(--line);border-radius:4px;padding:9px 10px}.shf .m{flex:1 1 100%;font-size:11px;color:var(--blue)}
@@ -129,6 +130,10 @@ details.fg>summary a{margin-left:auto}
 .bar .shb{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--paper);border-radius:999px;padding:8px 14px;margin-left:auto;margin-right:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;white-space:nowrap}.bar .shb+.rvl{margin-left:0}
 .shl{display:flex;flex-direction:column;margin-top:14px}.shr{display:grid;grid-template-columns:minmax(120px,1.1fr) 1.4fr auto minmax(54px,auto);gap:8px;align-items:center;padding:9px 0;border-top:1px solid var(--faint)}.shr .sn{font:700 13px var(--sans);text-transform:uppercase;letter-spacing:-.01em}.shr input{margin:0;min-width:0}.shr button{font:inherit;color:var(--paper);background:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}.shr .ss{font-size:10px;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;word-break:break-all}
 @media (max-width:620px){.shr{grid-template-columns:1fr auto}.shr .sn{grid-column:1/-1}.shr input{grid-column:1}.shr .ss{grid-column:1/-1}.bar .shb{margin-right:6px;padding:7px 11px;font-size:9px}}
+.nodl .ph [data-dl],.nodl #lbd{display:none!important}
+.art .dla{display:inline-flex;align-items:center;justify-content:center;margin-left:8px;padding:8px;color:var(--dim);flex:none;line-height:0;transition:color .2s,transform .2s}.art .dla:hover,.art .dla:focus-visible{color:var(--paper);transform:translateY(1px)}
+.onlyfav .ph:not(.fav){display:none!important}
+.artistpg .rv,.artistpg .rvl{display:none!important}
 .nofb [data-h],.nofb .fb,.nofb #fst{display:none!important}
 .nudge{position:fixed;right:clamp(14px,3vw,34px);bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:12px;max-width:min(380px,calc(100vw - 28px));padding:12px 14px 12px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(17,17,20,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--paper);cursor:pointer;box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(24px) scale(.96);opacity:0;pointer-events:none;transition:transform .7s cubic-bezier(.2,.9,.2,1.15),opacity .6s ease}
 .nudge.on{transform:none;opacity:1;pointer-events:auto}
@@ -177,8 +182,8 @@ main{padding:0 var(--pad) 140px}
 .art{border:1px solid var(--faint);border-radius:6px;margin-bottom:14px;background:var(--ink2);overflow:hidden}
 .art>summary{list-style:none;cursor:pointer;display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:16px 18px}
 .art>summary::-webkit-details-marker{display:none}
-.art .an{font:700 clamp(1.05rem,2.4vw,1.35rem) var(--sans);letter-spacing:-.02em;flex:1 1 220px}
-.art .am{color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.art .an{font:700 clamp(1.05rem,2.4vw,1.35rem) var(--sans);letter-spacing:-.02em;flex:0 1 auto}
+.art .am{color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-left:auto}
 .art .as{color:var(--blue);font-size:12px;letter-spacing:.08em}
 .art .ch{transition:transform .25s;color:var(--dim)}.art[open] .ch{transform:rotate(90deg)}
 .art .body{padding:4px 18px 18px;border-top:1px solid var(--faint)}
@@ -249,7 +254,7 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 <script>
 (() => {
 const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
-const q = new URLSearchParams(location.search), slug = q.get("c") || location.hash.slice(1) || "", demo = q.has("demo") && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);   // test mode only on this Mac: a live link can never be pointed at someone else's data
+const q = new URLSearchParams(location.search), slug = ((s0 => /^[a-z0-9]{10,40}$/.test(s0) ? s0 : "")(q.get("c") || location.hash.slice(1) || "")), demo = q.has("demo") && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);   // test mode only on this Mac: a live link can never be pointed at someone else's data
 try { document.documentElement.dataset.theme = localStorage.getItem("dv-theme") || "dark"; } catch {}
 const $ = s => document.querySelector(s), app = $("#app"), esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const kk = () => sessionStorage.getItem("dp:" + slug) || "";
@@ -333,8 +338,8 @@ function videoHtml(V) {
       const mine = V.map((v, i) => ({ v, i, x: I[i] })).filter(o => o.x.artist === a), size = mine.reduce((s, o) => s + (o.v.size || 0), 0);
       const mf = [...new Set(mine.map(o => o.x.fmt))].filter(f => fmts.includes(f)).sort((p, q) => fmts.indexOf(p) - fmts.indexOf(q));
       const counts = mf.map(f => `${f} · ${mine.filter(o => o.x.fmt === f).length}`).join("  /  ");
-      return `<details class="art" data-a="${esc(a)}" ${single || arts.length <= 2 ? "open" : ""}><summary>${(() => { const s = M.scope ? null : slotFor(a, LU); return s && s.t ? `<span class="at">${esc(s.t)}</span>` : ""; })()}<span class="an">${esc(a)}</span><span class="am">${counts}</span><span class="as">${fmtB(size)}</span><span class="ch">›</span></summary><div class="body">
-        <div class="bar2"><span class="c" style="color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase">${mine.length} clips</span><button type="button" data-x="open">Expand formats</button><button type="button" data-x="close">Collapse formats</button>${M.comments ? `<button type="button" data-apall="1">Approve all</button>` : ""}${M.share && !M.scope && arts.length > 1 ? `<button type="button" data-share="${esc(mine[0].x.asub.replace(/\/CLIPS$/i, ""))}" data-name="${esc(a)}">Share with this artist</button>` : ""}</div><div class="fh" style="margin-top:6px">${mine[0].x.asub ? `<a href="${zip(mine[0].x.asub)}" data-size="${size}">Download all clips · ${fmtB(size)}</a>` : ""}</div>
+      return `<details class="art" data-a="${esc(a)}" ${single || arts.length <= 2 ? "open" : ""}><summary>${(() => { const s = M.scope ? null : slotFor(a, LU); return s && s.t ? `<span class="at">${esc(s.t)}</span>` : ""; })()}<span class="an">${esc(a)}</span>${mine[0].x.asub ? `<a class="dla" href="${zip(mine[0].x.asub)}" data-size="${size}" title="Download all clips · ${fmtB(size)}" aria-label="Download all clips of ${esc(a)}, ${fmtB(size)}"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M6.2 0h1.6v8.2l2.6-2.6 1.1 1.1L7 11 2.5 6.7l1.1-1.1 2.6 2.6z"/><path d="M1 12h12v1.5H1z"/></svg></a>` : ""}<span class="am">${counts}</span><span class="as">${fmtB(size)}</span><span class="ch">›</span></summary><div class="body">
+        <div class="bar2"><span class="c" style="color:var(--dim);font-size:10px;letter-spacing:.14em;text-transform:uppercase">${mine.length} clips</span><button type="button" data-x="open">Expand formats</button><button type="button" data-x="close">Collapse formats</button>${M.comments ? `<button type="button" data-apall="1">Approve all</button>` : ""}${M.share && !M.scope && arts.length > 1 ? `<button type="button" data-share="${esc(mine[0].x.asub.replace(/\/CLIPS$/i, ""))}" data-name="${esc(a)}">Share</button>` : ""}</div>
         ${mf.flatMap(f => { const inF = mine.filter(o => o.x.fmt === f), rs = [...new Set(inF.map(o => o.x.res))].sort((p, q) => ({ "HD": 0, "4K": 1 }[p] ?? 5) - ({ "HD": 0, "4K": 1 }[q] ?? 5)); return rs.map((r, ri) => ({ f, r, ri, nr: rs.length, set: inF.filter(o => o.x.res === r), all: inF })); }).map(g => {
           const sz = g.set.reduce((s, o) => s + (o.v.size || 0), 0), allSz = g.all.reduce((s, o) => s + (o.v.size || 0), 0), vert = /^(9:16|4:5)$/.test(g.f), rfn = g.set[0].x.rf, title = g.f + (g.r ? " · " + g.r : "");
           return `<details class="fg" data-f="${esc(g.f)}" ${g.ri === 0 && g.f === mf[0] ? "open" : ""}><summary class="fh"><span class="ch2">›</span><b>${esc(title)}</b><span class="c">${g.set.length} clips · ${fmtB(sz)}</span>${rfn && g.ri === 0 ? `<a href="${zip(g.set[0].x.sub + "/" + rfn)}" data-size="${allSz}">Download ${esc(g.f)}${g.nr > 1 ? ", all qualities" : ""} · ${fmtB(allSz)}</a>` : ""}</summary>
@@ -439,6 +444,7 @@ function heroVideo() {
 
 /* a quiet nudge after a while: liked the work? leave a review for the website */
 function reviewNudge() {
+  if (M.scope) return;
   try {
     const K = "sv-nudge-" + slug, till = +(localStorage.getItem(K) || 0); if (!demo && till > Date.now()) return;
     if (document.querySelector(".nzo")) return;
@@ -475,9 +481,9 @@ function downloadAll() {
   const I = V.map(vinfo), arts = [...new Set(I.map(x => x.artist))].sort((a, b) => a.localeCompare(b));
   const artRows = arts.map(a => { const mine = V.map((v, i) => ({ v, x: I[i] })).filter(o => o.x.artist === a), sz = mine.reduce((s, o) => s + (o.v.size || 0), 0); return mine[0].x.asub ? { a, sz, href: zip(mine[0].x.asub) } : null; }).filter(Boolean);
   const row = (t, sub, href, size) => `<a href="${href}"${size ? ` data-size="${size}"` : ""}><span>${esc(t)}${sub ? `<em>${esc(sub)}</em>` : ""}</span><small>${esc(size ? fmtB(size) : "")}</small></a>`;
-  const photoAll = parent ? row("Photos, as in the folder", `HighRes + LowRes · ${P.length} photos`, zip(parent)) : "";
-  const photoHi = hi ? row("High resolution only", `${nHi} photos`, zip(dir(hi.high))) : "";
-  const photoLo = lo ? row("Web size only", `${nLo} photos`, zip(dir(lo.low))) : "";
+  const photoAll = M.nodl ? "" : parent ? row("Photos, as in the folder", `HighRes + LowRes · ${P.length} photos`, zip(parent)) : "";
+  const photoHi = M.nodl ? "" : hi ? row("High resolution only", `${nHi} photos`, zip(dir(hi.high))) : "";
+  const photoLo = M.nodl ? "" : lo ? row("Web size only", `${nLo} photos`, zip(dir(lo.low))) : "";
   const parts = [photoAll || photoHi].filter(Boolean).concat(artRows.map(r => row(r.a, "clips", r.href, r.sz)));
   const totVid = V.reduce((s, v) => s + (v.size || 0), 0);
   dl = document.createElement("div"); dl.className = "dl";
@@ -485,7 +491,7 @@ function downloadAll() {
   const b = document.createElement("button"); b.className = "dlb"; b.type = "button"; b.textContent = "Download all"; b.setAttribute("aria-haspopup", "true"); dl.appendChild(b);
   const panel = document.createElement("div"); panel.className = "dlp"; panel.setAttribute("role", "menu");
   panel.innerHTML = `<h4>Everything, as in the Dropbox folder</h4>${parts.join("")}<p class="n">In parts, because one zip of this size is not possible. Every part keeps the folder structure, so unzipped they fit together.</p>`
-    + (P.length ? `<h4>Photos only</h4>${photoAll}${photoHi}${photoLo}<p class="n">${ontbreekt ? `Checked: ${ontbreekt} photo${ontbreekt === 1 ? " has" : "s have"} no matching ${nHi < nLo ? "high resolution" : "web size"} file yet.` : `Checked: all ${P.length} photos are there in high resolution and in web size.`}</p>` : "")
+    + (P.length && !M.nodl ? `<h4>Photos only</h4>${photoAll}${photoHi}${photoLo}<p class="n">${ontbreekt ? `Checked: ${ontbreekt} photo${ontbreekt === 1 ? " has" : "s have"} no matching ${nHi < nLo ? "high resolution" : "web size"} file yet.` : `Checked: all ${P.length} photos are there in high resolution and in web size.`}</p>` : "")
     + (M.dropbox ? `<h4>Prefer Dropbox?</h4><a href="${esc(M.dropbox)}" target="_blank" rel="noopener"><span>Open in Dropbox<em>The same folder, in your own Dropbox</em></span><small>↗</small></a>` : "")
     + (artRows.length ? `<h4>Video only, per artist · ${fmtB(totVid)}</h4>${artRows.map(r => row(r.a, "", r.href, r.sz)).join("")}` : "");
   document.body.appendChild(panel);
@@ -543,7 +549,7 @@ function openDrift() {
 /* watermark for portraits, presskits and selections: the photo is drawn with the mark burned in, so a saved image carries it too */
 const wmCache = new Map();
 function wmSrc(src) {
-  if (!M.watermark) return Promise.resolve(src);
+  if (!M.watermark || M.wmserver) return Promise.resolve(src);   // the server already serves watermarked copies
   if (wmCache.has(src)) return wmCache.get(src);
   const pr = new Promise(res => { const im = new Image(); im.crossOrigin = "anonymous";
     im.onload = () => { try {
@@ -639,7 +645,7 @@ function audioRows() {
     const art = [...document.querySelectorAll("#vlist details.art")].find(d => d.dataset.a.toLowerCase() === who) || (document.querySelectorAll("#vlist details.art").length === 1 ? document.querySelector("#vlist details.art") : null); if (!art) return;
     const row = document.createElement("div"); row.className = "au";
     row.innerHTML = `<button class="pl" type="button" aria-label="Play audio">▶</button><span><b>${esc(a.name.replace(/\.[^.]+$/, ""))}</b><br><em>Audio · ${esc(a.name.split(".").pop())}${a.size ? " · " + fmtB(a.size) : ""}</em></span><a href="${file(a.path)}" data-size="${a.size || 0}">Download audio</a>`;
-    const fh = art.querySelector(".fh"); (fh || art.querySelector(".body")).after(row);
+    const anchor = art.querySelector(".bar2") || art.querySelector(".body"); anchor.after(row);
     row.querySelector(".pl").onclick = e => { let au = row.querySelector("audio"); if (!au) { au = document.createElement("audio"); au.controls = true; au.preload = "none"; au.src = demo ? a.path : url("file", { q: { p: a.path } }); row.querySelector("span").after(au); } if (au.paused) { document.querySelectorAll(".au audio").forEach(x => x !== au && x.pause()); au.play().catch(() => {}); e.target.textContent = "❚❚"; } else { au.pause(); e.target.textContent = "▶"; } au.onended = au.onpause = () => { row.querySelector(".pl").textContent = "▶"; }; };
   });
 }
@@ -668,16 +674,24 @@ function shareButton() {
   const anchor = bar.querySelector(".rvl") || bar.querySelector(".dl") || bar.querySelector("#barr"); anchor.parentNode.insertBefore(b, anchor);
 }
 
+/* a selection delivery: what you picked stays visible on any device, and the finished photos are one click away */
+async function selectionExtras() {
+  if (!M.select) return; const bar = document.querySelector(".fb .acts"); if (!bar) return;
+  if (!demo) { try { const r = await fetch(url("selection"), { headers: { "x-tok": tk(), "x-pass": kk() } }); const j = await r.json().catch(() => ({})); if ((j.names || []).length) { (M.photos || []).forEach(p => { if (j.names.includes(p.name)) fav.add(p.id); }); save(); stat(); } if (j.at) { const d = document.querySelector("#fst"); if (d) d.dataset.sent = new Date(j.at).toLocaleDateString("en-GB", { day: "numeric", month: "long" }); } } catch (e) { /* the local picks stay */ } }
+  if (!document.getElementById("onlyp")) { const b = document.createElement("button"); b.id = "onlyp"; b.type = "button"; b.className = "gl"; b.textContent = "My picks"; b.onclick = () => { const on = document.body.classList.toggle("onlyfav"); b.textContent = on ? "All photos" : "My picks"; window.scrollTo({ top: document.getElementById("sp").offsetTop - 70, behavior: "smooth" }); }; bar.insertBefore(b, bar.firstChild); }
+  if (M.final && !document.getElementById("finalb")) { const b = document.createElement("button"); b.id = "finalb"; b.type = "button"; b.className = "pri"; b.textContent = "View final photos"; b.onclick = async () => { b.textContent = "Opening…"; try { const r = await fetch(url("final"), { headers: { "x-tok": tk(), "x-pass": kk() } }); const j = await r.json(); if (!j.link) throw 0; location.href = j.link; } catch (e) { b.textContent = "Not ready yet"; setTimeout(() => { b.textContent = "View final photos"; }, 2500); } }; bar.insertBefore(b, bar.firstChild); }
+}
+
 function render() {
   { const a = albums().filter(x => x.slug !== slug); a.unshift({ slug, title: M.title, client: M.client || "", at: Date.now() }); put2("sv-albums", JSON.stringify(a.slice(0, 20))); }
   const P = M.photos, V = M.videos; $("#barr").textContent = M.client || "Delivery";
   const date = M.date ? new Date(M.date + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
-  app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc((artistName() ? [M.title, date] : [M.client ? "For " + M.client : "", date]).filter(Boolean).join(" · "))}</div><h1>${esc(artistName() || M.title)}</h1><p class="sub">${esc(deliveredLine())}<span>${esc(deliveredCounts())}</span></p>${M.locked && !M.select ? `<p class="lockn">Preview with watermark. The final files are released after approval.</p>` : ""}${M.note ? `<p class="note">${esc(M.note)}</p>` : ""}${M.location ? `<p class="loc"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5.5 12S10 8 10 5a4.5 4.5 0 10-9 0c0 3 4.5 7 4.5 7z"/><circle cx="5.5" cy="5" r="1.6"/></svg>${esc(M.location)}</p>` : ""}<div class="acts">${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
+  app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc((artistName() ? [M.title, date] : [M.client ? "For " + M.client : "", date]).filter(Boolean).join(" · "))}</div><h1>${esc(artistName() || M.title)}</h1><p class="sub">${esc(deliveredLine())}<span>${esc(deliveredCounts())}</span></p>${M.locked && !M.select ? `<p class="lockn">Preview with watermark. The final files are released after approval.</p>` : ""}${artistName() ? `<p class="note">Thanks for playing at ${esc(M.title)}. Your clips and audio are below, in every format.</p>` : M.note ? `<p class="note">${esc(M.note)}</p>` : ""}${M.location ? `<p class="loc"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5.5 12S10 8 10 5a4.5 4.5 0 10-9 0c0 3 4.5 7 4.5 7z"/><circle cx="5.5" cy="5" r="1.6"/></svg>${esc(M.location)}</p>` : ""}<div class="acts">${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
   <main><div class="tabs">${P.length ? `<button class="on" data-t="p">Photos · ${P.length}</button>` : ""}${V.length ? `<button class="${P.length ? "" : "on"}" data-t="v">Video · ${V.length}</button>` : ""}<span class="sp"></span><button id="theme" class="tg" type="button" aria-label="Switch between dark and light" title="Dark / light"><i></i></button></div>
   ${P.length ? `<section class="sec" id="sp"><h2>Photos</h2><div class="view" id="view"><span class="lab">View</span><button data-l="masonry">Masonry</button><button data-l="cells">Grid</button><button data-l="large">Large</button><button id="slide">Slideshow</button><button id="drift">Drift</button><span class="lab" style="margin-left:10px">Size</span><input id="sz" type="range" min="160" max="480" step="10" aria-label="Size"></div><div class="grid" id="grid">${P.map((p, i) => `<figure class="ph" data-i="${i}"><img data-src="${thumb(p.thumb, "w640h480")}" alt="${esc(p.name)}"><div class="tools"><button class="ic heart" data-h="${i}" aria-label="Favourite">♡</button>${M.select ? "" : `<a class="ic" href="${file(p.high || p.low || p.thumb)}" aria-label="Download" data-dl><button class="ic" type="button">↓</button></a>`}</div></figure>`).join("")}</div></section>` : ""}
   ${V.length ? videoHtml(V) : ""}<div class="rv"><p><b style="color:var(--paper)">Happy with the work?</b><br>A short review means a lot, and with your OK it can appear on stevyvergouwen.com.</p><button id="rvb">Leave a review</button></div></main>
   <div class="fb"><div class="st" id="fst"></div>${(M.select || M.comments) ? `<span class="pbar"><i id="fpb"></i></span>` : ""}<div class="acts">${M.comments && !M.select ? `<button class="gl" id="fguide" type="button">Guide</button>` : ""}<button class="pri" id="fsend">Send feedback or approve</button></div></div>`;
-  wire(); stat(); document.body.classList.toggle("nofb", !(M.select || M.comments)); document.body.classList.toggle("locked", !!M.locked); if (!(M.select || M.comments)) document.querySelectorAll("#sp h2 small").forEach(el => { el.textContent = "click a photo to open it"; }); if (M.comments && !comments.length && !appr.size) loadFb(); fbDraw.forEach(f => f()); stat(); restoreFb(); fbGuide(false); thanksAfterDownload(); downloadAll(); reviewLink(); flickerTitle(document.querySelector(".hero h1")); heroVideo(); selGuide(); audioRows(); shareButton(); if (!M.select) reviewNudge();
+  wire(); stat(); document.body.classList.toggle("nofb", !(M.select || M.comments)); document.body.classList.toggle("locked", !!M.locked); document.body.classList.toggle("nodl", !!M.nodl); document.body.classList.toggle("artistpg", !!M.scope); if (!(M.select || M.comments)) document.querySelectorAll("#sp h2 small").forEach(el => { el.textContent = "click a photo to open it"; }); if (M.comments && !comments.length && !appr.size) loadFb(); fbDraw.forEach(f => f()); stat(); restoreFb(); fbGuide(false); thanksAfterDownload(); downloadAll(); reviewLink(); flickerTitle(document.querySelector(".hero h1")); heroVideo(); selGuide(); audioRows(); shareButton(); selectionExtras(); if (!M.select) reviewNudge();
 }
 const eurT = n => "€" + (Math.round(n * 100) / 100).toLocaleString("nl-NL", { minimumFractionDigits: n % 1 ? 2 : 0 });
 function stat() { if (M.comments && !M.select) { const n = (M.videos || []).length, pb = $("#fpb"); if (pb && n) pb.style.width = Math.min(100, appr.size / n * 100) + "%"; const fbx = $(".fb"); if (fbx) fbx.classList.toggle("full", n > 0 && appr.size >= n); const fs0 = $("#fst"); if (fs0) fs0.textContent = `${appr.size} / ${n} videos approved · ${comments.length} comment${comments.length === 1 ? "" : "s"}`; } if (M.select) { const lim = M.select.limit, pb = $("#fpb"); if (pb) pb.style.width = Math.min(100, fav.size / lim * 100) + "%"; const fbx = $(".fb"); if (fbx) fbx.classList.toggle("full", fav.size >= lim); } $("#fst").textContent = M.select ? (fav.size > M.select.limit ? `${M.select.limit} included + ${fav.size - M.select.limit} extra: ${eurT((fav.size - M.select.limit) * M.select.extra)} extra in total` : fav.size === M.select.limit ? `${fav.size} / ${M.select.limit} chosen. That is your selection: send it${M.select.extra ? `, or add more for ${eurT(M.select.extra)} each` : ", or swap one"}.` : `${fav.size} / ${M.select.limit} chosen, ${M.select.limit - fav.size} to go`) : (M.comments ? `${appr.size} / ${(M.videos || []).length} videos approved · ${comments.length} comment${comments.length === 1 ? "" : "s"}` : `${fav.size} favourite${fav.size === 1 ? "" : "s"}`); const fs = $("#fsend"); if (fs) fs.textContent = M.select ? "Send my selection" : "Send feedback or approve"; document.querySelectorAll(".ph").forEach(f => f.classList.toggle("fav", fav.has(M.photos[f.dataset.i].id))); document.querySelectorAll(".heart").forEach(h => h.textContent = fav.has(M.photos[h.dataset.h].id) ? "♥" : "♡"); }
@@ -716,7 +730,7 @@ function wire() {
     try { if (!demo) { const r = await fetch(url("review"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ rating: stars, text: $("#rt").value, name: $("#rn2").value, company: $("#rc").value, publish: $("#rp").checked }) }); if (!r.ok) throw 0; } $("#rmsg").textContent = "Thank you, that means a lot."; setTimeout(() => $("#rsheet").classList.remove("on"), 1800); }
     catch { $("#rmsg").textContent = "Sending failed. Please try again."; } };
 }
-function open(i) { const big = M.watermark ? "w640h480" : "w2048h1536"; cur = (i + M.photos.length) % M.photos.length; const p = M.photos[cur]; [cur + 1, cur - 1].forEach(j => { const n = M.photos[(j + M.photos.length) % M.photos.length]; if (n && !M.watermark) new Image().src = thumb(n.thumb, big); }); $("#lb").classList.add("on"); setImg($("#lbi"), thumb(p.thumb, big)); $("#lbh").textContent = fav.has(p.id) ? (M.select ? "♥ Picked" : "♥ Favourite") : (M.select ? "♡ Pick" : "♡ Favourite"); $("#lbd").href = file(p.high || p.low || p.thumb); $("#lbd").style.display = (M.select || M.locked) ? "none" : ""; document.body.style.overflow = "hidden"; }
+function open(i) { const big = M.watermark && !M.wmserver ? "w640h480" : "w2048h1536"; cur = (i + M.photos.length) % M.photos.length; const p = M.photos[cur]; [cur + 1, cur - 1].forEach(j => { const n = M.photos[(j + M.photos.length) % M.photos.length]; if (n && !M.watermark) new Image().src = thumb(n.thumb, big); }); $("#lb").classList.add("on"); setImg($("#lbi"), thumb(p.thumb, big)); $("#lbh").textContent = fav.has(p.id) ? (M.select ? "♥ Picked" : "♥ Favourite") : (M.select ? "♡ Pick" : "♡ Favourite"); $("#lbd").href = file(p.high || p.low || p.thumb); $("#lbd").style.display = (M.select || M.locked) ? "none" : ""; document.body.style.overflow = "hidden"; }
 function toggle(id) { if (fav.has(id)) fav.delete(id); else { if (M.select && fav.size >= M.select.limit && !M.select.extra) { $("#fst").textContent = `Limit reached: ${M.select.limit}. Remove one to pick another. Want more? Ask Stevy.`; return; } fav.add(id); } save(); stat(); }
 const closeLb = () => { clearInterval(window.__sl); $("#lb").classList.remove("on"); document.body.style.overflow = ""; };
 let tx = 0; $("#lb").addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true }); $("#lb").addEventListener("touchend", e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) open(cur + (dx < 0 ? 1 : -1)); }, { passive: true });
@@ -726,7 +740,7 @@ $("#lbh").onclick = () => { toggle(M.photos[cur].id); open(cur); };
 document.addEventListener("keydown", e => { if (!$("#lb").classList.contains("on")) return; if (e.key === "Escape") closeLb(); if (e.key === "ArrowLeft") open(cur - 1); if (e.key === "ArrowRight") open(cur + 1); });
 $("#sx").onclick = () => $("#sheet").classList.remove("on");
 async function send(decision) {
-  const what = M.comments || (M.videos || []).length ? "videos" : "photos", email = ($("#fem").value || "").trim();
+  const V0 = (M.videos || []).length, P0 = (M.photos || []).length, what = V0 && P0 ? "both" : V0 ? "videos" : "photos", email = ($("#fem").value || "").trim();
   const body = { name: $("#fn").value, note: $("#fnote").value, email, what, decision, favorites: M.photos.filter(p => fav.has(p.id)).map(p => p.name), comments, approved: [...appr] };
   $("#smsg").textContent = "Sending…";
   try { if (!demo) { const r = await fetch(url("feedback"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify(body) }); if (!r.ok) throw 0; } if (email) put2("sv-email", email); $("#smsg").textContent = ""; $("#sheet").classList.remove("on"); sentThanks(decision, what, !!email); }
@@ -737,7 +751,7 @@ function sentThanks(decision, what, mailed) {
   document.querySelector(".nzo.sent")?.remove(); const first = (($("#fn").value || "").trim().split(" ")[0]);
   const o = document.createElement("div"); o.className = "nzo sent"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true");
   const ok = decision === "approved";
-  o.innerHTML = `<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">${ok ? "Approved" : "Feedback received"}</div><h2>${ok ? "Thank you" : "Thanks for your feedback"}${first ? ", " + first.replace(/[<>&]/g, "") : ""}.</h2><p>${ok ? "All good then. Enjoy the " + what + ", and tag me when you post them." : "I am going to look into it and get back to you soon with the improved " + what + "."}</p>${mailed ? '<p class="small">A copy is on its way to your inbox.</p>' : ""}<div class="row"><button class="go" type="button">Leave a review</button><button class="no" type="button">Close</button></div></div>`;
+  o.innerHTML = `<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">${ok ? "Approved" : "Feedback received"}</div><h2>${ok ? "Thank you" : "Thanks for your feedback"}${first ? ", " + first.replace(/[<>&]/g, "") : ""}.</h2><p>${ok ? "All good then. Enjoy the " + (what === "both" ? "videos and photos" : what) + ", and tag me when you post them." : "I am going to look into it and get back to you soon with the improved " + (what === "both" ? "videos and photos" : what) + "."}</p>${mailed ? '<p class="small">A copy is on its way to your inbox.</p>' : ""}<div class="row"><button class="go" type="button">Leave a review</button><button class="no" type="button">Close</button></div></div>`;
   document.body.appendChild(o); requestAnimationFrame(() => o.classList.add("on")); flickerTitle(o.querySelector("h2"));
   const close = () => { o.classList.remove("on"); setTimeout(() => o.remove(), 700); };
   o.querySelector(".x").onclick = close; o.querySelector(".no").onclick = close; o.addEventListener("click", e => { if (e.target === o) close(); });

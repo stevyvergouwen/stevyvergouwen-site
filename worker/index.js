@@ -2,7 +2,7 @@
    Uses Cloudflare Email Routing's send_email binding: no API key, no third party.
    Setup: see worker/README.md */
 import { EmailMessage } from "cloudflare:email";
-import { handleDelivery, giveToken } from "./delivery.js";
+import { handleDelivery, giveToken, deliveryStats } from "./delivery.js";
 import { handleUpload } from "./upload.js";
 import { handleBrief } from "./brief.js";
 
@@ -64,16 +64,18 @@ const text = (s, max = 2000) => String(s ?? "").replace(/\r/g, "").trim().slice(
 // ---- mails in the style of the site: dark, uppercase headline, hairlines, the signature banner for the client.
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const b64 = str => { const by = new TextEncoder().encode(str); let bin = ""; for (const x of by) bin += String.fromCharCode(x); return btoa(bin).replace(/.{1,76}/g, "$&\r\n").trim(); };
-function mailParts({ heading, eyebrow, intro, rows, note, sign, cta, lang }) {
+function mailParts({ heading, eyebrow, intro, rows, note, sign, cta, lang, stats }) {
   const items = (rows || []).filter(r => r && r[1]);
-  const text = [heading, "", ...(intro ? [intro, ""] : []), ...items.map(r => `${r[0]}: ${r[1]}${r[2] ? "  (" + r[2] + ")" : ""}`), ...(note ? ["", note] : []), ...(cta ? ["", `${cta.text}: ${cta.href}`] : []), ...(sign ? ["", (lang === "nl" ? "Hartelijke groet," : "Kind regards,"), "Stevy Vergouwen", "https://stevyvergouwen.com"] : [])].join("\n");
+  const text = [heading, "", ...(intro ? [intro, ""] : []), ...((stats || []).length ? [(stats || []).map(s => `${s[1]}: ${s[0]}`).join("  ·  "), ""] : []), ...items.map(r => `${r[0]}: ${r[1]}${r[2] ? "  (" + r[2] + ")" : ""}`), ...(note ? ["", note] : []), ...(cta ? ["", `${cta.text}: ${cta.href}`] : []), ...(sign ? ["", (lang === "nl" ? "Hartelijke groet," : "Kind regards,"), "Stevy Vergouwen", "https://stevyvergouwen.com"] : [])].join("\n");
   const F = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif";
   const rowsHtml = items.map(r => `<tr><td style="padding:20px 0;border-top:1px solid #232327"><div style="${F};font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#8d8b85;margin:0 0 7px">${esc(r[0])}</div><div style="${F};font-size:17px;line-height:1.5;color:#f1efe9">${r[2] ? `<a href="${esc(r[2])}" style="color:#f1efe9;text-decoration:underline;text-underline-offset:3px">${esc(r[1])}</a>` : esc(r[1]).replace(/\n/g, "<br>")}</div></td></tr>`).join("");
+  const statsHtml = (stats || []).length ? `<tr><td style="padding:0 0 34px"><table role="presentation" width="100%"><tr>${stats.map(s => `<td valign="top" style="padding:0 18px 0 0"><div style="${F};font-size:44px;line-height:1;font-weight:800;letter-spacing:-.04em;color:#f1efe9">${esc(s[0])}</div><div style="${F};padding-top:9px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#5b84ff">${esc(s[1])}</div></td>`).join("")}</tr></table></td></tr>` : "";
   const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#050506" bgcolor="#050506"><table role="presentation" width="100%" bgcolor="#050506" style="background:#050506"><tr><td align="center" style="padding:0 18px"><table role="presentation" width="620" style="max-width:620px;width:100%;${F};color:#f1efe9">
 <tr><td style="padding:44px 0 56px"><table role="presentation" width="100%"><tr><td style="${F};font-size:12px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#ffffff">Stevy Vergouwen</td><td align="right" style="${F};font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#6f6d68">${esc(eyebrow || "")}</td></tr></table></td></tr>
 <tr><td style="${F};padding:0 0 22px;font-size:46px;line-height:.98;font-weight:800;letter-spacing:-.035em;text-transform:uppercase;color:#f1efe9">${esc(heading)}</td></tr>
 <tr><td style="padding:0 0 34px"><div style="width:44px;height:2px;background:#5b84ff;font-size:0;line-height:0">&nbsp;</div></td></tr>
 ${intro ? `<tr><td style="${F};padding:0 0 38px;font-size:18px;line-height:1.55;color:#d6d3cd">${esc(intro)}</td></tr>` : ""}
+${statsHtml}
 ${rowsHtml}
 <tr><td style="border-top:1px solid #232327;font-size:0;line-height:0;height:1px">&nbsp;</td></tr>
 ${note ? `<tr><td style="${F};padding:22px 0 0;font-size:14px;line-height:1.55;color:#8d8b85">${esc(note)}</td></tr>` : ""}
@@ -175,7 +177,7 @@ async function sendNotify(env, { replyTo, subject, heading, intro, rows, cta: ct
   const { text, html } = mailParts({ heading, eyebrow: "New", intro, rows, sign: false, cta: ctaOverride ? ctaOverride : replyTo ? { text: "Reply to " + (String(replyTo[0]).split(" ")[0] || "them"), href: "mailto:" + replyTo[1] + "?subject=" + encodeURIComponent("Re: " + (subject || "your request")) } : null });
   const to = env.MAIL_TO || "info@stevyvergouwen.com";
   if (env.BREVO_API_KEY) {
-    const r = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen site", email: "info@stevyvergouwen.com" }, to: [{ email: to }], ...(replyTo ? { replyTo: { email: replyTo[1], name: String(replyTo[0]).slice(0, 80) } } : {}), subject, htmlContent: html, textContent: text }, "notify " + subject);
+    const r = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen site", email: "info@stevyvergouwen.com" }, to: [{ email: to }], ...(replyTo && /^[^\s@<>",]+@[^\s@<>",]+\.[^\s@<>",]{2,}$/.test(replyTo[1]) ? { replyTo: { email: replyTo[1], name: String(replyTo[0]).replace(/[\r\n<>"]/g, "").slice(0, 80) } } : {}), subject, htmlContent: html, textContent: text }, "notify " + subject);
     if (!r.ok) throw new Error("brevo " + r.status);
     return;
   }
@@ -238,10 +240,10 @@ async function feedbackRun(env, dry) {
         out.due++; if (dry) continue;
         const nl = rec.lang === "nl", first = (rec.name || "").split(" ").find(w => w && !/^(none|null|undefined|nan)$/i.test(w)) || (nl ? "daar" : "there");
         const { text, html } = nl
-          ? mailParts({ lang: "nl", heading: "Hoe was het?", eyebrow: "Feedback", intro: `Hoi ${first}, het was fijn om met je samen te werken. Ben je tevreden met het resultaat? Dan zou ik het erg waarderen als je een paar woorden wilt delen over de samenwerking. Het kost twee minuten en met jouw toestemming mag het op mijn website.`, cta: { text: "Deel je ervaring", href: `https://stevyvergouwen.com/${env.FEEDBACK_PATH}/nl/` }, note: "Liever geen mails als deze? Reageer even en ik haal je eraf.", sign: true })
-          : mailParts({ heading: "How was it?", eyebrow: "Feedback", intro: `Hi ${first}, it was a pleasure working with you. If you are happy with the result, would you share a few words about the experience? It takes two minutes, and with your permission it may appear on my website.`, cta: { text: "Share your experience", href: `https://stevyvergouwen.com/${env.FEEDBACK_PATH}/` }, note: "If you would rather not get this kind of mail, just reply and let me know.", sign: true });
+          ? mailParts({ lang: "nl", heading: "Vond je het fijn?", eyebrow: "Feedback", intro: `Hoi ${first}, het was fijn om met je samen te werken. Ben je tevreden met het resultaat? Dan zou ik het erg waarderen als je een paar woorden wilt delen over de samenwerking. Het kost twee minuten en met jouw toestemming mag het op mijn website.`, cta: { text: "Deel je ervaring", href: `https://stevyvergouwen.com/${env.FEEDBACK_PATH}/nl/` }, note: "Liever geen mails als deze? Reageer even en ik haal je eraf.", sign: true })
+          : mailParts({ heading: "Did you like working with me?", eyebrow: "Feedback", intro: `Hi ${first}, it was a pleasure working with you. If you are happy with the result, would you share a few words about the experience? It takes two minutes, and with your permission it may appear on my website.`, cta: { text: "Share your experience", href: `https://stevyvergouwen.com/${env.FEEDBACK_PATH}/` }, note: "If you would rather not get this kind of mail, just reply and let me know.", sign: true });
         try {
-          const res = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: rec.email, name: rec.name || undefined }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: nl ? "Hoe was het? | Stevy Vergouwen" : "How was it? | Stevy Vergouwen", htmlContent: html, textContent: text }, "feedback " + rec.email);
+          const res = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: rec.email, name: rec.name || undefined }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: nl ? "Vond je het fijn? | Stevy Vergouwen" : "Did you like working with me? | Stevy Vergouwen", htmlContent: html, textContent: text }, "feedback " + rec.email);
           if (res.ok) { r.fbSent = new Date().toISOString(); changed = true; out.sent++; for (const o of rec.requests) if (o !== r && !o.fbSent) o.fbSent = "skipped"; break; } else console.error("feedback mail failed:", res.status);
         } catch (e) { console.error("feedback mail error:", String(e && e.message || e)); }
       }
@@ -251,6 +253,18 @@ async function feedbackRun(env, dry) {
   return out;
 }
 
+/** Atomic counter for rate limits and code guesses: every hit is counted one after the other, so parallel requests cannot slip past a limit. */
+export class Counter {
+  constructor(state) { this.state = state; }
+  async fetch(request) {
+    const u = new URL(request.url), win = Number(u.searchParams.get("win")) || 3600, max = Number(u.searchParams.get("max")) || 1, now = Date.now();
+    let s = (await this.state.storage.get("s")) || { n: 0, until: 0 };
+    if (now > s.until) { s = { n: 0, until: now + win * 1000 }; await this.state.storage.setAlarm(s.until + 1000); }
+    s.n++; await this.state.storage.put("s", s);
+    return new Response(JSON.stringify({ n: s.n, over: s.n > max }));
+  }
+  async alarm() { await this.state.storage.deleteAll(); }
+}
 export default {
   // mails only go out in the daytime: the cron fires at 07:00 and 08:00 UTC and the work only runs when it is 09:00 in Amsterdam (summer and winter time both work)
   async scheduled(event, env, ctx) {
@@ -262,7 +276,7 @@ export default {
     const origin = request.headers.get("Origin") || "";
     const okOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
 
-    const dRes = await handleDelivery(request, env, new URL(request.url), okOrigin, a => sendNotify(env, a), (to, subject, text) => brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], subject, textContent: text }, "delivery"), async (to, m) => { const { text, html } = mailParts({ heading: m.heading, eyebrow: m.eyebrow, intro: m.intro, rows: m.rows || [], note: m.note, cta: m.cta, sign: true, lang: "en" }); return brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: m.subject, htmlContent: html, textContent: text }, "artist page"); }); if (dRes) return dRes;
+    const dRes = await handleDelivery(request, env, new URL(request.url), okOrigin, a => sendNotify(env, a), (to, subject, text) => brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], subject, textContent: text }, "delivery"), async (to, m) => { const { text, html } = mailParts({ heading: m.heading, eyebrow: m.eyebrow, intro: m.intro, rows: m.rows || [], stats: m.stats, note: m.note, cta: m.cta, sign: true, lang: "en" }); return brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: m.subject, htmlContent: html, textContent: text }, "artist page"); }); if (dRes) return dRes;
     const bRes = await handleBrief(request, env, new URL(request.url), okOrigin); if (bRes) return bRes;
     const uRes = await handleUpload(request, env, new URL(request.url), okOrigin, a => sendNotify(env, a)); if (uRes) return uRes;
     if (request.method === "OPTIONS") return new Response(null, { status: okOrigin ? 204 : 403, headers: okOrigin ? cors(okOrigin) : {} });
@@ -305,17 +319,21 @@ export default {
       const feedback = b.kind === "feedback";
       if (feedback) {
         const link2 = `https://stevyvergouwen.com/d/?c=${slug}${tok ? "&t=" + tok : ""}&review=1`;
-        const { text, html } = mailParts({ heading: nl ? "Hoe vond je het?" : "How did it go?", eyebrow: "Feedback",
+        const { text, html } = mailParts({ heading: nl ? "Vond je het fijn?" : "Did you like working with me?", eyebrow: "Feedback",
           intro: nl ? `Hi${first ? " " + first : ""}, bedankt voor het vertrouwen bij ${title}. Laat even weten wat je ervan vond. Moet er nog iets aangepast worden, schrijf het gewoon op je pagina. Een korte review helpt me ook enorm.` : `Hi ${first}, thank you for trusting me with ${title}. Let me know how it went. If something should change, just write it on your page. A short review helps me a lot too.`,
           rows: [], note: nl ? "Je pagina met alle bestanden blijft beschikbaar via deze link. Downloaden kan daar ook nog." : "Your page with all the files stays available through this link. You can still download there.",
           cta: { text: nl ? "Geef feedback" : "Give feedback", href: link2 }, sign: true, lang: nl ? "nl" : "en" });
-        const r2 = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: b.preview ? "info@stevyvergouwen.com" : to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: (b.preview ? "[Preview] " : "") + (nl ? `Hoe vond je ${title}?` : `How was ${title}?`), htmlContent: html, textContent: text }, "feedback mail");
+        const r2 = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: b.preview ? "info@stevyvergouwen.com" : to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: (b.preview ? "[Preview] " : "") + (nl ? `Vond je het fijn? ${title}` : `Did you like working with me? ${title}`), htmlContent: html, textContent: text }, "feedback mail");
         return reply(r2.ok ? 200 : 502, { ok: r2.ok, preview: !!b.preview }, okOrigin);
       }
-      const { text, html } = mailParts({ heading: nl ? `Je ${wat} staan klaar.` : `Your ${wat} are ready.`, eyebrow: nl ? "Oplevering" : "Delivery",
-        intro: nl ? `Hi${first ? " " + first : ""}, de ${wat} van ${title} staan voor je klaar. Bekijk ze, download ze en vink je favorieten aan op je eigen pagina.` : `Hi ${first}, the ${wat} from ${title} are ready for you. View them, download them and mark your favourites on your own page.`,
-        rows, note: nl ? "Deze link is persoonlijk: open hem zo vaak als je wilt. Moet er iets anders? Laat het achter op de pagina; bij een video kun je reageren op het exacte moment. Een korte review helpt me enorm." : "This link is personal: open it as often as you like. Should something change? Leave it on the page; on a video you can comment at the exact moment. A short review helps me a lot.",
-        cta: { text: nl ? "Bekijk je oplevering" : "View your delivery", href: link }, sign: true, lang: nl ? "nl" : "en" });
+      let st = null; try { st = await deliveryStats(env, drec, scope); } catch { /* the mail goes with the numbers from the app */ }
+      const label = (n, one, many) => n === 1 ? one : many;
+      const stats = st ? [...(st.clips ? [[String(st.clips), nl ? "Clips" : label(st.clips, "Clip", "Clips")]] : []), ...(st.photos ? [[String(st.photos), nl ? "Foto's" : label(st.photos, "Photo", "Photos")]] : []), ...(st.sets > 1 ? [[String(st.sets), "Sets"]] : []), ...(st.formats.length > 1 ? [[String(st.formats.length), "Formats"]] : st.audio ? [[String(st.audio), "Audio"]] : [])].slice(0, 4) : [];
+      const facts = st ? [...(st.formats.length ? [["Formats", st.formats.join("  /  ")]] : []), ...(st.audio ? [["Audio", st.audio === 1 ? "1 recording" : st.audio + (nl ? " opnames" : " recordings")]] : []), ...(st.gb ? [[nl ? "Totaal" : "Total", st.gb + " GB"]] : [])] : rows;
+      const { text, html } = mailParts({ heading: nl ? "Je content staat klaar." : "Your content is ready.", eyebrow: nl ? "Oplevering" : "Delivery", stats,
+        intro: nl ? `Hi${first ? " " + first : ""}, alles van ${title} staat voor je klaar: bekijk het, download het in elk formaat en vink je favorieten aan op je eigen pagina.` : `Hi ${first}, everything from ${title} is ready for you: watch it, download it in every format and mark your favourites on your own page.`,
+        rows: facts, note: nl ? "Deze link is persoonlijk. De eerste keer op een apparaat sturen we een code naar dit adres, zodat een doorgestuurde mail voor niemand anders opent. Moet er iets anders? Laat het achter op de pagina; bij een video kun je reageren op het exacte moment." : "This link is personal. The first time on a device we send a code to this address, so a forwarded mail opens for nobody else. Should something change? Leave it on the page; on a video you can comment at the exact moment.",
+        cta: { text: nl ? "Bekijk je content" : "View your content", href: link }, sign: true, lang: nl ? "nl" : "en" });
       const r = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: b.preview ? "info@stevyvergouwen.com" : to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: (b.preview ? "[Preview] " : "") + (nl ? `Je ${wat} van ${title}` : `Your ${wat} from ${title}`), htmlContent: html, textContent: text }, "delivery mail");
       return reply(r.ok ? 200 : 502, { ok: r.ok, preview: !!b.preview }, okOrigin);
     }
@@ -328,10 +346,10 @@ export default {
       if (!(await env.IG.get("brief:" + slug))) return reply(404, { ok: false, error: "no such briefing" }, okOrigin);
       const nl = b.lang === "nl", first = String(b.name || "").split(" ")[0] || (nl ? "" : "there"), title = String(b.title || "").slice(0, 120);
       const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 8).map(r => [String(r[0] || "").slice(0, 40), String(r[1] || "").slice(0, 100)]).filter(r => r[1]);
-      const { text, html } = mailParts({ heading: nl ? `Je briefing voor ${title}.` : `Your briefing for ${title}.`, eyebrow: "Briefing",
-        intro: nl ? `Hi${first ? " " + first : ""}, alles wat je nodig hebt voor ${title} staat op één pagina: line-up, camera-angles, contactgegevens, voorbeeldfoto's en waar je je beelden uploadt.` : `Hi ${first}, everything you need for ${title} is on one page: line-up, camera angles, contacts, reference photos and where to upload your footage.`,
-        rows, note: nl ? "Zit er iets niet goed of mis je iets? Stuur me een berichtje. Deze pagina wordt bijgewerkt als er iets verandert, dus open altijd dezelfde link." : "Is something off or missing? Message me. This page is updated when something changes, so always open the same link.",
-        cta: { text: nl ? "Open de briefing" : "Open the briefing", href: `https://stevyvergouwen.com/b/?c=${slug}` }, sign: true, lang: nl ? "nl" : "en" });
+      const { text, html } = mailParts({ heading: nl ? "Fijn dat je erbij bent." : "Thank you for joining the team.", eyebrow: "Briefing",
+        intro: nl ? `Hi${first ? " " + first : ""}! Bedankt dat je meedoet met het team voor ${title}. Lees de briefing goed door: line-up, camera-angles, contactgegevens, voorbeeldfoto's en waar je je beelden uploadt staan op één pagina.` : `Hi ${first}! Thank you for joining the team for ${title}. Please read the briefing carefully: line-up, camera angles, contacts, reference photos and where to upload your footage are all on one page.`,
+        rows, note: nl ? "Lees hem vóór de avond helemaal door. Zit er iets niet goed of mis je iets? Stuur me een berichtje. De pagina wordt bijgewerkt als er iets verandert, dus open altijd dezelfde link." : "Read it through before the night. Is something off or missing? Message me. The page is updated when something changes, so always open the same link.",
+        cta: { text: nl ? "Lees de briefing" : "Read the briefing", href: `https://stevyvergouwen.com/b/?c=${slug}` }, sign: true, lang: nl ? "nl" : "en" });
       const r = await brevo(env, "/smtp/email", { sender: { name: "Stevy Vergouwen", email: "info@stevyvergouwen.com" }, to: [{ email: b.preview ? "info@stevyvergouwen.com" : to }], replyTo: { email: "info@stevyvergouwen.com", name: "Stevy Vergouwen" }, subject: (b.preview ? "[Preview] " : "") + (nl ? `Briefing: ${title}` : `Briefing: ${title}`), htmlContent: html, textContent: text }, "briefing mail");
       return reply(r.ok ? 200 : 502, { ok: r.ok, preview: !!b.preview }, okOrigin);
     }

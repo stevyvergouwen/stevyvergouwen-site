@@ -178,6 +178,13 @@ a.zr:hover{border-color:rgba(255,255,255,.4);transform:translateX(4px)}
 :root[data-theme="light"] .zs{background:rgba(244,241,234,.8)}
 #thm{width:40px;height:40px;border:1px solid var(--line);background:none;color:var(--paper);cursor:pointer;font:500 13px var(--mono);transition:background .3s,color .3s}
 #thm:hover{background:var(--paper);color:var(--ink)}
+
+/* stat pills are buttons that jump to their block, magnetic like the rest */
+button.pill{cursor:pointer;background:rgba(8,8,10,.35);backdrop-filter:blur(8px);font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;transition:background .3s,color .3s,border-color .3s,translate .45s cubic-bezier(.3,1.6,.5,1)}
+button.pill:hover{background:var(--paper);color:var(--ink);border-color:var(--paper)}button.pill:hover b{color:var(--ink)}
+.mag{will-change:translate}
+:root[data-theme="light"] button.pill{background:rgba(244,241,234,.5)}
+
 </style>
 </head>
 <body>
@@ -225,11 +232,11 @@ function render(m) {
   const photos = H.length + P.length + HI.length + LO.length; window.__all = [...H, ...P, ...HI, ...LO, ...V];
   const bits = [m.location, ].filter(Boolean);
   const pills = [];
-  if (H.length) pills.push(`<span class="pill"><b>${nf(H.length)}</b> highlights</span>`);
-  if (P.length) pills.push(`<span class="pill"><b>${nf(P.length)}</b> previews</span>`);
-  if (HI.length) pills.push(`<span class="pill"><b>${nf(HI.length)}</b> ${LO.length ? "high res" : "photos"}</span>`);
-  if (LO.length) pills.push(`<span class="pill"><b>${nf(LO.length)}</b> low res</span>`);
-  if (V.length) pills.push(`<span class="pill"><b>${nf(V.length)}</b> ${V.length === 1 ? "clip" : "clips"}</span>`);
+  if (H.length) pills.push(`<button type="button" class="pill mag" data-go="hl"><b>${nf(H.length)}</b> highlights</button>`);
+  if (P.length) pills.push(`<button type="button" class="pill mag" data-go="pv"><b>${nf(P.length)}</b> previews</button>`);
+  if (HI.length) pills.push(`<button type="button" class="pill mag" data-go="high"><b>${nf(HI.length)}</b> ${LO.length ? "high res" : "photos"}</button>`);
+  if (LO.length) pills.push(`<button type="button" class="pill mag" data-go="low"><b>${nf(LO.length)}</b> low res</button>`);
+  if (V.length) pills.push(`<button type="button" class="pill mag" data-go="vids"><b>${nf(V.length)}</b> ${V.length === 1 ? "clip" : "clips"}</button>`);
   const clientLink = `${location.origin}${location.pathname}?c=${slug}`;
   // downloads (Brada view only): a folder as one zip made by Dropbox while it streams, or one file at a time
   const subOf = list => { const parts = ((list[0] && list[0].p) || "").split("/"); const i = parts.findIndex(x => /^(highres|lowres|previews?|highlights)$/i.test(x)); return i > 0 ? parts.slice(0, i + 1).join("/") : parts.slice(0, -1).join("/"); };
@@ -240,7 +247,7 @@ function render(m) {
   if (P.length) h += `<section><div class="sh"><h2>Previews</h2><span class="mono">swipe</span>${zipBtn(P, "Download folder")}</div><div class="pv" id="pv"></div></section>`;
   if (V.length) h += `<section><div class="sh"><h2>Videos</h2><span class="mono">${nf(V.length)} ${V.length === 1 ? "clip" : "clips"}</span></div><div class="vids" id="vids"></div></section>`;
   if (HI.length || LO.length) {
-    h += `<section><div class="sh"><h2>Full album</h2><span class="mono">${nf(HI.length + LO.length)} photos${HI.length && LO.length ? " · 2 folders" : ""}</span></div>`;
+    h += `<section id="fullalbum"><div class="sh"><h2>Full album</h2><span class="mono">${nf(HI.length + LO.length)} photos${HI.length && LO.length ? " · 2 folders" : ""}</span></div>`;
     if (HI.length && LO.length) h += `<div class="flt" id="flt"><button data-f="both" class="on">Both</button><button data-f="high">High res · ${nf(HI.length)}</button><button data-f="low">Low res · ${nf(LO.length)}</button></div>`;
     if (HI.length) h += `<div class="fold" data-f="high"><div class="fh"><h3>${LO.length ? "High res" : "Photos"}<span>${nf(HI.length)} photos</span></h3>${zipBtn(HI, "Download folder") || (m.downloadAll ? `<a class="btn brada-only" id="dla" href="${esc(m.downloadAll)}">Download all (zip)</a>` : "")}</div><div class="album" id="al-high"></div></div>`;
     if (LO.length) h += `<div class="fold" data-f="low"><div class="fh"><h3>Low res<span>${nf(LO.length)} photos · web size</span></h3>${zipBtn(LO, "Download folder")}</div><div class="album" id="al-low"></div></div>`;
@@ -262,13 +269,28 @@ function render(m) {
   // the banner: a slow slideshow of the photos (highlights first), each cut and zoomed by the page and nudged by the pointer, with grain over it. No file is made for it.
   // Without photos, a few clips fade into each other and slowly push in.
   const pool = H.length >= 3 ? H : [...H, ...P, ...HI, ...LO];
-  const picks = []; if (pool.length) { const n = Math.min(6, pool.length); for (let i = 0; i < n; i++) picks.push(pool[Math.floor(i * pool.length / n)]); }
+  const cand = []; if (pool.length) { const n = Math.min(40, pool.length); for (let i = 0; i < n; i++) cand.push(pool[Math.floor(i * pool.length / n)]); }
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, box = $("#slides");
+  const picks = cand;
   if (picks.length) {
     const dirs = [["-2%", "1%", "2%", "-1%"], ["2%", "-1%", "-2%", "1%"], ["0%", "2%", "0%", "-2%"], ["-1%", "-2%", "1%", "2%"]];
-    const sl = picks.map((it, i) => { const d = document.createElement("div"); d.className = "sl"; const dr = dirs[i % 4]; d.style.setProperty("--x0", dr[0]); d.style.setProperty("--y0", dr[1]); d.style.setProperty("--x1", dr[2]); d.style.setProperty("--y1", dr[3]); box.appendChild(d); const im = new Image(); im.onload = () => { d.style.backgroundImage = `url(${im.src})`; d.dataset.ok = "1"; }; im.src = img(it.p, true); return d; });
+    // every candidate is measured; wide photos make the banner, a vertical one is only used (aimed at the upper third, where the faces are) when fewer than three wide ones exist
+    // a vertical photo is zoomed to fill the wide banner; the visible band is the one with the most detail and light, leaning to the upper third where faces are (no pixel access: fixed 34%)
+    const aim = im => { try { const W = 48, H = Math.max(8, Math.round(48 * im.naturalHeight / im.naturalWidth)), c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(im, 0, 0, W, H); const d = x.getImageData(0, 0, W, H).data, L = i => d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11, row = new Array(H).fill(0);
+        for (let r = 0; r < H - 1; r++) for (let q = 0; q < W - 1; q++) { const i = r * W + q; row[r] += Math.abs(L(i) - L(i + 1)) + Math.abs(L(i) - L(i + W)) + L(i) * .15; }
+        const win = Math.max(3, Math.round(W * 9 / 16 * 0.5 * (H / W) * 0.0 + W * 7 / 16)), span = Math.max(1, H - win); let best = 0, bs = -1;
+        for (let y0 = 0; y0 <= span; y0++) { let sc = 0; for (let r = y0; r < y0 + win && r < H; r++) sc += row[r]; const mid = (y0 + win / 2) / H; sc *= Math.exp(-Math.pow((mid - .38) / .3, 2)); if (sc > bs) { bs = sc; best = y0; } }
+        return span ? Math.round(best / span * 100) : 34; } catch (e) { return 34; } };
+    const sl = picks.map((it, i) => { const d = document.createElement("div"); d.className = "sl"; const dr = dirs[i % 4]; d.style.setProperty("--x0", dr[0]); d.style.setProperty("--y0", dr[1]); d.style.setProperty("--x1", dr[2]); d.style.setProperty("--y1", dr[3]); box.appendChild(d); const im = new Image(); im.onload = () => { d.dataset.p = it.p; d.dataset.wide = im.naturalWidth / im.naturalHeight >= 1.25 ? "1" : ""; if (!d.dataset.wide) d.style.backgroundPosition = "50% " + aim(im) + "%"; d.dataset.ok = "1"; settle(); }; im.onerror = () => { d.dataset.bad = "1"; settle(); }; im.src = img(it.p, false); return d; });
+    let settled = false;
+    function settle() {
+      if (settled) return; const done = sl.filter(x => x.dataset.ok || x.dataset.bad).length; if (done < sl.length && !(done >= 8 && sl.filter(x => x.dataset.wide).length >= 6)) return; settled = true;
+      let wide = sl.filter(x => x.dataset.wide); if (wide.length < 4) wide = wide.concat(sl.filter(x => x.dataset.ok && !x.dataset.wide)).slice(0, 5); wide.forEach(x => box.appendChild(x)); wide.sort((p, q) => (q.dataset.wide ? 1 : 0) - (p.dataset.wide ? 1 : 0));
+      const keep = new Set(wide.slice(0, 6)); keep.forEach(x => { x.style.backgroundImage = `url(${img(x.dataset.p, true)})`; }); sl.forEach(x => { if (!keep.has(x)) { x.dataset.ok = ""; x.remove(); } });
+    }
+    setTimeout(() => { if (!settled) { const early = sl.filter(x => x.dataset.ok).length; if (early) { settled = false; sl.forEach(x => { if (!x.dataset.ok && !x.dataset.bad) x.dataset.bad = "1"; }); settle(); } } }, 6000);
     let cu = -1; const show = () => { const ok = sl.filter(x => x.dataset.ok); if (!ok.length) return; cu = (cu + 1) % ok.length; sl.forEach(x => x.classList.remove("on")); void ok[cu].offsetWidth; ok[cu].classList.add("on"); };
-    const first = setInterval(() => { if (sl.some(x => x.dataset.ok)) { clearInterval(first); show(); if (!reduce && sl.length > 1) setInterval(show, 7000); } }, 200);
+    const first = setInterval(() => { if (settled && sl.some(x => x.dataset.ok)) { clearInterval(first); show(); if (!reduce && sl.filter(x => x.dataset.ok).length > 1) setInterval(show, 7000); } }, 200);
     if (!reduce && matchMedia("(pointer: fine)").matches) $("header").addEventListener("pointermove", e => { const r = e.currentTarget.getBoundingClientRect(); box.style.transform = `translate(${((e.clientX - r.left) / r.width - .5) * -22}px, ${((e.clientY - r.top) / r.height - .5) * -14}px)`; });
   } else if (V.length && !reduce) {
     const list = V.filter(v => v.s && v.s < 400e6).sort((a, b) => a.s - b.s).slice(0, 4);
@@ -369,6 +391,27 @@ else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => 
   const set = v => { r.dataset.theme = v; };
   set(t || sys()); matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => { if (!t) set(sys()); });
   document.getElementById("thm").onclick = () => { t = r.dataset.theme === "light" ? "dark" : "light"; try { localStorage.setItem(K, t); } catch (e) {} set(t); };
+})();
+</script>
+<script>
+/* the stat buttons jump to their block; buttons and pills pull towards the pointer (magnetic) */
+(() => {
+  document.addEventListener("click", e => { const b = e.target.closest("button.pill[data-go]"); if (!b) return; const g = b.dataset.go;
+    let t = null;
+    if (g === "hl" || g === "pv" || g === "vids") t = document.getElementById(g);
+    else { const f = document.querySelector('#flt [data-f="' + g + '"]'); if (f && !f.classList.contains("on")) f.click(); t = document.querySelector('.fold[data-f="' + g + '"]') || document.getElementById("fullalbum"); }
+    if (t) { const y = t.getBoundingClientRect().top + scrollY - 90; scrollTo({ top: y, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); } });
+  if (!matchMedia("(pointer: fine)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const SEL = ".btn, button.pill, .flt button, .vm button, #thm, .tabs button, .zr, .bar .dlb";
+  let cur = null;
+  const reset = el => { el.style.translate = ""; };
+  addEventListener("pointermove", e => {
+    const el = document.elementFromPoint(e.clientX, e.clientY), t = el && el.closest ? el.closest(SEL) : null;
+    if (cur && cur !== t) { reset(cur); cur = null; }
+    const cand = t || [...document.querySelectorAll(SEL)].find(n => { const r = n.getBoundingClientRect(); return e.clientX > r.left - 28 && e.clientX < r.right + 28 && e.clientY > r.top - 28 && e.clientY < r.bottom + 28; });
+    if (!cand) return; cur = cand; const r = cand.getBoundingClientRect();
+    cand.style.translate = `${((e.clientX - (r.left + r.width / 2)) * .28).toFixed(1)}px ${((e.clientY - (r.top + r.height / 2)) * .38).toFixed(1)}px`; }, { passive: true });
+  document.addEventListener("pointerleave", () => { if (cur) { reset(cur); cur = null; } });
 })();
 </script>
 </body>

@@ -962,8 +962,10 @@ function heroFit() {
   (async () => {
     // no guessing from thumbnails: a handful of photos spread over the album, wide ones first when their shape is known
     const spread = n => { const out = [], step = Math.max(1, pool.length / n); for (let k = 0; k < n && Math.floor(k * step) < pool.length; k++) out.push(pool[Math.floor(k * step)]); return out; };
-    const wide = pool.filter(p => p.ar && p.ar > 1.15), picks = (wide.length >= 4 ? wide.filter((_, k) => k % Math.max(1, Math.floor(wide.length / 6)) === 0) : spread(6)).slice(0, 6);
-    const list = [...(lead ? [lead] : []), ...picks].slice(0, 7); if (!list.length) return;
+    const desk = !matchMedia("(max-width: 760px)").matches, wide = pool.filter(p => p.ar && p.ar > 1.15), minW = desk ? 1 : 4;   // on a desktop the banner is wide pictures whenever there are any
+    const picks = (wide.length >= minW ? wide.filter((_, k) => k % Math.max(1, Math.floor(wide.length / 6)) === 0) : spread(6)).slice(0, 6);
+    const leadOk = lead && !(desk && wide.length >= 2 && lead.ar && lead.ar <= 1.15);
+    const list = [...(leadOk ? [lead] : []), ...picks].slice(0, 7); if (!list.length) return;
     const layers = list.map((p, k) => { const el = document.createElement("i"), u = thumb(p.thumb, "w2048h1536"); el.innerHTML = "<s></s>"; el.querySelector("s").style.backgroundImage = `url('${u}')`; bg.appendChild(el); return { el, p, u, k }; });
     // every photo fills the picture, standing ones too: zoomed in, the face of the app's choice kept in view
     const place = (L, im) => { const W = hero.clientWidth, H = hero.clientHeight, fx = lead && L.p === lead ? M.hero.x : .5, fy = lead && L.p === lead ? M.hero.y : .36, sc = Math.max(W / im.naturalWidth, H / im.naturalHeight), vx = W / (im.naturalWidth * sc), vy = H / (im.naturalHeight * sc), pos = (c, v) => v >= .999 ? 50 : Math.min(100, Math.max(0, (c - v / 2) / (1 - v) * 100)); L.el.querySelector("s").style.backgroundPosition = `${pos(fx, vx)}% ${pos(fy, vy)}%`; };

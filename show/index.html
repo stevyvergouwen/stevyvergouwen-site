@@ -132,6 +132,44 @@ header .mono:first-of-type{color:var(--blue)}
 .album[data-m="s"]{columns:6}.album[data-m="l"]{columns:2}
 .pv[data-m="s"]{grid-template-columns:repeat(8,1fr)}.pv[data-m="l"]{grid-template-columns:repeat(4,1fr)}
 @media (max-width:900px){.album[data-m="s"]{columns:3}.album[data-m="l"]{columns:1}.pv[data-m="s"],.pv[data-m="l"]{display:flex}.pv[data-m="l"] figure{flex-basis:70vw}}
+.dl{position:absolute;right:8px;top:8px;width:32px;height:32px;border-radius:50%;background:rgba(7,8,12,.62);backdrop-filter:blur(8px);border:1px solid var(--line);align-items:center;justify-content:center;color:var(--paper);text-decoration:none;font-size:15px;opacity:0;transition:opacity .25s;z-index:3}
+body.brada figure:hover .dl{opacity:1}
+@media (hover:none){body.brada .dl{opacity:1}}
+.vid .vdl{position:absolute;right:10px;top:10px;height:34px;padding:0 14px;background:rgba(7,8,12,.62);backdrop-filter:blur(8px)}
+.sh .btn,.fh .btn{height:34px;padding:0 14px;font-size:10px}
+/* SKIN 2: less blue, no corner marks, calmer clip cards */
+:root{--blue:#d5dbea;--glow:rgba(213,219,234,.10);--accent:#e8eaf0}
+body{background:radial-gradient(1100px 640px at 88% -8%,rgba(150,165,205,.07),transparent 62%),radial-gradient(800px 560px at -8% 38%,rgba(150,165,205,.032),transparent 62%),var(--ink)!important}
+.hero::before,header::before{display:none!important}
+.hero .sub,header .mono:first-of-type{color:var(--dim)!important}
+.pill b{color:var(--paper)!important}
+.tgs b{text-shadow:none!important}
+.tabs button.on,.chip.on,.art .bar2 button[data-share],.flt button.on,.vm button.on{background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.34)!important;box-shadow:none!important;color:var(--paper)!important}
+.tabs button:hover,.chip:hover,.bar .rvl:hover,.vcard .ap:hover,.btn:hover,.flt button:hover{border-color:rgba(255,255,255,.42)!important;box-shadow:none!important}
+.bar .dlb,.btn.fill{background:var(--paper)!important;border-color:var(--paper)!important;color:#07080c!important;box-shadow:none!important}
+.tgh::before,.sh::before{background:linear-gradient(90deg,rgba(255,255,255,.6),var(--line) 45%,transparent)!important}
+.vcard.okd::before{background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,.2))!important}
+.vcard form .tc,.art .at,.art .as{color:var(--paper)}
+/* the big grey block around the clips goes: only a hairline above each group */
+.art{background:none!important;box-shadow:none!important;backdrop-filter:none!important;border-radius:0!important;border-top:1px solid var(--line)!important}
+.art::before{display:none!important}
+.art .body{border-top:0!important;padding:6px 0 22px!important}
+/* clip cards: the picture is the card, no grey panel; name and size sit quietly under it */
+.vcard{background:none!important;box-shadow:none!important;backdrop-filter:none!important;border-radius:12px!important;overflow:visible!important;border:0!important}
+.vcard::before{display:none!important}
+.vth{border-radius:12px!important;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.09),0 16px 36px rgba(0,0,0,.42);transition:box-shadow .4s ease}
+.vcard:hover .vth{box-shadow:0 0 0 1px rgba(255,255,255,.26),0 24px 54px rgba(0,0,0,.58)}
+.vcard .m2{padding:12px 2px 2px!important}
+.vcard .m2 .t{font:500 12px "Roboto Mono",ui-monospace,monospace;letter-spacing:.06em;color:var(--paper)}
+.vcard .m2 .s{color:var(--dim)}
+.vcard .m2 a{color:var(--paper);opacity:.7;margin-left:auto;transition:opacity .2s}
+.vcard .m2 a:hover{opacity:1}
+.vgrid[data-m="list"] .vcard{background:none!important}
+.vgrid[data-m="list"] .vth{border-radius:10px!important}
+/* the Brada panel stays glass but neutral */
+.internal{box-shadow:none!important}
+/* show page: video blocks and chips without blue */
+.vid{border-radius:12px;box-shadow:0 0 0 1px rgba(255,255,255,.09),0 16px 36px rgba(0,0,0,.42)}
 </style>
 </head>
 <body>
@@ -155,7 +193,7 @@ function fail(t, s) { app.innerHTML = `<div class="msg"><h1>${esc(t)}</h1><p cla
 let lists = [], cur = { l: 0, i: 0 }, brada = false;
 function fig(item, li, tag) {
   const f = document.createElement("figure"); f.innerHTML = `<img alt="" loading="lazy">${tag ? `<span class="tag" style="position:absolute;left:10px;top:10px;font:9px var(--mono);letter-spacing:.14em;text-transform:uppercase;background:rgba(8,8,10,.62);padding:5px 8px;border-radius:999px">${tag}</span>` : ""}`;
-  const im = f.querySelector("img"); im.onload = () => im.classList.add("in"); im.src = img(item.p, false);
+  f.insertAdjacentHTML("beforeend", `<a class="dl brada-only" href="${base}/file?p=${enc(item.p)}&k=${enc(K)}" title="Download" download onclick="event.stopPropagation()">↓</a>`); const im = f.querySelector("img"); im.onload = () => im.classList.add("in"); im.src = img(item.p, false);
   f.onclick = () => openLb(li, lists[li].indexOf(item)); return f;
 }
 function openLb(l, i) {
@@ -184,16 +222,19 @@ function render(m) {
   if (LO.length) pills.push(`<span class="pill"><b>${nf(LO.length)}</b> low res</span>`);
   if (V.length) pills.push(`<span class="pill"><b>${nf(V.length)}</b> ${V.length === 1 ? "clip" : "clips"}</span>`);
   const clientLink = `${location.origin}${location.pathname}?c=${slug}`;
+  // downloads (Brada view only): a folder as one zip made by Dropbox while it streams, or one file at a time
+  const subOf = list => { const parts = ((list[0] && list[0].p) || "").split("/"); const i = parts.findIndex(x => /^(highres|lowres|previews?|highlights)$/i.test(x)); return i > 0 ? parts.slice(0, i + 1).join("/") : parts.slice(0, -1).join("/"); };
+  const zipBtn = (list, label) => m.zip && list.length ? `<a class="btn brada-only" href="${base}/zip?sub=${enc(subOf(list))}&k=${enc(K)}" download>${label}</a>` : "";
   let h = `<header><div class="slides" id="slides"></div><div class="grain"></div><div class="mono">${esc(fmtDate(m.date))}</div><h1>${esc(m.title)}</h1><div class="meta">${bits.map(b => `<span class="mono">${esc(b)}</span>`).join("")}<span class="mono">By Stevy Vergouwen</span></div>${m.note ? `<p style="max-width:58ch;margin-top:16px;color:var(--paper);opacity:.88;line-height:1.6">${esc(m.note)}</p>` : ""}<div class="stats">${pills.join("")}</div></header>`;
-  h += `<div class="internal"><div class="who2"><b>Brada Media · internal view</b><span>Not for the client</span></div><div class="cl"><span class="mono">Client link</span><code id="cl">${esc(clientLink)}</code><a class="btn" href="#" id="cp">Copy client link</a></div></div>`;
-  if (H.length) h += `<section><div class="sh"><h2>Highlights</h2><span class="mono">selected by Stevy</span></div><div class="hl" id="hl"></div></section>`;
-  if (P.length) h += `<section><div class="sh"><h2>Previews</h2><span class="mono">swipe</span></div><div class="pv" id="pv"></div></section>`;
+  h += `<div class="internal"><div class="who2"><b>Brada Media · internal view</b><span>Not for the client</span></div><div class="cl"><span class="mono">Client link</span><code id="cl">${esc(clientLink)}</code><a class="btn" href="#" id="cp">Copy client link</a>${m.zip ? `<a class="btn" href="${base}/zip?k=${enc(K)}" download>Download everything (zip)</a>` : ""}</div></div>`;
+  if (H.length) h += `<section><div class="sh"><h2>Highlights</h2><span class="mono">selected by Stevy</span>${zipBtn(H, "Download folder")}</div><div class="hl" id="hl"></div></section>`;
+  if (P.length) h += `<section><div class="sh"><h2>Previews</h2><span class="mono">swipe</span>${zipBtn(P, "Download folder")}</div><div class="pv" id="pv"></div></section>`;
   if (V.length) h += `<section><div class="sh"><h2>Videos</h2><span class="mono">${nf(V.length)} ${V.length === 1 ? "clip" : "clips"}</span></div><div class="vids" id="vids"></div></section>`;
   if (HI.length || LO.length) {
     h += `<section><div class="sh"><h2>Full album</h2><span class="mono">${nf(HI.length + LO.length)} photos${HI.length && LO.length ? " · 2 folders" : ""}</span></div>`;
     if (HI.length && LO.length) h += `<div class="flt" id="flt"><button data-f="both" class="on">Both</button><button data-f="high">High res · ${nf(HI.length)}</button><button data-f="low">Low res · ${nf(LO.length)}</button></div>`;
-    if (HI.length) h += `<div class="fold" data-f="high"><div class="fh"><h3>${LO.length ? "High res" : "Photos"}<span>${nf(HI.length)} photos</span></h3>${m.downloadAll ? `<a class="btn brada-only" id="dla" href="${esc(m.downloadAll)}">Download all (zip)</a>` : ""}</div><div class="album" id="al-high"></div></div>`;
-    if (LO.length) h += `<div class="fold" data-f="low"><div class="fh"><h3>Low res<span>${nf(LO.length)} photos · web size</span></h3></div><div class="album" id="al-low"></div></div>`;
+    if (HI.length) h += `<div class="fold" data-f="high"><div class="fh"><h3>${LO.length ? "High res" : "Photos"}<span>${nf(HI.length)} photos</span></h3>${zipBtn(HI, "Download folder") || (m.downloadAll ? `<a class="btn brada-only" id="dla" href="${esc(m.downloadAll)}">Download all (zip)</a>` : "")}</div><div class="album" id="al-high"></div></div>`;
+    if (LO.length) h += `<div class="fold" data-f="low"><div class="fh"><h3>Low res<span>${nf(LO.length)} photos · web size</span></h3>${zipBtn(LO, "Download folder")}</div><div class="album" id="al-low"></div></div>`;
     h += `<div class="more"><span class="btn" id="more">Show more</span></div></section>`;
   }
   if (!photos && !V.length) h += `<section><div class="sh"><h2>Coming soon</h2></div><p class="mono">The files are not in the folder yet.</p></section>`;
@@ -206,7 +247,7 @@ function render(m) {
   const pieces = [[HI, "#al-high"], [LO, "#al-low"]].filter(x => x[0].length).map(([arr, id]) => ({ arr, el: $(id), li: lists.push(arr) - 1, n: 0 }));
   const more = () => { pieces.forEach(p => { p.arr.slice(p.n, p.n + 24).forEach(it => p.el.appendChild(fig(it, p.li))); p.n += 24; }); if (pieces.every(p => p.n >= p.arr.length) && $("#more")) $("#more").style.display = "none"; };
   if (pieces.length) { more(); $("#more").onclick = more; }
-  const vids = $("#vids"); if (vids) V.forEach(v => { const d = document.createElement("div"); d.className = "vid"; d.innerHTML = `<video controls preload="metadata" playsinline src="${base}/stream?p=${enc(v.p)}"></video><div class="cap">${esc(v.n)}</div>`; vids.appendChild(d); });
+  const vids = $("#vids"); if (vids) V.forEach(v => { const d = document.createElement("div"); d.className = "vid"; d.innerHTML = `<video controls preload="metadata" playsinline src="${base}/stream?p=${enc(v.p)}"></video><div class="cap">${esc(v.n)}</div><a class="btn brada-only vdl" href="${base}/file?p=${enc(v.p)}&k=${enc(K)}" download>Download</a>`; vids.appendChild(d); });
   const flt = $("#flt"); if (flt) flt.querySelectorAll("button").forEach(b => b.onclick = () => { flt.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); document.querySelectorAll(".fold").forEach(f => f.classList.toggle("off", b.dataset.f !== "both" && f.dataset.f !== b.dataset.f)); });
   const cp = $("#cp"); if (cp) cp.onclick = e => { e.preventDefault(); navigator.clipboard && navigator.clipboard.writeText(clientLink); cp.textContent = "Copied"; setTimeout(() => cp.textContent = "Copy client link", 1800); };
   // the banner: a slow slideshow of the photos (highlights first), each cut and zoomed by the page and nudged by the pointer, with grain over it. No file is made for it.

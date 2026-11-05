@@ -5,7 +5,7 @@
 import { json, adminOk, dbxToken, same } from "./delivery.js";
 const SLUG = /^[a-z0-9]{12,40}$/, KEY = /^[a-z0-9]{12,40}$/;
 const LINK = /^https:\/\/(www\.)?dropbox\.com\/(scl\/fo|sh)\//;
-const HIDE = new Set(["uploads", "raw video", "raw footage", "raw audio", "stacks", "preview-wm", "audio"]);
+const HIDE = new Set(["uploads", "raw video", "raw footage", "raw audio", "stacks", "preview-wm", "audio", "lowres + logo", "lowres logo"]);   // the logo copies are not shown: they repeat the low res photos
 const isPhoto = n => /\.(jpe?g|png|webp|heic)$/i.test(n), isVideo = n => /\.(mp4|mov|m4v)$/i.test(n);
 
 async function dbx(env, endpoint, body) {
@@ -13,10 +13,46 @@ async function dbx(env, endpoint, body) {
   if (!r.ok) { const t = (await r.text().catch(() => "")).slice(0, 160); throw new Error(endpoint + " " + r.status + " " + t); }
   return r.json();
 }
+/* The Brada Dropbox itself: a second READ-ONLY Dropbox app, authorized once with Stevy's own Brada login (secrets DBXB_APP_KEY, DBXB_APP_SECRET, DBXB_REFRESH; setup: zet-dropbox-brada.sh).
+   With it the page finds a Brada album by its folder path: no link has to be pasted and nothing is made or changed in the Brada Dropbox. */
+const bOK = env => !!(env.DBXB_APP_KEY && env.DBXB_APP_SECRET && env.DBXB_REFRESH);
+async function bToken(env) {
+  const c = await env.IG.get("brada-token", "json"); if (c && c.exp > Date.now() + 60000) return c.token;
+  const r = await fetch("https://api.dropbox.com/oauth2/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", Authorization: "Basic " + btoa(env.DBXB_APP_KEY + ":" + env.DBXB_APP_SECRET) }, body: new URLSearchParams({ grant_type: "refresh_token", refresh_token: env.DBXB_REFRESH }) });
+  if (!r.ok) throw new Error("brada token " + r.status);
+  const j = await r.json(); await env.IG.put("brada-token", JSON.stringify({ token: j.access_token, exp: Date.now() + (j.expires_in || 14400) * 1000 }), { expirationTtl: 14000 });
+  return j.access_token;
+}
+/** Headers for the Brada Dropbox: the team space is the root of that account, so its namespace goes in the path root. */
+async function bHead(env) {
+  const token = await bToken(env); let root = await env.IG.get("brada-root");
+  if (!root) { const r = await fetch("https://api.dropboxapi.com/2/users/get_current_account", { method: "POST", headers: { Authorization: "Bearer " + token } }); if (r.ok) { const j = await r.json(); root = (j.root_info && j.root_info.root_namespace_id) || ""; if (root) await env.IG.put("brada-root", root); } }
+  return { Authorization: "Bearer " + token, ...(root ? { "Dropbox-API-Path-Root": JSON.stringify({ ".tag": "root", "root": root }) } : {}) };
+}
+async function bApi(env, endpoint, body) {
+  const r = await fetch("https://api.dropboxapi.com/2/" + endpoint, { method: "POST", headers: { ...(await bHead(env)), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!r.ok) { const t = (await r.text().catch(() => "")).slice(0, 160); throw new Error(endpoint + " " + r.status + " " + t); }
+  return r.json();
+}
+/** The album folder in the Brada Dropbox. The app sends the local path under "Dropbox-Drive"; Dropbox may start higher or lower, so a few starts are tried and the one that exists is remembered. */
+async function bFolder(env, slug, rec) {
+  const k = "bradap:" + slug, c = await env.IG.get(k); if (c) return c;
+  const segs = rec.bpath.split("/").filter(Boolean);
+  for (let i = 0; i < Math.min(4, segs.length); i++) { const p = "/" + segs.slice(i).join("/"); try { const m = await bApi(env, "files/get_metadata", { path: p }); if (m[".tag"] === "folder") { await env.IG.put(k, p); return p; } } catch { /* try the next start */ } }
+  throw new Error("folder not found in the Brada Dropbox");
+}
 /** Everything under the shared link, sorted into the blocks of the page. Cached for two minutes so a busy page costs one Dropbox listing. */
 async function manifest(env, slug, rec) {
   const ck = "bradamf:" + slug, c = await env.IG.get(ck, "json"); if (c) return c;
   const link = { url: rec.link }, all = []; let level = [""], calls = 0;
+  if (rec.bpath) {
+    const base = await bFolder(env, slug, rec);
+    let res = await bApi(env, "files/list_folder", { path: base, recursive: true, limit: 2000 });
+    const entries = [...res.entries];
+    while (res.has_more) { res = await bApi(env, "files/list_folder/continue", { cursor: res.cursor }); entries.push(...res.entries); }
+    for (const e of entries) if (e[".tag"] === "file") all.push({ ...e, path: (e.path_display || "").slice(base.length) });
+    level = [];
+  }
   for (let depth = 0; depth < 5 && level.length; depth++) {   // Dropbox lists a shared link one folder at a time
     const next = [];
     await Promise.all(level.map(async dir => {
@@ -70,11 +106,13 @@ export async function handleBrada(request, env, url, origin, notify) {
     if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
     let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
     const slug = String(b.slug || ""), key = String(b.key || ""), link = String(b.link || "");
-    if (!SLUG.test(slug) || !KEY.test(key) || !LINK.test(link)) return json(400, { ok: false, error: "slug, key or link" }, origin);
+    const bpath = String(b.bpath || "").slice(0, 300);
+    if (!SLUG.test(slug) || !KEY.test(key) || !(LINK.test(link) || (bpath && !bpath.includes("..")))) return json(400, { ok: false, error: "slug, key and a link or a folder path" }, origin);
+    if (!LINK.test(link) && !bOK(env)) return json(409, { ok: false, error: "brada-dropbox-not-set-up" }, origin);
     const people = (Array.isArray(b.people) ? b.people : []).slice(0, 30).map(x => ({ t: String(x.t || ""), n: String(x.n || "").slice(0, 60) })).filter(x => /^[a-z0-9]{8,24}$/.test(x.t) && x.n);
-    const rec = { link: link.replace(/&dl=\d/, "").slice(0, 400), key, people, title: String(b.title || "").slice(0, 120), client: String(b.client || "").slice(0, 80), date: String(b.date || "").slice(0, 10), location: String(b.location || "").slice(0, 160), note: String(b.note || "").slice(0, 300), at: Date.now() };
+    const rec = { link: LINK.test(link) ? link.replace(/&dl=\d/, "").slice(0, 400) : "", bpath: LINK.test(link) ? "" : bpath, key, people, title: String(b.title || "").slice(0, 120), client: String(b.client || "").slice(0, 80), date: String(b.date || "").slice(0, 10), location: String(b.location || "").slice(0, 160), note: String(b.note || "").slice(0, 300), at: Date.now() };
     await env.IG.put("brada:" + slug, JSON.stringify(rec));
-    await env.IG.delete("bradamf:" + slug);
+    await env.IG.delete("bradamf:" + slug); await env.IG.delete("bradap:" + slug);
     return json(200, { ok: true }, origin);
   }
   if (path === "/brada-visits" && request.method === "GET") {   // for the app: who opened it, how often, when
@@ -83,7 +121,7 @@ export async function handleBrada(request, env, url, origin, notify) {
     let v = {}; try { v = JSON.parse(await env.IG.get("bradav:" + slug) || "{}") || {}; } catch { v = {}; }
     return json(200, { ok: true, visits: Object.entries(v).map(([k, e]) => ({ who: k === "anon" ? "" : e.n, anon: k === "anon", count: e.c, first: e.first, last: e.last, country: e.country || "" })) }, origin);
   }
-  const m = path.match(/^\/brada\/([a-z0-9]{12,40})\/(manifest|img|stream|file)$/);
+  const m = path.match(/^\/brada\/([a-z0-9]{12,40})\/(manifest|img|stream|file|zip)$/);
   if (!m) return null;
   let rec; try { rec = JSON.parse(await env.IG.get("brada:" + m[1]) || "null"); } catch { rec = null; }
   if (!rec) return json(404, { error: "not found" }, origin);
@@ -92,21 +130,45 @@ export async function handleBrada(request, env, url, origin, notify) {
     if (r === "client") await visit(env, m[1], rec, request, url, notify);
     let mf; try { mf = await manifest(env, m[1], rec); } catch (e) { return json(502, { error: "dropbox", detail: String(e && e.message || e).slice(0, 240) }, origin); }
     const body = { role: r, title: rec.title, client: rec.client, date: rec.date, location: rec.location, note: rec.note, ...mf };
-    if (r === "brada") { body.dropbox = rec.link; body.downloadAll = rec.link.replace(/([?&])dl=\d/, "$1dl=1").includes("dl=1") ? rec.link.replace(/([?&])dl=\d/, "$1dl=1") : rec.link + (rec.link.includes("?") ? "&" : "?") + "dl=1"; }
+    if (r === "brada" && rec.bpath) body.zip = true;   // a folder can be downloaded as one zip
+    if (r === "brada" && rec.link) { body.dropbox = rec.link; body.downloadAll = rec.link.replace(/([?&])dl=\d/, "$1dl=1").includes("dl=1") ? rec.link.replace(/([?&])dl=\d/, "$1dl=1") : rec.link + (rec.link.includes("?") ? "&" : "?") + "dl=1"; }
+    if (r === "brada" && rec.bpath && !body.dropbox) { try { const f = await bFolder(env, m[1], rec); body.dropbox = "https://www.dropbox.com/home" + f.split("/").map(encodeURIComponent).join("/"); } catch { /* the page still works without the button */ } }
     return json(200, body, origin);
+  }
+  if (m[2] === "zip") {   // Brada only: a whole folder (or the whole album) as one zip, made by Dropbox itself while it streams (limit: 20 GB and 10,000 files per zip)
+    if (r !== "brada") return json(403, { error: "no" }, origin);
+    if (!rec.bpath) return json(404, { error: "zip only for albums found by folder" }, origin);
+    const sub = url.searchParams.get("sub") || ""; if (sub && !(inside(sub) && sub.split("/").length <= 4)) return json(400, { error: "path" }, origin);
+    let res; try { res = await fetch("https://content.dropboxapi.com/2/files/download_zip", { method: "POST", headers: { ...(await bHead(env)), "Dropbox-API-Arg": JSON.stringify({ path: (await bFolder(env, m[1], rec)) + sub }) } }); } catch (e) { return json(502, { error: "dropbox" }, origin); }
+    if (!res.ok) { const t = (await res.text().catch(() => "")).slice(0, 160); return json(res.status === 409 ? 413 : 502, { error: "zip", detail: t }, origin); }
+    const nm = ((rec.title || "album") + (sub ? " - " + sub.split("/").filter(Boolean).slice(-1)[0] : "")).replace(/[\\/:*?"<>|]+/g, " ").trim() + ".zip";
+    return new Response(res.body, { headers: { "Content-Type": "application/zip", "Content-Disposition": `attachment; filename*=UTF-8''${encodeURIComponent(nm)}`, "Cache-Control": "no-store", "Access-Control-Allow-Origin": "*", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" } });
   }
   const p = url.searchParams.get("p") || ""; if (!inside(p)) return json(400, { error: "path" }, origin);
   if (m[2] === "img") {   // a thumbnail through the shared link: the client never sees Dropbox
     const size = url.searchParams.get("s") === "large" ? "w2048h1536" : "w640h480";
-    const res = await fetch("https://content.dropboxapi.com/2/files/get_thumbnail_v2", { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ resource: { ".tag": "link", url: rec.link, path: p }, format: "jpeg", size, mode: "bestfit" }) } });
+    let res;
+    try {
+      res = rec.bpath
+        ? await fetch("https://content.dropboxapi.com/2/files/get_thumbnail_v2", { method: "POST", headers: { ...(await bHead(env)), "Dropbox-API-Arg": JSON.stringify({ resource: { ".tag": "path", path: (await bFolder(env, m[1], rec)) + p }, format: "jpeg", size, mode: "bestfit" }) } })
+        : await fetch("https://content.dropboxapi.com/2/files/get_thumbnail_v2", { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ resource: { ".tag": "link", url: rec.link, path: p }, format: "jpeg", size, mode: "bestfit" }) } });
+    } catch (e) { return new Response("", { status: 502 }); }
     if (!res.ok) return new Response((await res.text().catch(() => "")).slice(0, 200), { status: res.status === 404 ? 404 : 502 });
     return new Response(res.body, { headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=86400", "Access-Control-Allow-Origin": "*", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" } });
   }
   // stream (a clip played on the page, ranges for scrubbing) and file (Brada only: the original as a download)
   if (m[2] === "file" && r !== "brada") return json(403, { error: "no" }, origin);
-  const h = { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ url: rec.link, path: p }) };
-  const range = request.headers.get("Range"); if (range && m[2] === "stream") h.Range = range;
-  const res = await fetch("https://content.dropboxapi.com/2/sharing/get_shared_link_file", { method: "POST", headers: h });
+  const range = request.headers.get("Range");
+  let res;
+  try {
+    if (rec.bpath) {   // the Brada Dropbox: a short-lived link, fetched here so the client never sees it
+      const tl = await bApi(env, "files/get_temporary_link", { path: (await bFolder(env, m[1], rec)) + p });
+      res = await fetch(tl.link, { headers: range && m[2] === "stream" ? { Range: range } : {} });
+    } else {
+      const h = { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ url: rec.link, path: p }) }; if (range && m[2] === "stream") h.Range = range;
+      res = await fetch("https://content.dropboxapi.com/2/sharing/get_shared_link_file", { method: "POST", headers: h });
+    }
+  } catch (e) { return new Response("", { status: 502 }); }
   if (!res.ok && res.status !== 206) return new Response((await res.text().catch(() => "")).slice(0, 200), { status: res.status === 404 ? 404 : 502 });
   const name = p.split("/").pop() || "file", ext = (name.match(/\.([a-z0-9]+)$/i) || [])[1] || "";
   const type = { mp4: "video/mp4", m4v: "video/mp4", mov: "video/quicktime", jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp" }[ext.toLowerCase()] || "application/octet-stream";

@@ -115,7 +115,7 @@ export async function handleBrada(request, env, url, origin, notify, mailer) {
     const craft = what === "video" ? "Videography" : what === "photos and video" ? "Photography & videography" : "Photography";
     const rows = [["Client", rec.client], ["Date", when], ["Location", rec.location], [craft.split(" ")[0], "Stevy Vergouwen"]];
     const m = kind === "client"
-      ? { subject: `${craft} from Brada Media: ${rec.title}`, eyebrow: "Brada Media", label: craft, heading: rec.title, intro: `${hi}Brada Media has your ${what} ready.`, rows, note: "This page is for looking. If you need the files, Brada Media sends them to you.", cta: { text: "Open your album", href: link } }
+      ? { subject: `${craft} from Brada Media: ${rec.title}`, eyebrow: "Brada Media", label: craft, heading: rec.title, intro: `${hi}Stevy has your ${what} ready.`, rows, note: "This page is for looking. If you need the files, Brada Media sends them to you.", cta: { text: "Open your album", href: link } }
       : { subject: `Delivered: ${rec.title}`, eyebrow: "Delivered", label: craft, heading: rec.title, intro: `${hi}${rec.title}${rec.client ? " for " + rec.client : ""} is ready. Your internal view has the Dropbox link, the client link and the downloads. Please do not forward that view: the client gets the client link.`, rows, note: "The client link is view only; the internal view is for Brada Media.", cta: { text: "Open the internal view", href: base + "&k=" + rec.key } };
     const r = await mailer(b.preview ? "info@stevyvergouwen.com" : to, { ...m, subject: (b.preview ? "[Preview] " : "") + m.subject, dry: !!b.dry });
     if (b.dry) return json(200, { ok: true, html: r.html }, origin);

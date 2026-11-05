@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#08080a">
+<link rel="preconnect" href="https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev">
+<title>Album | Stevy Vergouwen</title>
+<link rel="stylesheet" href="/fonts.css">
+<style>
+:root{--ink:#08080a;--ink2:#111114;--paper:#ebe7e0;--dim:#a09e99;--faint:#2c2b29;--line:rgba(235,231,224,.18);--pad:clamp(16px,3.4vw,48px);--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--mono:"Roboto Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;margin:0}
+html{background:var(--ink);color-scheme:dark}
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh}
+.mono{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px var(--pad);background:rgba(8,8,10,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.lock{display:flex;align-items:center;gap:12px;min-width:0;font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.lock em{font-style:normal;opacity:.5}
+.lock img{height:18px;width:auto;display:block}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;border:1px solid var(--line);color:var(--paper);background:transparent;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn.fill{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+header{position:relative;overflow:hidden;min-height:min(78svh,720px);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(36px,8vw,96px) var(--pad) clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
+header .slides{position:absolute;inset:0;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+header .sl{position:absolute;inset:-5%;background:var(--ink2) center/cover;opacity:0;transition:opacity 1.8s ease;will-change:opacity,transform}
+header .sl.on{opacity:.74;animation:kb 13s ease-out both}
+@keyframes kb{from{transform:scale(1.04) translate(var(--x0),var(--y0))}to{transform:scale(1.15) translate(var(--x1),var(--y1))}}
+header .grain{position:absolute;inset:-50%;z-index:1;pointer-events:none;opacity:.16;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:gr .9s steps(6) infinite}
+@keyframes gr{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+header .hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.8s ease;filter:brightness(.62) saturate(1.1);transform:scale(1.02)}
+header .hv.on{opacity:1;animation:vz 11s ease-out both}
+@keyframes vz{from{transform:scale(1.02)}to{transform:scale(1.14)}}
+header::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--ink) 4%,transparent 72%)}
+header>*:not(.slides):not(.hv):not(.grain){position:relative;z-index:2}
+@keyframes drift{to{transform:scale(1.14) translate(-1.5%,-1%)}}
+h1{font-weight:300;font-size:clamp(40px,9vw,120px);line-height:.98;letter-spacing:-.035em;margin:14px 0 18px;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.pill{font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--dim)}
+.pill b{color:var(--paper);font-weight:500}
+.internal{display:none;margin:22px var(--pad) 0;padding:16px 18px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,#121218,#0b0b0f);align-items:center;gap:14px 22px;flex-wrap:wrap}
+body.brada .internal{display:flex}
+.internal .who2{display:flex;flex-direction:column;gap:5px}
+.internal .who2 b{font:500 11px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.internal .who2 span{font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.internal .cl{display:flex;gap:10px;align-items:center;margin-left:auto;flex-wrap:wrap;min-width:0}
+.internal .cl code{font:11px var(--mono);background:rgba(235,231,224,.06);border:1px solid var(--line);padding:9px 12px;border-radius:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brada-only{display:none!important}
+body.brada .brada-only{display:inline-flex!important}
+section{padding:clamp(18px,4vw,44px) var(--pad)}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px;border-top:1px solid var(--line)}
+.sh h2{font-weight:400;font-size:clamp(18px,2.4vw,26px);letter-spacing:-.01em;padding-top:14px}
+.sh .mono{padding-top:14px}
+.hl{display:grid;gap:10px;grid-template-columns:repeat(4,1fr)}
+.hl figure:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+figure{position:relative;overflow:hidden;background:var(--ink2);border-radius:3px;cursor:zoom-in;aspect-ratio:4/5}
+figure img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.2,.7,.2,1),opacity .4s;opacity:0}
+figure img.in{opacity:1}
+figure:hover img{transform:scale(1.03)}
+.pv{display:grid;gap:10px;grid-template-columns:repeat(6,1fr)}.pv figure{aspect-ratio:1}
+.album{columns:4;column-gap:10px}
+.album figure{break-inside:avoid;margin-bottom:10px;aspect-ratio:auto;min-height:120px}
+.album figure img{height:auto}
+.flt{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px}
+.flt button{height:36px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);font:500 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.flt button.on{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.fold{margin-bottom:34px}.fold.off{display:none}
+.fh{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+.fh h3{font-weight:400;font-size:16px}.fh h3 span{font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-left:10px}
+.vids{display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+.vid{position:relative;aspect-ratio:16/9;border-radius:3px;overflow:hidden;background:var(--ink2)}
+.vid video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.vid .cap{position:absolute;left:12px;bottom:10px;font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;pointer-events:none;text-shadow:0 1px 6px #000}
+.more{display:flex;justify-content:center;padding:18px 0 8px}
+footer{margin:30px var(--pad) 0;padding:40px 0 70px;color:var(--dim);font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line)}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(5,5,6,.96);display:none;align-items:center;justify-content:center}
+.lb.on{display:flex}.lb img{max-width:96vw;max-height:86vh;object-fit:contain}
+.lb button,.lb a{position:absolute;background:none;border:1px solid var(--line);color:var(--paper);width:44px;height:44px;border-radius:50%;font-size:16px;cursor:pointer;display:grid;place-items:center;text-decoration:none}
+.lb .x{top:14px;right:14px}.lb .p{left:14px;top:50%}.lb .n{right:14px;top:50%}
+.lb .dl{top:14px;right:70px;width:auto;border-radius:999px;padding:0 16px;font:500 10px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.lb .c{position:absolute;bottom:18px;left:0;right:0;text-align:center}
+.msg{padding:30vh var(--pad) 0;text-align:center}
+.msg h1{font-size:clamp(28px,5vw,56px)}
+@media (max-width:900px){
+  .hl{grid-template-columns:repeat(2,1fr)}.hl figure:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:4/5}
+  .pv{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin:0 calc(var(--pad)*-1);padding:0 var(--pad);scrollbar-width:none}
+  .pv::-webkit-scrollbar{display:none}.pv figure{flex:0 0 38vw;scroll-snap-align:start}
+  .album{columns:2;column-gap:8px}.album figure{margin-bottom:8px}
+  .vids{grid-template-columns:1fr}
+  .internal{margin-top:18px}.internal .cl{margin-left:0;width:100%}
+  .btn{height:44px}.fh .btn{height:40px;padding:0 14px}
+  .lock{font-size:10px;gap:9px}.lock img{height:15px}
+}
+@media (prefers-reduced-motion:reduce){figure img{transition:none}header .sl.on{animation:none}header .grain{animation:none}header .hv.on{animation:none}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="lock"><span>Stevy Vergouwen</span><em>×</em><img id="logo" src="/album/brada.png" alt="Brada Media" hidden></div>
+  <span class="sp"></span>
+  <a class="btn fill brada-only" id="dbx" href="#" target="_blank" rel="noopener">Open in Dropbox ↗</a>
+</div>
+<div id="app"><div class="msg"><span class="mono">Loading…</span></div></div>
+<div class="lb" id="lb"><button class="x" aria-label="Close">✕</button><button class="p" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="n" aria-label="Next">›</button><a class="dl brada-only" id="lbd" href="#">Download</a><div class="c mono" id="lbc"></div></div>
+<script>
+const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
+const q = new URLSearchParams(location.search), slug = (q.get("c") || "").toLowerCase(), K = q.get("k") || "", T = q.get("t") || "";
+const $ = s => document.querySelector(s), app = $("#app");
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const base = `${ENDPOINT}/brada/${slug}`, enc = encodeURIComponent;
+const img = (p, big) => `${base}/img?p=${enc(p)}${big ? "&s=large" : ""}`;
+const nf = n => Number(n).toLocaleString("en");
+function fmtDate(d) { if (!/^\d{4}-\d{2}-\d{2}$/.test(d || "")) return ""; try { return new Date(d + "T12:00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" }); } catch { return d; } }
+function fail(t, s) { app.innerHTML = `<div class="msg"><h1>${esc(t)}</h1><p class="mono" style="margin-top:14px">${esc(s || "")}</p></div>`; }
+let lists = [], cur = { l: 0, i: 0 }, brada = false;
+function fig(item, li, tag) {
+  const f = document.createElement("figure"); f.innerHTML = `<img alt="" loading="lazy">${tag ? `<span class="tag" style="position:absolute;left:10px;top:10px;font:9px var(--mono);letter-spacing:.14em;text-transform:uppercase;background:rgba(8,8,10,.62);padding:5px 8px;border-radius:999px">${tag}</span>` : ""}`;
+  const im = f.querySelector("img"); im.onload = () => im.classList.add("in"); im.src = img(item.p, false);
+  f.onclick = () => openLb(li, lists[li].indexOf(item)); return f;
+}
+function openLb(l, i) {
+  cur = { l, i }; const it = lists[l][i]; const lb = $("#lb"); $("#lbi").src = img(it.p, true);
+  $("#lbc").textContent = (i + 1) + " / " + lists[l].length; $("#lbd").href = `${base}/file?p=${enc(it.p)}&k=${enc(K)}`; lb.classList.add("on");
+}
+function step(d) { const L = lists[cur.l]; openLb(cur.l, (cur.i + d + L.length) % L.length); }
+$("#lb").onclick = e => { if (e.target.id === "lb" || e.target.classList.contains("x")) $("#lb").classList.remove("on"); };
+$(".lb .p").onclick = e => { e.stopPropagation(); step(-1); }; $(".lb .n").onclick = e => { e.stopPropagation(); step(1); };
+document.addEventListener("keydown", e => { if (!$("#lb").classList.contains("on")) return; if (e.key === "Escape") $("#lb").classList.remove("on"); if (e.key === "ArrowRight") step(1); if (e.key === "ArrowLeft") step(-1); });
+// swipe in the viewer
+(() => { let x0 = null; const lb = $("#lb"); lb.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true }); lb.addEventListener("touchend", e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); }, { passive: true }); })();
+
+function render(m) {
+  brada = m.role === "brada"; document.body.classList.toggle("brada", brada);
+  document.title = (m.title || "Album") + " | Stevy Vergouwen";
+  if (m.client_logo !== false) { const lg = $("#logo"); lg.hidden = false; }   // jobs done for Brada Media carry their logo next to the name
+  if (brada && m.dropbox) $("#dbx").href = m.dropbox;
+  const H = m.highlights || [], P = m.previews || [], HI = m.high || [], LO = m.low || [], V = m.videos || [];
+  const photos = H.length + P.length + HI.length + LO.length;
+  const bits = [m.location, ].filter(Boolean);
+  const pills = [];
+  if (H.length) pills.push(`<span class="pill"><b>${nf(H.length)}</b> highlights</span>`);
+  if (P.length) pills.push(`<span class="pill"><b>${nf(P.length)}</b> previews</span>`);
+  if (HI.length) pills.push(`<span class="pill"><b>${nf(HI.length)}</b> ${LO.length ? "high res" : "photos"}</span>`);
+  if (LO.length) pills.push(`<span class="pill"><b>${nf(LO.length)}</b> low res</span>`);
+  if (V.length) pills.push(`<span class="pill"><b>${nf(V.length)}</b> ${V.length === 1 ? "clip" : "clips"}</span>`);
+  const clientLink = `${location.origin}${location.pathname}?c=${slug}`;
+  let h = `<header><div class="slides" id="slides"></div><div class="grain"></div><div class="mono">${esc(fmtDate(m.date))}</div><h1>${esc(m.title)}</h1><div class="meta">${bits.map(b => `<span class="mono">${esc(b)}</span>`).join("")}<span class="mono">By Stevy Vergouwen</span></div>${m.note ? `<p style="max-width:58ch;margin-top:16px;color:var(--paper);opacity:.88;line-height:1.6">${esc(m.note)}</p>` : ""}<div class="stats">${pills.join("")}</div></header>`;
+  h += `<div class="internal"><div class="who2"><b>Brada Media · internal view</b><span>Not for the client</span></div><div class="cl"><span class="mono">Client link</span><code id="cl">${esc(clientLink)}</code><a class="btn" href="#" id="cp">Copy client link</a></div></div>`;
+  if (H.length) h += `<section><div class="sh"><h2>Highlights</h2><span class="mono">selected by Stevy</span></div><div class="hl" id="hl"></div></section>`;
+  if (P.length) h += `<section><div class="sh"><h2>Previews</h2><span class="mono">swipe</span></div><div class="pv" id="pv"></div></section>`;
+  if (V.length) h += `<section><div class="sh"><h2>Videos</h2><span class="mono">${nf(V.length)} ${V.length === 1 ? "clip" : "clips"}</span></div><div class="vids" id="vids"></div></section>`;
+  if (HI.length || LO.length) {
+    h += `<section><div class="sh"><h2>Full album</h2><span class="mono">${nf(HI.length + LO.length)} photos${HI.length && LO.length ? " · 2 folders" : ""}</span></div>`;
+    if (HI.length && LO.length) h += `<div class="flt" id="flt"><button data-f="both" class="on">Both</button><button data-f="high">High res · ${nf(HI.length)}</button><button data-f="low">Low res · ${nf(LO.length)}</button></div>`;
+    if (HI.length) h += `<div class="fold" data-f="high"><div class="fh"><h3>${LO.length ? "High res" : "Photos"}<span>${nf(HI.length)} photos</span></h3><a class="btn brada-only" id="dla" href="${esc(m.downloadAll || "#")}">Download all (zip)</a></div><div class="album" id="al-high"></div></div>`;
+    if (LO.length) h += `<div class="fold" data-f="low"><div class="fh"><h3>Low res<span>${nf(LO.length)} photos · web size</span></h3></div><div class="album" id="al-low"></div></div>`;
+    h += `<div class="more"><span class="btn" id="more">Show more</span></div></section>`;
+  }
+  if (!photos && !V.length) h += `<section><div class="sh"><h2>Coming soon</h2></div><p class="mono">The files are not in the folder yet.</p></section>`;
+  h += `<footer><span>stevyvergouwen.com</span><span>Photography by Stevy Vergouwen</span></footer>`;
+  app.innerHTML = h;
+  lists = [];
+  const add = (arr, id, tag) => { if (!arr.length) return; const li = lists.push(arr) - 1; const el = $(id); arr.slice(0, 1e9).forEach((it, i) => { if (id === "#al-high" || id === "#al-low") return; el.appendChild(fig(it, li, tag && i === 0 ? tag : "")); }); return li; };
+  add(H, "#hl", "highlight"); add(P, "#pv", "");
+  // the full album fills in pieces
+  const pieces = [[HI, "#al-high"], [LO, "#al-low"]].filter(x => x[0].length).map(([arr, id]) => ({ arr, el: $(id), li: lists.push(arr) - 1, n: 0 }));
+  const more = () => { pieces.forEach(p => { p.arr.slice(p.n, p.n + 24).forEach(it => p.el.appendChild(fig(it, p.li))); p.n += 24; }); if (pieces.every(p => p.n >= p.arr.length) && $("#more")) $("#more").style.display = "none"; };
+  if (pieces.length) { more(); $("#more").onclick = more; }
+  const vids = $("#vids"); if (vids) V.forEach(v => { const d = document.createElement("div"); d.className = "vid"; d.innerHTML = `<video controls preload="metadata" playsinline src="${base}/stream?p=${enc(v.p)}"></video><div class="cap">${esc(v.n)}</div>`; vids.appendChild(d); });
+  const flt = $("#flt"); if (flt) flt.querySelectorAll("button").forEach(b => b.onclick = () => { flt.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); document.querySelectorAll(".fold").forEach(f => f.classList.toggle("off", b.dataset.f !== "both" && f.dataset.f !== b.dataset.f)); });
+  const cp = $("#cp"); if (cp) cp.onclick = e => { e.preventDefault(); navigator.clipboard && navigator.clipboard.writeText(clientLink); cp.textContent = "Copied"; setTimeout(() => cp.textContent = "Copy client link", 1800); };
+  // the banner: a slow slideshow of the photos (highlights first), each cut and zoomed by the page and nudged by the pointer, with grain over it. No file is made for it.
+  // Without photos, a few clips fade into each other and slowly push in.
+  const pool = H.length >= 3 ? H : [...H, ...P, ...HI, ...LO];
+  const picks = []; if (pool.length) { const n = Math.min(6, pool.length); for (let i = 0; i < n; i++) picks.push(pool[Math.floor(i * pool.length / n)]); }
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, box = $("#slides");
+  if (picks.length) {
+    const dirs = [["-2%", "1%", "2%", "-1%"], ["2%", "-1%", "-2%", "1%"], ["0%", "2%", "0%", "-2%"], ["-1%", "-2%", "1%", "2%"]];
+    const sl = picks.map((it, i) => { const d = document.createElement("div"); d.className = "sl"; const dr = dirs[i % 4]; d.style.setProperty("--x0", dr[0]); d.style.setProperty("--y0", dr[1]); d.style.setProperty("--x1", dr[2]); d.style.setProperty("--y1", dr[3]); box.appendChild(d); const im = new Image(); im.onload = () => { d.style.backgroundImage = `url(${im.src})`; d.dataset.ok = "1"; }; im.src = img(it.p, true); return d; });
+    let cu = -1; const show = () => { const ok = sl.filter(x => x.dataset.ok); if (!ok.length) return; cu = (cu + 1) % ok.length; sl.forEach(x => x.classList.remove("on")); void ok[cu].offsetWidth; ok[cu].classList.add("on"); };
+    const first = setInterval(() => { if (sl.some(x => x.dataset.ok)) { clearInterval(first); show(); if (!reduce && sl.length > 1) setInterval(show, 7000); } }, 200);
+    if (!reduce && matchMedia("(pointer: fine)").matches) $("header").addEventListener("pointermove", e => { const r = e.currentTarget.getBoundingClientRect(); box.style.transform = `translate(${((e.clientX - r.left) / r.width - .5) * -22}px, ${((e.clientY - r.top) / r.height - .5) * -14}px)`; });
+  } else if (V.length && !reduce) {
+    const list = V.filter(v => v.s && v.s < 400e6).sort((a, b) => a.s - b.s).slice(0, 4);
+    if (list.length) { const hs = [0, 1].map(() => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "auto"; $("header").insertBefore(v, $(".grain")); return v; }); let n = 0, c = 0;
+      const next = () => { const v = hs[c], o = hs[1 - c], clip = list[n % list.length]; n++; v.onloadeddata = () => { v.currentTime = 0.5; v.play().catch(() => {}); v.classList.remove("on"); void v.offsetWidth; v.classList.add("on"); o.classList.remove("on"); c = 1 - c; if (list.length > 1) setTimeout(next, 8500); }; v.onerror = () => { if (n < list.length * 2) next(); }; v.src = `${base}/stream?p=${enc(clip.p)}`; };
+      next(); }
+  }
+}
+if (!slug) fail("This link is not complete", "Ask Stevy for a new link.");
+else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(render).catch(s => s === 404 ? fail("This album was not found", "Check the link or ask Stevy for a new one.") : fail("The album could not be loaded", "Try again in a moment."));
+</script>
+</body>
+</html>

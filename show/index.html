@@ -94,6 +94,11 @@ footer{margin:30px var(--pad) 0;padding:40px 0 70px;color:var(--dim);font:10px v
   .lock{font-size:10px;gap:9px}.lock img{height:15px}
 }
 @media (prefers-reduced-motion:reduce){figure img{transition:none}header .sl.on{animation:none}header .grain{animation:none}header .hv.on{animation:none}}
+@keyframes rv{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes rvf{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.rv{animation:rv .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms)}
+figure.rv,.ph.rv,.vid.rv{animation-name:rvf}
+@media (prefers-reduced-motion:reduce){.rv{animation:none}}
 </style>
 </head>
 <body>
@@ -191,6 +196,17 @@ function render(m) {
 }
 if (!slug) fail("This link is not complete", "Ask Stevy for a new link.");
 else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(render).catch(s => s === 404 ? fail("This album was not found", "Check the link or ask Stevy for a new one.") : fail("The album could not be loaded", "Try again in a moment."));
+</script>
+<script>
+/* every part of the page eases in one after the other, a soft rise out of a blur, like in the Projecten app */
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const SEL = ".hero .in > *:not(h1), main > *, .sec, .tabs, section, .sh, .hl, .pv, .internal, figure, .ph, .vid, .card, .nz, footer";
+  let n = 0, t = 0;
+  const go = el => { if (el.__rv || !el.classList) return; el.__rv = 1; el.style.setProperty("--i", Math.min(n++, 16)); el.classList.add("rv"); clearTimeout(t); t = setTimeout(() => { n = 0; }, 150); };
+  const scan = root => { if (root.nodeType !== 1) return; if (root.matches && root.matches(SEL)) go(root); if (root.querySelectorAll) root.querySelectorAll(SEL).forEach(go); };
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(scan))).observe(document.getElementById("app") || document.body, { childList: true, subtree: true });
+})();
 </script>
 </body>
 </html>

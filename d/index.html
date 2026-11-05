@@ -310,6 +310,11 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 .boot{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none}.boot span{width:7px;height:7px;border-radius:50%;background:var(--paper);opacity:.5;animation:bp 1.1s ease-in-out infinite}@keyframes bp{50%{opacity:.12;transform:scale(1.7)}}
 #app main{animation:appin .9s .15s cubic-bezier(.2,.7,.2,1) both}@keyframes appin{from{opacity:0;transform:translateY(10px)}}
 @media (prefers-reduced-motion:reduce){.boot span,#app main{animation:none}}
+@keyframes rv{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes rvf{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.rv{animation:rv .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms)}
+figure.rv,.ph.rv,.vid.rv{animation-name:rvf}
+@media (prefers-reduced-motion:reduce){.rv{animation:none}}
 </style>
 </head>
 <body>
@@ -322,7 +327,7 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 (() => {
 const ENDPOINT = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
 const q = new URLSearchParams(location.search), slug = ((s0 => /^[a-z0-9]{10,40}$/.test(s0) ? s0 : "")(q.get("c") || location.hash.slice(1) || "")), demo = q.has("demo") && /^(localhost|127\.0\.0\.1|\[::1\]|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)$/.test(location.hostname);   // test mode only on this Mac: a live link can never be pointed at someone else's data
-try { document.documentElement.dataset.theme = localStorage.getItem("dv-theme") || "dark"; } catch {}
+document.documentElement.dataset.theme = "dark";   // every delivery page opens dark; the switch in the bar changes it for this visit only
 const $ = s => document.querySelector(s), app = $("#app"), esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const kk = () => sessionStorage.getItem("dp:" + slug) || "";
 if (q.get("t")) { try { localStorage.setItem("dt:" + slug, q.get("t")); } catch {} history.replaceState(null, "", "?c=" + slug); }
@@ -392,7 +397,7 @@ function vinfo(v) {
   const g = String(v.group || "").split(" / ").filter(Boolean), ci = g.findIndex(x => /^clips$/i.test(x)), artist = ci > 0 ? g[ci - 1] : (g[0] && ci !== 0 ? g[g.length - 1] : "All clips");
   const asub = ci > 0 ? g.slice(0, ci + 1).join("/") : "";
   const n = /[_-](\d{1,3})\.[a-z0-9]+$/i.exec(v.name || "");
-  return { fmt: m ? m[1] + ":" + m[2] : "Other", ar: m ? m[1] + " / " + m[2] : "16 / 9", res: res ? res[1].toUpperCase() : "", artist, asub, sub: g.join("/"), rf, label: n ? "Clip " + n[1] : (v.name || "").replace(/\.[a-z0-9]+$/i, "") };
+  return { fmt: m ? m[1] + ":" + m[2] : (artist && artist !== "All clips" ? artist : "Other"), ar: m ? m[1] + " / " + m[2] : "16 / 9", res: res ? res[1].toUpperCase() : "", artist, asub, sub: g.join("/"), rf, label: n ? "Clip " + n[1] : (v.name || "").replace(/\.[a-z0-9]+$/i, "") };
 }
 function videoHtml(V) {
   const I = V.map(vinfo), arts = [...new Set(I.map(x => x.artist))].sort((a, b) => a.localeCompare(b)), LU = lineupInfo();
@@ -877,6 +882,17 @@ $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").oncli
   if (!slug && !demo) { const a = albums(); app.innerHTML = `<div class="gate"><div style="width:min(460px,100%)"><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem;margin:10px 0 6px">${a.length ? "Your albums" : "Open your link"}</h1><p class="note" style="margin:0 auto">${a.length ? "Opened on this device. Tap to go back in." : "Use the link from your mail or message. Albums you open are listed here afterwards."}</p><div class="mine">${a.map(x => `<a href="/d/?c=${esc(x.slug)}"><b>${esc(x.title || "Delivery")}</b><span>${esc(x.client)}</span></a>`).join("")}</div></div></div>`; return; }
   try { M = await load(kk()); render(); } catch (x) { if (!x.gate) console.error("delivery page:", x); x.gate ? gate(x.gate) : (app.innerHTML = `<div class="gate"><div><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem">${esc(x.msg || "Something went wrong.")}</h1></div></div>`); }
 })();
+})();
+</script>
+<script>
+/* every part of the page eases in one after the other, a soft rise out of a blur, like in the Projecten app */
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const SEL = ".hero .in > *:not(h1), main > *, .sec, .tabs, section, .sh, .hl, .pv, .internal, figure, .ph, .vid, .card, .nz, footer";
+  let n = 0, t = 0;
+  const go = el => { if (el.__rv || !el.classList) return; el.__rv = 1; el.style.setProperty("--i", Math.min(n++, 16)); el.classList.add("rv"); clearTimeout(t); t = setTimeout(() => { n = 0; }, 150); };
+  const scan = root => { if (root.nodeType !== 1) return; if (root.matches && root.matches(SEL)) go(root); if (root.querySelectorAll) root.querySelectorAll(SEL).forEach(go); };
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(scan))).observe(document.getElementById("app") || document.body, { childList: true, subtree: true });
 })();
 </script>
 </body>

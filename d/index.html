@@ -310,11 +310,11 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 .boot{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none}.boot span{width:7px;height:7px;border-radius:50%;background:var(--paper);opacity:.5;animation:bp 1.1s ease-in-out infinite}@keyframes bp{50%{opacity:.12;transform:scale(1.7)}}
 #app main{animation:appin .9s .15s cubic-bezier(.2,.7,.2,1) both}@keyframes appin{from{opacity:0;transform:translateY(10px)}}
 @media (prefers-reduced-motion:reduce){.boot span,#app main{animation:none}}
-@keyframes rv{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
-@keyframes rvf{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.rv{animation:rv .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms)}
-figure.rv,.ph.rv,.vid.rv{animation-name:rvf}
-@media (prefers-reduced-motion:reduce){.rv{animation:none}}
+@keyframes apin{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes apinf{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.apin{animation:apin .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms)}
+figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
+@media (prefers-reduced-motion:reduce){.apin{animation:none}}
 </style>
 </head>
 <body>
@@ -890,7 +890,7 @@ $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").oncli
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const SEL = ".hero .in > *:not(h1), main > *, .sec, .tabs, section, .sh, .hl, .pv, .internal, figure, .ph, .vid, .card, .nz, footer";
   let n = 0, t = 0;
-  const go = el => { if (el.__rv || !el.classList) return; el.__rv = 1; el.style.setProperty("--i", Math.min(n++, 16)); el.classList.add("rv"); clearTimeout(t); t = setTimeout(() => { n = 0; }, 150); };
+  const go = el => { if (el.__apin || !el.classList) return; el.__apin = 1; el.style.setProperty("--i", Math.min(n++, 16)); el.classList.add("apin"); clearTimeout(t); t = setTimeout(() => { n = 0; }, 150); };
   const scan = root => { if (root.nodeType !== 1) return; if (root.matches && root.matches(SEL)) go(root); if (root.querySelectorAll) root.querySelectorAll(SEL).forEach(go); };
   new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(scan))).observe(document.getElementById("app") || document.body, { childList: true, subtree: true });
 })();

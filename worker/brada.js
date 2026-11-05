@@ -109,8 +109,8 @@ export async function handleBrada(request, env, url, origin, notify, mailer) {
     const slug = String(b.slug || "").toLowerCase(), kind = b.kind === "brada" ? "brada" : "client", to = String(b.to || "").toLowerCase().trim();
     if (!SLUG.test(slug) || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to)) return json(400, { ok: false, error: "slug or to" }, origin);
     let rec = null; try { rec = JSON.parse(await env.IG.get("brada:" + slug) || "null"); } catch { rec = null; } if (!rec) return json(404, { ok: false, error: "no such album" }, origin);
-    let what = ["photos", "video", "photos and video"].includes(b.what) ? b.what : "photos";   // the app's guess from the job type, replaced by what is really in the folder
-    try { const mf = await manifest(env, slug, rec), ph = ["highlights", "previews", "high", "low", "lowres"].reduce((n, k) => n + ((mf[k] || []).length), 0), vi = (mf.videos || []).length; if (ph && vi) what = "photos and video"; else if (vi) what = "video"; else if (ph) what = "photos"; } catch { /* the guess stays */ }
+    let what = ["photos", "video", "photos and video"].includes(b.what) ? b.what : "photos";   // the app's guess from the job type, a job marked as combi (Photo + video) always says both; any other job is checked against what is really in the folder
+    if (b.what !== "photos and video") try { const mf = await manifest(env, slug, rec), ph = ["highlights", "previews", "high", "low", "lowres"].reduce((n, k) => n + ((mf[k] || []).length), 0), vi = (mf.videos || []).length; if (ph && vi) what = "photos and video"; else if (vi) what = "video"; else if (ph) what = "photos"; } catch { /* the guess stays */ }
     const first = String(b.name || "").trim().split(" ")[0], hi = first ? `Hi ${first}, ` : "", when = rec.date && /^\d{4}-\d{2}-\d{2}$/.test(rec.date) ? new Date(rec.date + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
     const person = (rec.people || []).find(x => first && String(x.n || "").toLowerCase().startsWith(first.toLowerCase()));
     const base = "https://stevyvergouwen.com/show/?c=" + slug, link = base + (person ? "&t=" + person.t : "");

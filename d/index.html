@@ -625,6 +625,7 @@ function heroVideo() {
       v.loop = list.length === 1; v.addEventListener("error", () => res(false), { once: true });
       let src = stream(clip.path) + "#t=0.5";
       if (!demo && clip.size && clip.size <= 70e6) { try { const r = await fetch(stream(clip.path)); if (r.ok) { const u = URL.createObjectURL(await r.blob()); blobs.add(u); src = u; } } catch (e) { /* streams instead */ } }
+      { const f = vinfo(clip).fmt; v.style.scale = f === "4:3" ? "1.34" : ""; v.style.objectPosition = (f === "9:16" || f === "4:5") && !phone ? "50% 30%" : ""; }   // VHS sits in a 16:9 file with bars: zoomed away; a standing clip is framed on the upper part
       v.addEventListener("canplaythrough", () => res(true), { once: true }); v.addEventListener("canplay", () => setTimeout(() => res(true), 1500), { once: true }); v.src = src;
     });
     const next = async () => {

@@ -200,7 +200,6 @@ button.pill:hover{background:var(--paper);color:var(--ink);border-color:var(--pa
 :root[data-theme="light"] .bar.sc .btn:hover,:root[data-theme="light"] .bar.sc #thm:hover{background:#16140f!important;color:#f4f1ea!important}
 @media (max-width:760px){.bar{height:68px;margin-bottom:-68px}.bar .lock span{font-size:13px!important;letter-spacing:.06em!important}.bar .btn{padding:0 14px;font-size:10px}}
 
-header .sl.tri{display:flex;background:none}header .sl.tri>i{flex:1;background:center/cover no-repeat;background-position:50% 30%}
 
 /* phone: the title sits in the upper part of the banner like on the website, the picture shows beneath it; the bar fits on one line */
 @media (max-width:760px){
@@ -208,7 +207,7 @@ header .sl.tri{display:flex;background:none}header .sl.tri>i{flex:1;background:c
   .bar .lock span{font-size:11px!important;letter-spacing:.06em!important}.bar .lock em{padding:0 4px}
   #dbx{font-size:0!important;padding:0 14px!important}#dbx::after{content:"Dropbox \2197";font-size:10px;letter-spacing:.1em}
   .bar #thm{width:36px;height:36px}
-  .bar .lock span{font-size:10px!important;letter-spacing:.03em!important}.bar .lock img{height:17px!important}
+  .bar .lock span{font-size:0!important}.bar .lock span::before{content:"SV";font-size:12px;font-weight:700;letter-spacing:.12em;color:#fff}.bar .lock img{height:17px!important}.bar .lock em{padding:0 6px}
 }
 </style>
 </head>
@@ -293,7 +292,7 @@ function render(m) {
   const cp = $("#cp"); if (cp) cp.onclick = e => { e.preventDefault(); navigator.clipboard && navigator.clipboard.writeText(clientLink); cp.textContent = "Copied"; setTimeout(() => cp.textContent = "Copy client link", 1800); };
   // the banner: a slow slideshow of the photos (highlights first), each cut and zoomed by the page and nudged by the pointer, with grain over it. No file is made for it.
   // Without photos, a few clips fade into each other and slowly push in.
-  const pool = H.length >= 3 ? H : [...H, ...P, ...HI, ...LO];
+  const pool = HI.length >= 3 ? HI : LO.length >= 3 ? LO : [...HI, ...LO, ...H, ...P];   // the full-size originals: they hold the wide photos; the highlights are standing Instagram crops
   const phone0 = matchMedia("(max-width: 760px)").matches;
   const cand = []; if (pool.length) { const n = Math.min(phone0 ? 18 : 70, pool.length); for (let i = 0; i < n; i++) cand.push(pool[Math.floor(i * pool.length / n)]); }
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, box = $("#slides");
@@ -307,28 +306,40 @@ function render(m) {
         const win = Math.max(3, Math.round(W * 9 / 16 * 0.5 * (H / W) * 0.0 + W * 7 / 16)), span = Math.max(1, H - win); let best = 0, bs = -1;
         for (let y0 = 0; y0 <= span; y0++) { let sc = 0; for (let r = y0; r < y0 + win && r < H; r++) sc += row[r]; const mid = (y0 + win / 2) / H; sc *= Math.exp(-Math.pow((mid - .38) / .3, 2)); if (sc > bs) { bs = sc; best = y0; } }
         return span ? Math.round(best / span * 100) : 34; } catch (e) { return 34; } };
-    const sl = picks.map((it, i) => { const d = document.createElement("div"); d.className = "sl"; const dr = dirs[i % 4]; d.style.setProperty("--x0", dr[0]); d.style.setProperty("--y0", dr[1]); d.style.setProperty("--x1", dr[2]); d.style.setProperty("--y1", dr[3]); box.appendChild(d); const im = new Image(); im.onload = () => { d.dataset.p = it.p; d.dataset.wide = im.naturalWidth / im.naturalHeight >= 1.25 ? "1" : ""; if (!d.dataset.wide) d.style.backgroundPosition = "50% " + aim(im) + "%"; d.dataset.ok = "1"; settle(); }; im.onerror = () => { d.dataset.bad = "1"; settle(); }; im.src = img(it.p, false); return d; });
+    const sl = picks.map((it, i) => { const d = document.createElement("div"); d.className = "sl"; const dr = dirs[i % 4]; d.style.setProperty("--x0", dr[0]); d.style.setProperty("--y0", dr[1]); d.style.setProperty("--x1", dr[2]); d.style.setProperty("--y1", dr[3]); box.appendChild(d); const im = new Image(); im.onload = () => { d.dataset.p = it.p; d.dataset.wide = im.naturalWidth / im.naturalHeight >= 1.25 ? "1" : ""; if (settled) return; d.dataset.ok = "1"; settle(); }; im.onerror = () => { d.dataset.bad = "1"; settle(); }; im.src = img(it.p, false); return d; });
     let settled = false;
     const phone = matchMedia("(max-width: 760px)").matches;
     // desktop: as many wide photos as possible; a phone can take the standing ones. Without wide photos on a desktop, three standing ones side by side fill the banner at their own shape.
     function settle() {
-      if (settled) return; const done = sl.filter(x => x.dataset.ok || x.dataset.bad).length; if (done < sl.length && !(done >= 8 && sl.filter(x => x.dataset.wide).length >= 6)) return; settled = true;
+      if (settled) return; const done = sl.filter(x => x.dataset.ok || x.dataset.bad).length; if (done < sl.length && !(done >= 10 && sl.filter(x => x.dataset.wide).length >= 6)) return; settled = true;
       const ok = sl.filter(x => x.dataset.ok), wide = ok.filter(x => x.dataset.wide), vert = ok.filter(x => !x.dataset.wide);
       let keep;
       if (phone) keep = (vert.length >= 2 ? vert : ok).slice(0, 6);
-      else if (wide.length >= 2) keep = wide.slice(0, 6);
-      else { keep = wide.slice(); for (let g = 0; g + 2 < vert.length && g < 6; g += 3) { const t = document.createElement("div"); t.className = "sl tri"; vert.slice(g, g + 3).forEach(v => { const c = document.createElement("i"); c.style.backgroundImage = `url(${img(v.dataset.p, true)})`; t.appendChild(c); }); t.dataset.ok = "1"; box.appendChild(t); sl.push(t); keep.push(t); } if (!keep.length) keep = vert.slice(0, 4); }
-      keep.forEach(x => { if (x.dataset.p) x.style.backgroundImage = `url(${img(x.dataset.p, true)})`; if (!x.dataset.wide && x.dataset.p) x.style.backgroundPosition = "50% 30%"; });
+      else keep = [...wide.slice(0, 6), ...(wide.length < 3 ? vert.slice(0, 4 - wide.length) : [])];   // desktop: wide photos, as many as there are; a standing one only fills up when there are too few, zoomed and framed
+      keep.forEach(x => { if (x.dataset.p) x.style.backgroundImage = `url(${img(x.dataset.p, true)})`; });   // always the large version
+      keep.filter(x => !x.dataset.wide).forEach(async x => { x.style.backgroundPosition = "50% 30%"; const y = await aimFrom(x.dataset.p); if (y != null) x.style.backgroundPosition = "50% " + y + "%"; });
       const ks = new Set(keep); sl.forEach(x => { if (!ks.has(x)) { x.dataset.ok = ""; x.remove(); } else box.appendChild(x); });
     }
+    // the band of a standing photo that holds the most detail and light, leaning to the upper part where faces are; read from the picture itself when the server lets the page do that
+    async function aimFrom(path) {
+      try { const r = await fetch(img(path, false)); if (!r.ok) return null; const bm = await createImageBitmap(await r.blob()); const W = 48, H = Math.max(8, Math.round(48 * bm.height / bm.width)), c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(bm, 0, 0, W, H); const d = x.getImageData(0, 0, W, H).data, L = i => d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11, row = new Array(H).fill(0);
+        for (let r2 = 0; r2 < H - 1; r2++) for (let q = 0; q < W - 1; q++) { const i = r2 * W + q; row[r2] += Math.abs(L(i) - L(i + 1)) + Math.abs(L(i) - L(i + W)) + L(i) * .15; }
+        const win = Math.max(3, Math.round(W * 7 / 16)), span = Math.max(1, H - win); let best = 0, bs = -1;
+        for (let y0 = 0; y0 <= span; y0++) { let sc = 0; for (let r2 = y0; r2 < y0 + win && r2 < H; r2++) sc += row[r2]; const mid = (y0 + win / 2) / H; sc *= Math.exp(-Math.pow((mid - .36) / .28, 2)); if (sc > bs) { bs = sc; best = y0; } }
+        return span ? Math.round(best / span * 100) : 34; } catch (e) { return null; }
+    }
     setTimeout(() => { if (!settled) { const early = sl.filter(x => x.dataset.ok).length; if (early) { settled = false; sl.forEach(x => { if (!x.dataset.ok && !x.dataset.bad) x.dataset.bad = "1"; }); settle(); } } }, 6000);
-    let cu = -1; const show = () => { const ok = sl.filter(x => x.dataset.ok); if (!ok.length) return; cu = (cu + 1) % ok.length; sl.forEach(x => x.classList.remove("on")); void ok[cu].offsetWidth; ok[cu].classList.add("on"); };
-    const first = setInterval(() => { if (settled && sl.some(x => x.dataset.ok)) { clearInterval(first); show(); if (!reduce && sl.filter(x => x.dataset.ok).length > 1) setInterval(show, 7000); } }, 200);
+    let cu = -1; const show = () => { const ok = sl.filter(x => x.dataset.ok && x.isConnected);   // a slide dropped at settle can still finish loading: it must never be picked
+      if (!ok.length) return; cu = (cu + 1) % ok.length; sl.forEach(x => x.classList.remove("on")); void ok[cu].offsetWidth; ok[cu].classList.add("on"); };
+    const first = setInterval(() => { if (settled && sl.some(x => x.dataset.ok && x.isConnected)) { clearInterval(first); show(); if (!reduce && sl.filter(x => x.dataset.ok && x.isConnected).length > 1) setInterval(show, 7000); } }, 200);
     if (!reduce && matchMedia("(pointer: fine)").matches) $("header").addEventListener("pointermove", e => { const r = e.currentTarget.getBoundingClientRect(); box.style.transform = `translate(${((e.clientX - r.left) / r.width - .5) * -22}px, ${((e.clientY - r.top) / r.height - .5) * -14}px)`; });
   } else if (V.length && !reduce) {
-    const list = V.filter(v => v.s && v.s < 400e6).sort((a, b) => a.s - b.s).slice(0, 4);
+    const phoneV = matchMedia("(max-width: 760px)").matches, arOf = v => { const m = /(\d{1,2})X(\d{1,2})/i.exec(String(v.p || "").split("/").pop()); return m ? +m[1] / +m[2] : 0; };
+    // always wide clips as the banner; standing ones only when there are none (a phone prefers standing ones)
+    const rk = v => { const a = arOf(v); return phoneV ? (a && a < .9 ? 0 : 1) : (a >= 1.25 ? 0 : a ? 2 : 1); };
+    const list = V.filter(v => v.s && v.s < 400e6).sort((a, b) => rk(a) - rk(b) || a.s - b.s).slice(0, 4);
     if (list.length) { const hs = [0, 1].map(() => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "metadata"; v.disableRemotePlayback = true; $("header").insertBefore(v, $(".grain")); return v; }); let n = 0, c = 0;
-      const next = () => { const v = hs[c], o = hs[1 - c], clip = list[n % list.length]; n++; v.onloadeddata = () => { v.currentTime = 0.5; v.play().catch(() => {}); v.classList.remove("on"); void v.offsetWidth; v.classList.add("on"); o.classList.remove("on"); c = 1 - c; if (list.length > 1) setTimeout(next, 8500); }; v.onerror = () => { if (n < list.length * 2) next(); }; v.src = `${base}/stream?p=${enc(clip.p)}`; };
+      const next = () => { const v = hs[c], o = hs[1 - c], clip = list[n % list.length]; n++; v.onloadeddata = () => { { const a = arOf(clip); v.style.scale = a >= 1.25 && a < 1.5 ? "1.34" : ""; v.style.objectPosition = a && a < .9 && !phoneV ? "50% 30%" : ""; } v.currentTime = 0.5; v.play().catch(() => {}); v.classList.remove("on"); void v.offsetWidth; v.classList.add("on"); o.classList.remove("on"); c = 1 - c; if (list.length > 1) setTimeout(next, 8500); }; v.onerror = () => { if (n < list.length * 2) next(); }; v.src = `${base}/stream?p=${enc(clip.p)}`; };
       next(); }
   }
 }

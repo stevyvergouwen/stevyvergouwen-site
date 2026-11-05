@@ -24,9 +24,9 @@ body{background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-fo
 .btn.fill{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 header{position:relative;overflow:hidden;min-height:min(78svh,720px);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(36px,8vw,96px) var(--pad) clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
 header .slides{position:absolute;inset:0;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
-header .sl{position:absolute;inset:-5%;background:var(--ink2) center/cover;opacity:0;transition:opacity 1.8s ease;will-change:opacity,transform}
+header .sl{position:absolute;inset:-2%;background:var(--ink2) center/cover;opacity:0;transition:opacity 1.8s ease;will-change:opacity,transform}
 header .sl.on{opacity:.74;animation:kb 13s ease-out both}
-@keyframes kb{from{transform:scale(1.04) translate(var(--x0),var(--y0))}to{transform:scale(1.15) translate(var(--x1),var(--y1))}}
+@keyframes kb{from{transform:scale(1.01) translate(var(--x0),var(--y0))}to{transform:scale(1.06) translate(var(--x1),var(--y1))}}
 header .grain{position:absolute;inset:-50%;z-index:1;pointer-events:none;opacity:.16;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:gr .9s steps(6) infinite}
 @keyframes gr{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
 header .hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.8s ease;filter:brightness(.62) saturate(1.1);transform:scale(1.02)}
@@ -199,6 +199,8 @@ button.pill:hover{background:var(--paper);color:var(--ink);border-color:var(--pa
 :root[data-theme="light"] .bar.sc .btn,:root[data-theme="light"] .bar.sc #thm{background:rgba(22,20,15,.06)!important;color:#16140f!important;border-color:rgba(22,20,15,.4)!important}
 :root[data-theme="light"] .bar.sc .btn:hover,:root[data-theme="light"] .bar.sc #thm:hover{background:#16140f!important;color:#f4f1ea!important}
 @media (max-width:760px){.bar{height:68px;margin-bottom:-68px}.bar .lock span{font-size:13px!important;letter-spacing:.06em!important}.bar .btn{padding:0 14px;font-size:10px}}
+
+header .sl.tri{display:flex;background:none}header .sl.tri>i{flex:1;background:center/cover no-repeat;background-position:50% 30%}
 </style>
 </head>
 <body>
@@ -283,7 +285,8 @@ function render(m) {
   // the banner: a slow slideshow of the photos (highlights first), each cut and zoomed by the page and nudged by the pointer, with grain over it. No file is made for it.
   // Without photos, a few clips fade into each other and slowly push in.
   const pool = H.length >= 3 ? H : [...H, ...P, ...HI, ...LO];
-  const cand = []; if (pool.length) { const n = Math.min(40, pool.length); for (let i = 0; i < n; i++) cand.push(pool[Math.floor(i * pool.length / n)]); }
+  const phone0 = matchMedia("(max-width: 760px)").matches;
+  const cand = []; if (pool.length) { const n = Math.min(phone0 ? 18 : 70, pool.length); for (let i = 0; i < n; i++) cand.push(pool[Math.floor(i * pool.length / n)]); }
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, box = $("#slides");
   const picks = cand;
   if (picks.length) {
@@ -297,10 +300,17 @@ function render(m) {
         return span ? Math.round(best / span * 100) : 34; } catch (e) { return 34; } };
     const sl = picks.map((it, i) => { const d = document.createElement("div"); d.className = "sl"; const dr = dirs[i % 4]; d.style.setProperty("--x0", dr[0]); d.style.setProperty("--y0", dr[1]); d.style.setProperty("--x1", dr[2]); d.style.setProperty("--y1", dr[3]); box.appendChild(d); const im = new Image(); im.onload = () => { d.dataset.p = it.p; d.dataset.wide = im.naturalWidth / im.naturalHeight >= 1.25 ? "1" : ""; if (!d.dataset.wide) d.style.backgroundPosition = "50% " + aim(im) + "%"; d.dataset.ok = "1"; settle(); }; im.onerror = () => { d.dataset.bad = "1"; settle(); }; im.src = img(it.p, false); return d; });
     let settled = false;
+    const phone = matchMedia("(max-width: 760px)").matches;
+    // desktop: as many wide photos as possible; a phone can take the standing ones. Without wide photos on a desktop, three standing ones side by side fill the banner at their own shape.
     function settle() {
       if (settled) return; const done = sl.filter(x => x.dataset.ok || x.dataset.bad).length; if (done < sl.length && !(done >= 8 && sl.filter(x => x.dataset.wide).length >= 6)) return; settled = true;
-      let wide = sl.filter(x => x.dataset.wide); if (wide.length < 4) wide = wide.concat(sl.filter(x => x.dataset.ok && !x.dataset.wide)).slice(0, 5); wide.forEach(x => box.appendChild(x)); wide.sort((p, q) => (q.dataset.wide ? 1 : 0) - (p.dataset.wide ? 1 : 0));
-      const keep = new Set(wide.slice(0, 6)); keep.forEach(x => { x.style.backgroundImage = `url(${img(x.dataset.p, true)})`; }); sl.forEach(x => { if (!keep.has(x)) { x.dataset.ok = ""; x.remove(); } });
+      const ok = sl.filter(x => x.dataset.ok), wide = ok.filter(x => x.dataset.wide), vert = ok.filter(x => !x.dataset.wide);
+      let keep;
+      if (phone) keep = (vert.length >= 2 ? vert : ok).slice(0, 6);
+      else if (wide.length >= 2) keep = wide.slice(0, 6);
+      else { keep = wide.slice(); for (let g = 0; g + 2 < vert.length && g < 6; g += 3) { const t = document.createElement("div"); t.className = "sl tri"; vert.slice(g, g + 3).forEach(v => { const c = document.createElement("i"); c.style.backgroundImage = `url(${img(v.dataset.p, true)})`; t.appendChild(c); }); t.dataset.ok = "1"; box.appendChild(t); sl.push(t); keep.push(t); } if (!keep.length) keep = vert.slice(0, 4); }
+      keep.forEach(x => { if (x.dataset.p) x.style.backgroundImage = `url(${img(x.dataset.p, true)})`; if (!x.dataset.wide && x.dataset.p) x.style.backgroundPosition = "50% 30%"; });
+      const ks = new Set(keep); sl.forEach(x => { if (!ks.has(x)) { x.dataset.ok = ""; x.remove(); } else box.appendChild(x); });
     }
     setTimeout(() => { if (!settled) { const early = sl.filter(x => x.dataset.ok).length; if (early) { settled = false; sl.forEach(x => { if (!x.dataset.ok && !x.dataset.bad) x.dataset.bad = "1"; }); settle(); } } }, 6000);
     let cu = -1; const show = () => { const ok = sl.filter(x => x.dataset.ok); if (!ok.length) return; cu = (cu + 1) % ok.length; sl.forEach(x => x.classList.remove("on")); void ok[cu].offsetWidth; ok[cu].classList.add("on"); };

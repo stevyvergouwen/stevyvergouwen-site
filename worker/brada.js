@@ -112,9 +112,9 @@ export async function handleBrada(request, env, url, origin, notify, mailer) {
     const what = ["photos", "video", "photos and video"].includes(b.what) ? b.what : "photos", first = String(b.name || "").trim().split(" ")[0], hi = first ? `Hi ${first}, ` : "", when = rec.date && /^\d{4}-\d{2}-\d{2}$/.test(rec.date) ? new Date(rec.date + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
     const person = (rec.people || []).find(x => first && String(x.n || "").toLowerCase().startsWith(first.toLowerCase()));
     const base = "https://stevyvergouwen.com/show/?c=" + slug, link = base + (person ? "&t=" + person.t : "");
-    const rows = [["Client", rec.client], ["Date", when], ["Location", rec.location]];
+    const rows = [["Client", rec.client], ["Date", when], ["Location", rec.location], ["Photography", "Stevy Vergouwen"]];
     const m = kind === "client"
-      ? { subject: `Your album from Brada Media: ${rec.title}`, eyebrow: "Brada Media", heading: rec.title, intro: `${hi}Brada Media has your ${what} ready. Photography by Stevy Vergouwen.`, rows, note: "This page is for looking. If you need the files, Brada Media sends them to you.", cta: { text: "Open your album", href: link } }
+      ? { subject: `Your album from Brada Media: ${rec.title}`, eyebrow: "Brada Media · Photography", heading: rec.title, intro: `${hi}Brada Media has your ${what} ready. Photography by Stevy Vergouwen.`, rows, note: "This page is for looking. If you need the files, Brada Media sends them to you.", cta: { text: "Open your album", href: link } }
       : { subject: `Delivered: ${rec.title}`, eyebrow: "Delivered", heading: rec.title, intro: `${hi}${rec.title}${rec.client ? " for " + rec.client : ""} is ready. Your internal view has the Dropbox link, the client link and the downloads. Please do not forward that view: the client gets the client link.`, rows, note: "The client link is view only; the internal view is for Brada Media.", cta: { text: "Open the internal view", href: base + "&k=" + rec.key } };
     const r = await mailer(b.preview ? "info@stevyvergouwen.com" : to, { ...m, subject: (b.preview ? "[Preview] " : "") + m.subject, dry: !!b.dry });
     if (b.dry) return json(200, { ok: true, html: r.html }, origin);

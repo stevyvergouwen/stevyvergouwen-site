@@ -403,6 +403,22 @@ figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 .sfx-h.in{clip-path:inset(-10% 0 -10% 0);transform:none}
 .vgrid .vcard.sfx{transition-delay:calc(var(--k,0)*70ms)}
 @media (prefers-reduced-motion:reduce){.sfx,.sfx-h{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important;transition:none!important}}
+
+/* BAR: the website's top bar: a bold wordmark, glass pill buttons, a scrim that fades out instead of a hard strip */
+.bar{height:calc(80px + env(safe-area-inset-top,0px))!important;padding:env(safe-area-inset-top,0px) var(--pad) 0!important;background:none!important;border:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;isolation:isolate;gap:12px;color:#fff}
+.bar::before{content:"";position:absolute;left:0;right:0;top:0;height:calc(100% + 36px);z-index:-1;pointer-events:none;background:linear-gradient(to bottom,rgba(8,8,10,.62) 0%,rgba(8,8,10,.4) 40%,rgba(8,8,10,.14) 74%,rgba(8,8,10,0) 100%);transition:background .5s ease}
+.bar.sc::before{background:linear-gradient(to bottom,rgba(8,8,10,.94) 0%,rgba(8,8,10,.9) 44%,rgba(8,8,10,.6) 70%,rgba(8,8,10,0) 100%);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 58%,rgba(0,0,0,.6) 78%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 58%,rgba(0,0,0,.6) 78%,transparent 100%)}
+.bar .bn{font:700 15px "Helvetica Neue",Helvetica,Arial,sans-serif!important;letter-spacing:.12em!important;text-transform:uppercase;color:#fff!important;border:0!important;padding:0!important}
+.bar .dl,.bar #barr{display:flex;align-items:center;gap:10px}
+.bar .rvl,.bar .dlb,.bar .shb{height:40px!important;margin:0 !important;padding:0 20px!important;display:inline-flex!important;align-items:center;gap:8px;border-radius:999px!important;background:rgba(255,255,255,.1)!important;color:#fff!important;border:1px solid rgba(255,255,255,.5)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font:600 11px "Helvetica Neue",Helvetica,Arial,sans-serif!important;letter-spacing:.16em!important;text-transform:uppercase;white-space:nowrap;box-shadow:none!important;transition:background .3s ease,color .3s ease,border-color .3s ease,translate .45s cubic-bezier(.3,1.6,.5,1)}
+.bar .rvl{margin-left:auto!important;margin-right:10px!important}
+.bar .dlb::after{content:"\2193";font-size:12px}
+.bar .rvl:hover,.bar .dlb:hover,.bar .shb:hover{background:#fff!important;color:#08080a!important;border-color:#fff!important;transform:none!important}
+:root[data-theme="light"] .bar.sc::before{background:linear-gradient(to bottom,rgba(244,241,236,.96) 0%,rgba(244,241,236,.9) 44%,rgba(244,241,236,.6) 70%,rgba(244,241,236,0) 100%)}
+:root[data-theme="light"] .bar.sc .bn{color:#141414!important}
+:root[data-theme="light"] .bar.sc .rvl,:root[data-theme="light"] .bar.sc .dlb,:root[data-theme="light"] .bar.sc .shb{background:rgba(20,20,20,.06)!important;color:#141414!important;border-color:rgba(20,20,20,.4)!important}
+:root[data-theme="light"] .bar.sc .rvl:hover,:root[data-theme="light"] .bar.sc .dlb:hover,:root[data-theme="light"] .bar.sc .shb:hover{background:#141414!important;color:#f4f1ec!important}
+@media (max-width:760px){.bar{height:calc(68px + env(safe-area-inset-top,0px))!important}.bar .bn{font-size:13px!important;letter-spacing:.06em!important}.bar .rvl{display:none!important}.bar .dlb,.bar .shb{height:36px!important;padding:0 14px!important;font-size:10px!important;letter-spacing:.1em!important}.bar .dlb::after{display:none}}
 </style>
 </head>
 <body>

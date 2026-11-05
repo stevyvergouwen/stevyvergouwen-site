@@ -185,6 +185,20 @@ button.pill:hover{background:var(--paper);color:var(--ink);border-color:var(--pa
 .mag{will-change:translate}
 :root[data-theme="light"] button.pill{background:rgba(244,241,234,.5)}
 
+
+/* BAR: same wordmark and glass pill buttons as the website, the bar fades out instead of ending in a line */
+.bar{position:sticky;top:0;height:80px;padding:0 var(--pad)!important;background:none!important;border:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;isolation:isolate;margin-bottom:-80px;z-index:40}
+.bar::before{content:"";position:absolute;left:0;right:0;top:0;height:calc(100% + 36px);z-index:-1;pointer-events:none;background:linear-gradient(to bottom,rgba(8,8,10,.62) 0%,rgba(8,8,10,.4) 40%,rgba(8,8,10,.14) 74%,rgba(8,8,10,0) 100%);transition:background .5s ease}
+.bar.sc::before{background:linear-gradient(to bottom,rgba(8,8,10,.94) 0%,rgba(8,8,10,.9) 44%,rgba(8,8,10,.6) 70%,rgba(8,8,10,0) 100%);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 58%,rgba(0,0,0,.6) 78%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 58%,rgba(0,0,0,.6) 78%,transparent 100%)}
+.bar .lock span{font:700 15px "Helvetica Neue",Helvetica,Arial,sans-serif!important;letter-spacing:.12em!important;color:#fff}
+.bar .btn,.bar #thm{height:40px;border-radius:999px!important;background:rgba(255,255,255,.1)!important;color:#fff!important;border:1px solid rgba(255,255,255,.5)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font:600 11px "Helvetica Neue",Helvetica,Arial,sans-serif!important;letter-spacing:.16em;text-transform:uppercase;box-shadow:none!important;transition:background .3s ease,color .3s ease,border-color .3s ease,translate .45s cubic-bezier(.3,1.6,.5,1)}
+.bar #thm{width:40px;padding:0}
+.bar .btn:hover,.bar #thm:hover{background:#fff!important;color:#08080a!important;border-color:#fff!important}
+:root[data-theme="light"] .bar.sc::before{background:linear-gradient(to bottom,rgba(244,241,234,.96) 0%,rgba(244,241,234,.9) 44%,rgba(244,241,234,.6) 70%,rgba(244,241,234,0) 100%)}
+:root[data-theme="light"] .bar.sc .lock span{color:#16140f}
+:root[data-theme="light"] .bar.sc .btn,:root[data-theme="light"] .bar.sc #thm{background:rgba(22,20,15,.06)!important;color:#16140f!important;border-color:rgba(22,20,15,.4)!important}
+:root[data-theme="light"] .bar.sc .btn:hover,:root[data-theme="light"] .bar.sc #thm:hover{background:#16140f!important;color:#f4f1ea!important}
+@media (max-width:760px){.bar{height:68px;margin-bottom:-68px}.bar .lock span{font-size:13px!important;letter-spacing:.06em!important}.bar .btn{padding:0 14px;font-size:10px}}
 </style>
 </head>
 <body>
@@ -414,5 +428,6 @@ else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => 
   document.addEventListener("pointerleave", () => { if (cur) { reset(cur); cur = null; } });
 })();
 </script>
+<script>addEventListener("scroll",()=>{const b=document.querySelector(".bar");if(b)b.classList.toggle("sc",scrollY>40)},{passive:true});</script>
 </body>
 </html>

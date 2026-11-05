@@ -422,6 +422,19 @@ figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 
 /* phone: the title sits in the upper part of the banner like on the website, the picture shows beneath it */
 @media (max-width:760px){.hero{align-items:flex-start!important;padding-top:132px!important;min-height:74svh!important}}
+
+/* READ + SCROLL: legible text over any photo, and a scroll cue that shows on a phone too */
+.scue{position:absolute!important;left:50%;bottom:20px;z-index:6;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;font:500 11px "Roboto Mono",ui-monospace,monospace;letter-spacing:.26em;text-transform:uppercase;color:#fff;text-decoration:none;text-shadow:0 1px 12px rgba(0,0,0,.7);opacity:0;animation:scin .9s .8s ease forwards;cursor:pointer;background:none;border:0;padding:8px 14px}
+.scue svg{animation:scbob 1.8s ease-in-out infinite}
+@keyframes scin{to{opacity:.95}}@keyframes scbob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.scue.gone{opacity:0!important;pointer-events:none;transition:opacity .4s}
+@media (prefers-reduced-motion:reduce){.scue svg{animation:none}}
+@media (max-width:760px){.scue{bottom:14px}}
+
+.hero h1,.hero .sub,.hero .note,.hero .loc,.hero .sub span,.hero .in>*{text-shadow:0 2px 22px rgba(0,0,0,.6),0 0 2px rgba(0,0,0,.35)}
+.hero .sub,.hero .loc,.hero .sub span{color:#d9d6cf!important}
+.hero .bg{opacity:.7!important}
+.hero::after{background:linear-gradient(to top,var(--ink) 4%,rgba(8,8,10,.5) 40%,transparent 78%)!important}
 </style>
 </head>
 <body>
@@ -1246,6 +1259,17 @@ $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").oncli
 /* the glide stays out of overlays that scroll themselves */
 (() => { const SEL = ".lb, .sheet, .zs, .zp, .nzo, .fb, .dlp, .vb, .menu, textarea, select, [role=dialog]"; const mark = r => { if (r.nodeType !== 1) return; if (r.matches && r.matches(SEL)) r.setAttribute("data-lenis-prevent", ""); if (r.querySelectorAll) r.querySelectorAll(SEL).forEach(e => e.setAttribute("data-lenis-prevent", "")); };
   new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(mark))).observe(document.documentElement, { childList: true, subtree: true }); mark(document.body); })();
+</script>
+<script>
+/* the scroll cue: added to the banner once it exists, goes when you start scrolling */
+(() => {
+  const mk = () => { const h = document.querySelector("header, .hero"); if (!h || h.querySelector(".scue")) return; const a = document.createElement("button"); a.type = "button"; a.className = "scue"; a.setAttribute("aria-label", "Scroll down");
+    a.innerHTML = '<span>Scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+    a.onclick = () => { const y = h.offsetHeight - 70; if (window.lenis) window.lenis.scrollTo(y); else scrollTo({ top: y, behavior: "smooth" }); };
+    h.appendChild(a); };
+  new MutationObserver(mk).observe(document.getElementById("app") || document.body, { childList: true, subtree: true }); mk();
+  addEventListener("scroll", () => { const c = document.querySelector(".scue"); if (c) c.classList.toggle("gone", scrollY > 60); }, { passive: true });
+})();
 </script>
 </body>
 </html>

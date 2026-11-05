@@ -207,8 +207,21 @@ button.pill:hover{background:var(--paper);color:var(--ink);border-color:var(--pa
   .bar .lock span{font-size:11px!important;letter-spacing:.06em!important}.bar .lock em{padding:0 4px}
   #dbx{font-size:0!important;padding:0 14px!important}#dbx::after{content:"Dropbox \2197";font-size:10px;letter-spacing:.1em}
   .bar #thm{width:36px;height:36px}
-  .bar .lock span{font-size:0!important}.bar .lock span::before{content:"SV";font-size:12px;font-weight:700;letter-spacing:.12em;color:#fff}.bar .lock img{height:17px!important}.bar .lock em{padding:0 6px}
+  .bar{gap:6px!important}.bar .lock span{font-size:10px!important;letter-spacing:.02em!important;white-space:nowrap}.bar .lock img{height:14px!important}.bar .lock em{padding:0 4px;font-size:10px}.bar #thm{width:32px!important;height:32px!important}#dbx{padding:0 11px!important;height:32px!important}#dbx::after{font-size:9px!important;letter-spacing:.06em!important}
 }
+
+/* READ + SCROLL: legible text over any photo, and a scroll cue that shows on a phone too */
+.scue{position:absolute!important;left:50%;bottom:20px;z-index:6;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;font:500 11px "Roboto Mono",ui-monospace,monospace;letter-spacing:.26em;text-transform:uppercase;color:#fff;text-decoration:none;text-shadow:0 1px 12px rgba(0,0,0,.7);opacity:0;animation:scin .9s .8s ease forwards;cursor:pointer;background:none;border:0;padding:8px 14px}
+.scue svg{animation:scbob 1.8s ease-in-out infinite}
+@keyframes scin{to{opacity:.95}}@keyframes scbob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.scue.gone{opacity:0!important;pointer-events:none;transition:opacity .4s}
+@media (prefers-reduced-motion:reduce){.scue svg{animation:none}}
+@media (max-width:760px){.scue{bottom:14px}}
+
+header h1,header .meta,header .mono,header .pill,header .meta .mono{text-shadow:0 2px 22px rgba(0,0,0,.6),0 0 2px rgba(0,0,0,.35)}
+header .mono,header .meta .mono{color:#d9d6cf!important}
+header .sl.on{opacity:.6!important}
+header::after{background:linear-gradient(to top,var(--ink) 4%,rgba(8,8,10,.55) 38%,transparent 78%)!important}
 </style>
 </head>
 <body>
@@ -464,6 +477,17 @@ else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => 
 /* the glide stays out of overlays that scroll themselves */
 (() => { const SEL = ".lb, .sheet, .zs, .zp, .nzo, .fb, .dlp, .vb, .menu, textarea, select, [role=dialog]"; const mark = r => { if (r.nodeType !== 1) return; if (r.matches && r.matches(SEL)) r.setAttribute("data-lenis-prevent", ""); if (r.querySelectorAll) r.querySelectorAll(SEL).forEach(e => e.setAttribute("data-lenis-prevent", "")); };
   new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(mark))).observe(document.documentElement, { childList: true, subtree: true }); mark(document.body); })();
+</script>
+<script>
+/* the scroll cue: added to the banner once it exists, goes when you start scrolling */
+(() => {
+  const mk = () => { const h = document.querySelector("header, .hero"); if (!h || h.querySelector(".scue")) return; const a = document.createElement("button"); a.type = "button"; a.className = "scue"; a.setAttribute("aria-label", "Scroll down");
+    a.innerHTML = '<span>Scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+    a.onclick = () => { const y = h.offsetHeight - 70; if (window.lenis) window.lenis.scrollTo(y); else scrollTo({ top: y, behavior: "smooth" }); };
+    h.appendChild(a); };
+  new MutationObserver(mk).observe(document.getElementById("app") || document.body, { childList: true, subtree: true }); mk();
+  addEventListener("scroll", () => { const c = document.querySelector(".scue"); if (c) c.classList.toggle("gone", scrollY > 60); }, { passive: true });
+})();
 </script>
 </body>
 </html>

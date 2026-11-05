@@ -201,6 +201,15 @@ button.pill:hover{background:var(--paper);color:var(--ink);border-color:var(--pa
 @media (max-width:760px){.bar{height:68px;margin-bottom:-68px}.bar .lock span{font-size:13px!important;letter-spacing:.06em!important}.bar .btn{padding:0 14px;font-size:10px}}
 
 header .sl.tri{display:flex;background:none}header .sl.tri>i{flex:1;background:center/cover no-repeat;background-position:50% 30%}
+
+/* phone: the title sits in the upper part of the banner like on the website, the picture shows beneath it; the bar fits on one line */
+@media (max-width:760px){
+  header{justify-content:flex-start!important;padding-top:132px!important;min-height:74svh!important}
+  .bar .lock span{font-size:11px!important;letter-spacing:.06em!important}.bar .lock em{padding:0 4px}
+  #dbx{font-size:0!important;padding:0 14px!important}#dbx::after{content:"Dropbox \2197";font-size:10px;letter-spacing:.1em}
+  .bar #thm{width:36px;height:36px}
+  .bar .lock span{font-size:10px!important;letter-spacing:.03em!important}.bar .lock img{height:17px!important}
+}
 </style>
 </head>
 <body>
@@ -439,5 +448,11 @@ else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => 
 })();
 </script>
 <script>addEventListener("scroll",()=>{const b=document.querySelector(".bar");if(b)b.classList.toggle("sc",scrollY>40)},{passive:true});</script>
+<script src="/smooth.js"></script>
+<script>
+/* the glide stays out of overlays that scroll themselves */
+(() => { const SEL = ".lb, .sheet, .zs, .zp, .nzo, .fb, .dlp, .vb, .menu, textarea, select, [role=dialog]"; const mark = r => { if (r.nodeType !== 1) return; if (r.matches && r.matches(SEL)) r.setAttribute("data-lenis-prevent", ""); if (r.querySelectorAll) r.querySelectorAll(SEL).forEach(e => e.setAttribute("data-lenis-prevent", "")); };
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(mark))).observe(document.documentElement, { childList: true, subtree: true }); mark(document.body); })();
+</script>
 </body>
 </html>

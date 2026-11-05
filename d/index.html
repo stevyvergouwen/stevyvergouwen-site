@@ -419,6 +419,9 @@ figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 :root[data-theme="light"] .bar.sc .rvl,:root[data-theme="light"] .bar.sc .dlb,:root[data-theme="light"] .bar.sc .shb{background:rgba(20,20,20,.06)!important;color:#141414!important;border-color:rgba(20,20,20,.4)!important}
 :root[data-theme="light"] .bar.sc .rvl:hover,:root[data-theme="light"] .bar.sc .dlb:hover,:root[data-theme="light"] .bar.sc .shb:hover{background:#141414!important;color:#f4f1ec!important}
 @media (max-width:760px){.bar{height:calc(68px + env(safe-area-inset-top,0px))!important}.bar .bn{font-size:13px!important;letter-spacing:.06em!important}.bar .rvl{display:none!important}.bar .dlb,.bar .shb{height:36px!important;padding:0 14px!important;font-size:10px!important;letter-spacing:.1em!important}.bar .dlb::after{display:none}}
+
+/* phone: the title sits in the upper part of the banner like on the website, the picture shows beneath it */
+@media (max-width:760px){.hero{align-items:flex-start!important;padding-top:132px!important;min-height:74svh!important}}
 </style>
 </head>
 <body>
@@ -1236,6 +1239,12 @@ $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").oncli
   new MutationObserver(() => { clearTimeout(mark.t); mark.t = setTimeout(mark, 120); }).observe(document.getElementById("app") || document.body, { childList: true, subtree: true });
   mark(); upd();
 })();
+</script>
+<script src="/smooth.js"></script>
+<script>
+/* the glide stays out of overlays that scroll themselves */
+(() => { const SEL = ".lb, .sheet, .zs, .zp, .nzo, .fb, .dlp, .vb, .menu, textarea, select, [role=dialog]"; const mark = r => { if (r.nodeType !== 1) return; if (r.matches && r.matches(SEL)) r.setAttribute("data-lenis-prevent", ""); if (r.querySelectorAll) r.querySelectorAll(SEL).forEach(e => e.setAttribute("data-lenis-prevent", "")); };
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(mark))).observe(document.documentElement, { childList: true, subtree: true }); mark(document.body); })();
 </script>
 </body>
 </html>

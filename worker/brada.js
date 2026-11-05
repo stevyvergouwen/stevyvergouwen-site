@@ -163,7 +163,7 @@ export async function handleBrada(request, env, url, origin, notify) {
   try {
     if (rec.bpath) {   // the Brada Dropbox: a short-lived link, fetched here so the client never sees it
       const tl = await bApi(env, "files/get_temporary_link", { path: (await bFolder(env, m[1], rec)) + p });
-      res = await fetch(tl.link, { headers: range && m[2] === "stream" ? { Range: range } : {} });
+      res = await fetch(tl.link, { headers: range ? { Range: range } : {} });   // ranges for both: a scrubbed clip and a download that resumes
     } else {
       const h = { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ url: rec.link, path: p }) }; if (range && m[2] === "stream") h.Range = range;
       res = await fetch("https://content.dropboxapi.com/2/sharing/get_shared_link_file", { method: "POST", headers: h });

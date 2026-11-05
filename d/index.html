@@ -14,13 +14,13 @@
 <link rel="preconnect" href="https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev">
 <title>Delivery | Stevy Vergouwen</title>
 <meta property="og:title" content="Your delivery | Stevy Vergouwen">
-<meta property="og:description" content="Your photos and videos are ready. Open the page to view, download and leave feedback.">
+<meta property="og:description" content="Your content is ready. Open the page to view and download it.">
 <meta property="og:image" content="https://stevyvergouwen.com/og.jpg">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/fonts.css">
 <style>
-:root{--ink:#08080a;--ink2:#111114;--paper:#ebe7e0;--dim:#a09e99;--faint:#2c2b29;--line:rgba(235,231,224,.22);--blue:#5b84ff;--pad:clamp(16px,3.4vw,48px);--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--mono:"Roboto Mono",ui-monospace,Menlo,monospace}
+:root{--ink:#08080a;--ink2:#111114;--paper:#ebe7e0;--dim:#a09e99;--faint:#2c2b29;--line:rgba(235,231,224,.22);--blue:#ebe7e0;--pad:clamp(16px,3.4vw,48px);--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--mono:"Roboto Mono",ui-monospace,Menlo,monospace}
 *{box-sizing:border-box}html{background:var(--ink);color-scheme:dark}
 body{margin:0;background:var(--ink);color:var(--paper);font:13px/1.6 var(--mono);letter-spacing:.03em;-webkit-font-smoothing:antialiased}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");z-index:90}
@@ -32,12 +32,21 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .bar{position:fixed;top:0;left:0;right:0;z-index:50;box-sizing:border-box;height:56px;display:flex;justify-content:space-between;align-items:center;padding:0 var(--pad);background:linear-gradient(rgba(8,8,10,.75),transparent);font-size:11px;letter-spacing:.22em;text-transform:uppercase;transition:background .3s}
 .bar.sc{background:var(--ink)}
 .hero{position:relative;min-height:78svh;display:flex;align-items:flex-end;padding:120px var(--pad) 48px;overflow:hidden;border-bottom:1px solid var(--faint)}
-.hero .bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.5;transform:scale(1.04);animation:drift 24s ease-in-out infinite alternate}
+.hero .bg i{position:absolute;inset:0;opacity:0;transition:opacity 2.4s ease;will-change:opacity,transform}
+.hero .bg i s{position:absolute;inset:0;background-size:cover;background-position:center}
+.hero .bg i.out{opacity:1;z-index:1}
+.hero .bg i.on{opacity:1;z-index:2;animation:kb 14s ease-out both}
+@keyframes kb{from{transform:scale(1.06)}to{transform:scale(1)}}
+.hero .hn{position:absolute;z-index:3;left:var(--pad);bottom:clamp(18px,4vh,34px);display:flex;align-items:center;gap:14px;font:500 11px var(--mono);letter-spacing:.2em;color:var(--paper)}
+.hero .hn em{font-style:normal;opacity:.55}.hero .hn u{display:block;width:clamp(48px,9vw,96px);height:1px;background:rgba(235,231,224,.28);position:relative;overflow:hidden}
+.hero .hn u::after{content:"";position:absolute;inset:0;background:var(--paper);transform:scaleX(0);transform-origin:left}.hero .hn.go u::after{animation:hp 6.5s linear forwards}
+@keyframes hp{to{transform:scaleX(1)}}
+.hero .bg{position:absolute;inset:0;opacity:.85;transform:scale(1.04);animation:drift 24s ease-in-out infinite alternate}
 @keyframes drift{to{transform:scale(1.12) translate(-1.5%,1%)}}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--ink) 4%,transparent 70%)}
 .hero .in{position:relative;z-index:2;max-width:1100px}
 .bar .dl{display:flex;align-items:center;gap:14px}
-.bar .dlb{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--paper);border-radius:999px;padding:8px 16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:transform .2s,background .2s}.bar .dlb:hover{transform:translateY(-1px)}
+.bar .dlb{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--paper);border-radius:999px;padding:5px 12px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:transform .2s,background .2s}.bar .dlb:hover{transform:translateY(-1px)}
 .dlp{position:fixed;top:56px;right:var(--pad);z-index:70;width:min(420px,calc(100vw - 2*var(--pad)));max-height:min(70svh,560px);overflow:auto;background:rgba(17,17,20,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:8px;box-shadow:0 24px 60px rgba(0,0,0,.55);padding:14px;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .25s,transform .25s}
 .dlp.on{opacity:1;transform:none;pointer-events:auto}
 .dlp h4{margin:10px 6px 6px;font:400 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}.dlp h4:first-child{margin-top:2px}
@@ -74,10 +83,15 @@ details.fg>summary a{margin-left:auto}
 .nz .go{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--paper);border-radius:999px;padding:13px 24px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:transform .2s}.nz .go:hover{transform:translateY(-1px)}
 .nz .no{font:inherit;color:var(--dim);background:none;border:0;padding:13px 10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}.nz .no:hover{color:var(--paper)}
 .nz .x{position:absolute;top:12px;right:14px;border:0;background:none;color:var(--dim);font-size:20px;line-height:1;padding:6px 8px;cursor:pointer;letter-spacing:0;text-transform:none}
+.nzo.corner .nz{border-radius:20px;border:1px solid rgba(255,255,255,.1);background:rgba(20,20,24,.78);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.5)}
+.nzo.corner .eb{color:var(--paper);opacity:.85;font-size:11px;letter-spacing:.3em}.nzo.corner h2{font-size:1.35rem;letter-spacing:-.03em;min-height:0;margin:8px 0 6px}.nzo.corner p{max-width:none;margin:0 0 16px;line-height:1.55}
+.nzo.corner .row{display:flex;flex-direction:column;gap:2px;align-items:stretch}.nzo.corner .go{width:100%;padding:13px 18px;letter-spacing:.14em}.nzo.corner .no{padding:11px 10px;text-align:center}
+.nzo.fg .nz{width:min(440px,100%);padding:clamp(26px,5vw,40px)}.nzo.fg h2{font-size:clamp(1.6rem,5vw,2.1rem);margin:8px 0 22px;letter-spacing:-.04em}.nzo.fg ol{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:0;counter-reset:s}.nzo.fg li{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--faint);font-size:12.5px;line-height:1.55;color:var(--dim)}.nzo.fg li:last-child{border-bottom:1px solid var(--faint)}.nzo.fg li b{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--paper);padding-top:3px}.nzo.fg li::before,.nzo.fg li::marker{content:none}.nzo.fg .small{font-size:11px;color:var(--dim);margin:0 0 22px}.nzo.fg .go{width:100%}
 @media (prefers-reduced-motion:reduce){.nzo,.nz{transition:none}}
 .hero .sub{margin:0 0 14px;font:400 clamp(12px,1.5vw,14px)/1.5 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--paper)}.hero .sub span{margin-left:14px;color:var(--dim)}
-.tabs .tg{width:36px;height:36px;padding:0;border-radius:50%;display:grid;place-items:center;flex:0 0 36px;letter-spacing:0}
-.tg i{display:block;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--paper);background:linear-gradient(90deg,var(--paper) 50%,transparent 50%);transition:transform .6s cubic-bezier(.2,.9,.2,1.1)}
+.tabs .tg{width:36px;height:36px;padding:0;border-radius:50%;display:grid;grid-template-columns:1fr;grid-template-rows:1fr;place-items:center;flex:0 0 36px;letter-spacing:0;line-height:0;border:1px solid var(--faint)}
+.tg svg{display:block;margin:auto;color:var(--paper)}.tg .moon{display:none}.tg.sw .sun{display:none}.tg.sw .moon{display:block}
+.tg i{display:none;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--paper);background:linear-gradient(90deg,var(--paper) 50%,transparent 50%);transition:transform .6s cubic-bezier(.2,.9,.2,1.1)}
 .tg.sw i{transform:rotate(180deg)}.tg:hover i{transform:scale(1.12)}.tg.sw:hover i{transform:rotate(180deg) scale(1.12)}
 #gdrift{position:fixed;inset:0;z-index:95;perspective:900px;perspective-origin:50% 46%;overflow:hidden;touch-action:none;cursor:grab;background:var(--ink)}
 #gdrift .dw{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;will-change:transform}
@@ -114,10 +128,10 @@ details.fg>summary a{margin-left:auto}
 .thx p{margin:0 0 8px;color:var(--dim);font-size:12.5px;line-height:1.65}.thx p b{color:var(--paper);font-weight:700}
 .thx .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .thx .row a,.thx .row button{font:inherit;color:var(--paper);background:none;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s}
-.thx .row .pri{background:var(--paper);color:var(--ink);border-color:var(--paper)}.thx .row a:hover,.thx .row button:hover{border-color:var(--paper)}
+.thx .row .pri{background:var(--paper);color:var(--ink);border-color:var(--paper)}.thx .row .ig{display:inline-flex;align-items:center;gap:8px;width:100%;justify-content:center;padding:13px 18px;font-weight:700;background:linear-gradient(90deg,#f58529,#dd2a7b 50%,#8134af);color:#fff;border-color:transparent}.thx .row .ig:hover{filter:brightness(1.08);border-color:transparent}.thx .row a:hover,.thx .row button:hover{border-color:var(--paper)}
 .thx .x{position:absolute;top:8px;right:10px;border:0;background:none;color:var(--dim);font-size:18px;line-height:1;padding:6px 8px;cursor:pointer;letter-spacing:0;text-transform:none}
 @media (prefers-reduced-motion:reduce){.thx{transition:none}}
-.art .bar2 button[data-share]{color:var(--paper);border-color:var(--blue);background:rgba(91,132,255,.12)}.art .bar2 button[data-share]:hover{background:var(--blue);color:var(--ink)}
+.art .bar2 button[data-share]{color:var(--paper);border-color:var(--blue);background:rgba(235,231,224,.1)}.art .bar2 button[data-share]:hover{background:var(--blue);color:var(--ink)}
 #barr{display:none!important}
 .art .at{flex:0 0 auto;min-width:104px;font:400 11px var(--mono);letter-spacing:.1em;color:var(--blue);white-space:nowrap}
 @media (max-width:760px){.art .at{flex:1 1 100%;order:-1;min-width:0;font-size:10px}}
@@ -142,6 +156,18 @@ details.fg>summary a{margin-left:auto}
 .igb{display:none;margin:36px 0 0;padding:20px 22px;border:1px solid var(--faint);border-radius:8px;background:var(--ink2);justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.artistpg .igb{display:flex}.igb p{margin:0;font-size:13px;line-height:1.6;color:var(--dim)}.igb p b{color:var(--paper);font-weight:700}.igb .row{display:flex;gap:8px;flex-wrap:wrap}.igb a,.igb button{font:inherit;color:var(--paper);background:none;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none}.igb a{background:var(--paper);color:var(--ink);border-color:var(--paper)}.igb a.two{background:none;color:var(--paper);border-color:var(--line)}.igb a.two:hover{border-color:var(--paper)}
 .grid.cells.big{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}.grid.cells.small{grid-template-columns:repeat(auto-fill,minmax(min(46%,150px),1fr));gap:6px}
 .ph .nm{display:none}
+.ph{position:relative}.ph .sz{position:absolute;left:8px;bottom:8px;font:500 10px var(--mono);letter-spacing:.06em;padding:3px 8px;border-radius:999px;background:rgba(0,0,0,.6);color:#fff;pointer-events:none}.alt.on iframe.gfr{display:block;width:100%;height:min(82svh,880px);border:0;border-radius:14px;background:#0b0b0d}[data-theme="light"] .dlp{background:rgba(250,248,244,.98);color:#111}[data-theme="light"] .nzo.corner .nz{background:rgba(250,248,244,.9);border-color:rgba(0,0,0,.12)}[data-theme="light"] .nzo.corner .go{background:#111;color:#f4f1ec;border-color:#111}
+.sec .view{position:sticky;top:var(--vt,116px);z-index:39;background:var(--ink);padding:10px 0;margin:0 0 10px;box-shadow:0 0 0 100vmax var(--ink);clip-path:inset(0 -100vmax)}
+.mz{width:100%;display:flex;flex-direction:column;gap:8px}.mzl{color:var(--dim);font:12px var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:40px 0;text-align:center}.mzs{height:1px}
+.mzr{display:flex;gap:8px;flex:none}.mz figure{margin:0;flex:none;height:100%;position:relative;overflow:hidden;border-radius:4px;background:var(--ink2);cursor:zoom-in;opacity:0;transform:translateY(26px) scale(.965);transition:opacity .35s ease,transform .35s ease}
+.mz figure.in{opacity:1;transform:none;transition:opacity .8s ease,transform 1s cubic-bezier(.2,.9,.2,1)}
+.mz img{width:100%;height:100%;object-fit:cover;display:block}
+.mz figure::after{content:attr(data-n);position:absolute;left:10px;bottom:8px;font:500 10px var(--mono);letter-spacing:.14em;color:#fff;opacity:0;transition:opacity .3s;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+@media (hover:hover){.mz:has(figure:hover) figure.in:not(:hover){opacity:.34;transition:opacity .3s ease,transform .3s ease}.mz figure.in:hover{transform:scale(1.012);z-index:2;transition:opacity .25s ease,transform .5s cubic-bezier(.2,.9,.2,1)}.mz figure:hover::after{opacity:.9}}
+@media (max-width:700px){.mz,.mzr{gap:6px}.mz figure{border-radius:3px}}
+@media (prefers-reduced-motion:reduce){.mz figure{opacity:1;transform:none;transition:none}}
+.tgs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin:0 var(--pad);border:1px solid var(--faint);border-radius:4px;overflow:hidden;background:var(--faint);position:relative}.tgs>div{background:var(--ink2);padding:clamp(16px,3vw,26px) clamp(16px,3vw,28px);text-align:left}.tgs b{display:block;font:600 clamp(1.4rem,4vw,2rem)/1.1 var(--sans);letter-spacing:-.02em;color:var(--paper)}.tgs span{display:block;margin-top:8px;font:500 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}.tgh{margin:clamp(28px,6vw,48px) var(--pad) 12px;font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.mw{margin:56px 0 12px;padding:36px clamp(20px,4vw,40px);border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,var(--ink2),var(--ink))}.mw h2{margin:10px 0 22px;font:700 clamp(1.4rem,3.4vw,2.2rem)/1.1 var(--sans);letter-spacing:-.03em;max-width:24ch}.mw .row{display:flex;gap:10px;flex-wrap:wrap}.mw a{border:1px solid var(--line);color:var(--paper);border-radius:999px;padding:12px 20px;font:500 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;text-decoration:none}.mw a.go{background:var(--paper);color:var(--ink);border-color:var(--paper)}.mw a:hover{border-color:var(--paper)}.gp{display:none}.ivs{display:flex;flex-direction:column;gap:6px;max-height:42svh;overflow:auto}.ivr{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:12px var(--mono)}.ivr span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ivr em{display:block;font-style:normal;opacity:.5;font-size:10px;margin-top:2px}.ivr.new{border-color:var(--paper)}.ivr button{border:1px solid var(--line);background:none;color:var(--paper);border-radius:999px;padding:7px 14px;font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;cursor:pointer}.nzo.invite .row input{background:none;border:1px solid var(--line);color:var(--paper);border-radius:999px;padding:12px 16px;font:12px var(--mono);outline:0}.resrow{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap}.resrow .kb{border:1px solid var(--line,#2a2a30);background:none;color:var(--dim);border-radius:999px;padding:9px 16px;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;cursor:pointer}.resrow .kb.on{background:var(--paper);color:var(--ink);border-color:var(--paper)}.resrow .kb:disabled{opacity:.35;cursor:default}.pvn{margin:0 0 16px;padding:14px 16px;border:1px solid var(--line,#2a2a30);border-radius:12px;font-size:13px;line-height:1.5;color:var(--dim)}.pvn b{color:var(--paper)}.fa{margin:34px 0 0;padding:26px 20px;border:1px dashed var(--line,#3a3a42);border-radius:14px;text-align:center}.fa h3{font:700 1.2rem var(--sans);letter-spacing:-.02em;margin:0 0 6px}.fa p{margin:0 0 14px;color:var(--dim);font-size:13px}
 .grid.list{display:flex;flex-direction:column;columns:auto;gap:0;max-width:980px}
 .grid.list .ph{display:grid;grid-template-columns:84px 1fr auto;align-items:center;gap:16px;margin:0;border-radius:0;border-top:1px solid var(--faint);padding:8px 2px;background:none;aspect-ratio:auto;cursor:zoom-in}.grid.list .ph:last-child{border-bottom:1px solid var(--faint)}
 .grid.list .ph img{width:84px;height:56px;min-height:0;object-fit:cover;border-radius:3px}
@@ -153,7 +179,7 @@ details.fg>summary a{margin-left:auto}
 .view button{padding:7px 14px;font-size:10px}
 @media (max-width:640px){
   .tabs{padding:8px 0;margin-bottom:8px}.tabs button,.view button,.vbar .chip,.chip{min-height:34px!important;padding:6px 13px;font-size:10px}.view{margin-bottom:12px}
-  .bar .bn{white-space:nowrap;font-size:10px;letter-spacing:.14em}.bar .rvl{display:none}.bar .shb,.bar .dlb{padding:7px 12px;font-size:9px;letter-spacing:.14em;min-height:0!important;white-space:nowrap}.bar .shb{margin-right:6px}
+  .bar .bn{white-space:nowrap;font-size:10px;letter-spacing:.14em}.bar .rvl{display:none}.bar .shb,.bar .dlb{padding:5px 10px;font-size:8px;letter-spacing:.14em;min-height:0!important;white-space:nowrap}.bar .shb{margin-right:6px}
   .hero{min-height:56svh;padding-top:96px;padding-bottom:28px}
   .sec{padding-top:4px}.grid.list .ph{grid-template-columns:64px 1fr auto;gap:12px}.grid.list .ph img{width:64px;height:48px}
 }
@@ -204,7 +230,7 @@ details.art>summary{transition:background .2s}details.art>summary:hover{backgrou
 .nudge b{display:block;font:700 14px/1.25 var(--sans);letter-spacing:-.01em}.nudge small{display:block;color:var(--dim);font-size:10px;letter-spacing:.1em;margin-top:2px}
 .nudge .x{margin-left:2px;border:0;padding:6px 8px;color:var(--dim);font-size:15px;line-height:1;letter-spacing:0;text-transform:none;border-radius:50%;background:none}
 @media (prefers-reduced-motion:reduce){.nudge,.nudge .st::after,.nudge .st i{animation:none;transition:none}}
-.hero .hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s ease;filter:brightness(.6) saturate(1.1) contrast(1.05);transform:scale(1.04)}.hero .hv.on{opacity:1}.hero .bg{transition:opacity 1.2s ease}.hero.hasvid .bg{opacity:0!important}
+.hero .hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s ease;transform:translateZ(0);backface-visibility:hidden}.hero .hv.on{opacity:1}.hero.hasvid::before{content:"";position:absolute;inset:0;z-index:1;background:rgba(8,8,10,.42);pointer-events:none}.hero .bg{transition:opacity 1.2s ease}.hero.hasvid .bg{opacity:0!important}
 .hero h1 span[aria-hidden]{will-change:opacity}
 
 .eyebrow{color:var(--dim);letter-spacing:.22em;text-transform:uppercase;font-size:11px}
@@ -252,7 +278,7 @@ main{padding:0 var(--pad) 140px}
 .vcard{border:1px solid var(--faint);border-radius:4px;overflow:hidden;background:var(--ink)}
 .vth{position:relative;aspect-ratio:var(--ar,16/9);background:#000;display:grid;place-items:center;cursor:pointer}
 .vth video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
-.vth .pl{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.5);display:grid;place-items:center;font-size:15px;color:#fff;transition:transform .2s,background .2s}.vth:hover .pl{transform:scale(1.08);background:rgba(91,132,255,.4)}
+.vth .pl{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.5);display:grid;place-items:center;font-size:15px;color:#fff;transition:transform .2s,background .2s}.vth:hover .pl{transform:scale(1.08);background:rgba(235,231,224,.4)}
 .vth .bd{position:absolute;left:8px;top:8px;display:flex;gap:5px}.vth .bd i{font-style:normal;font-size:9px;letter-spacing:.14em;background:rgba(0,0,0,.6);color:#fff;border-radius:99px;padding:3px 8px}
 .vcard .m2{padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.vcard .m2 .t{font:700 13px var(--sans);letter-spacing:0;flex:1 1 auto}.vcard .m2 .s{color:var(--dim);font-size:10px;letter-spacing:.1em}
 .vcard .m2 a{color:var(--blue);font-size:10px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
@@ -273,18 +299,19 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 .sheet label{display:block;margin-top:14px;color:var(--dim);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
 .sheet input,.sheet textarea{margin-top:6px}
 .gate{min-height:100svh;display:grid;place-items:center;padding:var(--pad);text-align:center}
-.gate form{display:flex;flex-direction:column;gap:12px;width:min(340px,100%)}
+.gate form{display:flex;flex-direction:column;gap:12px;width:min(340px,100%);margin-left:auto;margin-right:auto}
+.gate input{text-indent:.4em}.gate #cd{text-indent:.4em}.gate .msg,.gate .alt,.gate p{margin-left:auto;margin-right:auto}
 .msg{color:var(--blue);margin-top:10px}
 @media (max-width:640px){.tabs{overflow-x:auto}.ph .tools{opacity:1}button{min-height:44px}.ic{width:40px;height:40px}.lb .bt{padding-bottom:env(safe-area-inset-bottom)}.view .lab{display:none}}
 @media (hover:none){.ph:hover img{transform:none}}
 .shim{background:linear-gradient(90deg,var(--ink2),#1b1b20,var(--ink2));background-size:200% 100%;animation:sh 1.4s linear infinite}@keyframes sh{to{background-position:-200% 0}}
 .mine{margin-top:26px;text-align:left}.mine a{display:block;padding:14px 0;border-top:1px solid var(--faint)}.mine b{display:block;font:700 1.1rem var(--sans);letter-spacing:-.01em}.mine span{color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
-@media (prefers-reduced-motion:reduce){.hero .hv{display:none}.hero .bg{animation:none}.ph{transition:none;opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.hero .hv{display:none}.hero .bg{animation:none}.hero .bg i.on{animation:none;transition:none}.hero .hn u::after{animation:none!important}.ph{transition:none;opacity:1;transform:none}}
 
-[data-theme="light"]{--ink:#f4f1ec;--ink2:#e9e5de;--paper:#141414;--dim:#6d6a64;--faint:#d6d1c8;--line:rgba(20,20,20,.24);--blue:#2f55d4}
+[data-theme="light"]{--ink:#f4f1ec;--ink2:#e9e5de;--paper:#141414;--dim:#6d6a64;--faint:#d6d1c8;--line:rgba(20,20,20,.24);--blue:#141414}
 [data-theme="light"] .lb,[data-theme="light"] .fb{background:rgba(244,241,236,.94)}
 [data-theme="light"] body::after{opacity:.04}
-[data-theme="light"] .hero{--ink:#08080a;--paper:#ebe7e0;--dim:#a09e99;--faint:#2c2b29;--line:rgba(235,231,224,.28);--blue:#8ea8ff;color:#ebe7e0;background:#08080a}
+[data-theme="light"] .hero{--ink:#08080a;--paper:#ebe7e0;--dim:#a09e99;--faint:#2c2b29;--line:rgba(235,231,224,.28);--blue:#ebe7e0;color:#ebe7e0;background:#08080a}
 [data-theme="light"] .hero::after{background:linear-gradient(to top,#08080a 4%,transparent 70%)}
 [data-theme="light"] .bar:not(.sc){--ink:#08080a;--paper:#ebe7e0;--dim:#a09e99;--line:rgba(235,231,224,.3);color:#ebe7e0;background:linear-gradient(rgba(8,8,10,.7),transparent)}
 [data-theme="light"] .bar.sc{background:rgba(244,241,236,.96)}
@@ -297,6 +324,7 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 .view .lab{color:var(--dim);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-right:2px}
 .view input[type=range]{width:120px;padding:0;accent-color:var(--blue)}
 .grid.masonry{columns:auto var(--col,260px)}
+.gh{column-span:all;grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 12px;padding-top:18px;border-top:1px solid var(--line,#2a2a30);font:600 clamp(1.1rem,3.4vw,1.5rem) var(--sans);letter-spacing:-.02em}.gchips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}.gchips button{display:inline-flex;gap:10px;align-items:baseline;padding:9px 16px;border:1px solid var(--line,#2a2a30);border-radius:999px;background:none;color:var(--paper);font:500 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;cursor:pointer}.gchips button small{color:var(--dim);font-size:10px}.gchips button.on{background:var(--paper);color:var(--ink);border-color:var(--paper)}.gchips button.on small{color:var(--ink);opacity:.6}.gdl{display:inline-flex;align-items:baseline;gap:8px;margin:0 0 14px;padding:4px 11px;border:1px solid var(--faint);border-radius:999px;color:var(--dim);text-decoration:none;font:500 9px var(--mono);letter-spacing:.12em;text-transform:uppercase}.gdl span{color:var(--paper)}.gdl small{font:500 9px var(--mono);letter-spacing:.12em;color:var(--dim)}.gdl:hover{border-color:var(--paper)}.gsoon{column-span:all;grid-column:1/-1;margin:0 0 6px;color:var(--dim);font:400 14px/1.6 var(--sans)}.gh:first-child{margin-top:0;border-top:0;padding-top:0}.gh span{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .grid.cells{columns:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--col,260px),1fr));gap:10px}
 .grid.cells .ph{margin:0;aspect-ratio:1/1}.grid.cells .ph img{height:100%;object-fit:cover}
 .grid.large{columns:1;max-width:1100px;margin:0 auto}
@@ -312,14 +340,74 @@ input,textarea{width:100%;font:inherit;color:var(--paper);background:transparent
 @media (prefers-reduced-motion:reduce){.boot span,#app main{animation:none}}
 @keyframes apin{from{opacity:0;transform:translateY(12px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
 @keyframes apinf{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.apin{animation:apin .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms)}
+.apin{animation:apin .55s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i,0)*55ms)}
 figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 @media (prefers-reduced-motion:reduce){.apin{animation:none}}
+/* Working together: no boxes, big light numbers that count up, the same tight look as the Brada album page */
+.tgh{margin:clamp(28px,6vw,52px) var(--pad) 18px;padding-top:14px;border-top:1px solid var(--line);font:400 clamp(18px,2.4vw,26px)/1.2 var(--sans);letter-spacing:-.01em;text-transform:none;color:var(--paper)}
+.tgs{border:0;border-radius:0;background:none;gap:0;overflow:visible;grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:clamp(8px,2vw,24px)}
+.tgs>div{background:none;padding:4px 0 4px clamp(14px,3vw,36px);border-left:1px solid var(--line)}
+.tgs>div:first-child{border-left:0;padding-left:0}
+.tgs b{font:300 clamp(2.6rem,8vw,5.4rem)/1 "Helvetica Neue",var(--sans);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.tgs span{margin-top:12px}
+/* SKIN 4: the site's own palette in dark and in light (the tokens of the page are left alone), sharp corners, thin lines, calm motion */
+.apin{animation-fill-mode:backwards!important}
+.art{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important}
+.art::before{display:none!important}
+.art .body{border-top:0!important;padding:6px 0 22px!important}
+.fg.flat>summary{display:none!important}
+.fg.flat{border:0!important;margin:0!important}
+.vgrid{gap:12px!important}
+.vcard{background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;position:relative;overflow:visible!important;transition:transform .55s cubic-bezier(.3,1.5,.5,1)}
+@media (hover:hover){.vcard:hover .vth{transform:translateY(-4px)}}.vth{transition:transform .55s cubic-bezier(.3,1.5,.5,1)}
+.vth{border-radius:0!important;box-shadow:none!important;outline:1px solid var(--line);outline-offset:-1px;aspect-ratio:var(--ar,16/9);overflow:hidden}
+.vth video.pv{transition:opacity .6s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.vcard:hover .vth video.pv{transform:scale(1.05)}
+.vth::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(8,8,10,.8) 0%,rgba(8,8,10,.22) 34%,transparent 56%);z-index:1}
+.vth .bd{z-index:2}.vth .bd i{border-radius:0!important;background:rgba(8,8,10,.6)!important;border:1px solid rgba(235,231,224,.3)!important;color:#ebe7e0!important;backdrop-filter:blur(6px)}
+.vth .pl{opacity:0;transform:scale(.7);transition:opacity .35s ease,transform .5s cubic-bezier(.3,1.6,.5,1);background:rgba(8,8,10,.35);border:1px solid rgba(235,231,224,.6);color:#ebe7e0;z-index:2}
+.vcard:hover .vth .pl,.vth.playing .pl{opacity:1;transform:scale(1)}
+@media (hover:none){.vth .pl{opacity:1;transform:none}}
+.vcard .m2{position:absolute!important;left:0;right:0;bottom:0;z-index:2;padding:0 14px 12px!important;pointer-events:none;display:flex;align-items:flex-end;gap:10px;color:#ebe7e0}
+.vcard .m2 .t{flex:1;min-width:0;font:500 13px "Helvetica Neue",var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ebe7e0}
+.vcard .m2 .s{font:10px "Roboto Mono",ui-monospace,monospace;letter-spacing:.12em;color:rgba(235,231,224,.65)}
+.vcard .m2 a,.vcard .m2 button{pointer-events:auto;opacity:0;transform:translateY(4px);transition:opacity .3s,transform .4s cubic-bezier(.3,1.5,.5,1);border:1px solid rgba(235,231,224,.45)!important;background:rgba(8,8,10,.5)!important;color:#ebe7e0!important;border-radius:0!important;padding:6px 12px;font-size:9px!important;backdrop-filter:blur(6px)}
+.vcard:hover .m2 a,.vcard:hover .m2 button,.vcard:focus-within .m2 a{opacity:1;transform:none}
+@media (hover:none){.vcard .m2 a,.vcard .m2 button{opacity:1;transform:none}}
+.vth .okb,.vth .cb{z-index:3}
+/* the lines draw themselves */
+.tgh{border-top:0!important;position:relative}
+.tgh::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,var(--paper),var(--line) 45%,transparent);transform-origin:left;animation:drw 1.1s .15s cubic-bezier(.2,.7,.2,1) backwards}
+@keyframes drw{from{transform:scaleX(0)}}
+/* view mode of the clips */
+.vm{display:inline-flex;gap:0;border:1px solid var(--line);margin-left:auto;margin-right:10px}
+.vm button{font:500 10px "Roboto Mono",ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);background:none;border:0;padding:8px 13px;cursor:pointer;transition:background .25s,color .25s}
+.vm button.on{background:var(--paper);color:var(--ink)}
+.vgrid[data-m="s"]{--w:210px!important}
+.vgrid[data-m="l"]{--w:560px!important}
+.vgrid[data-m="list"]{display:flex!important;flex-direction:column;gap:8px}
+.vgrid[data-m="list"] .vcard{display:grid;grid-template-columns:220px minmax(0,1fr);align-items:center}
+.vgrid[data-m="list"] .vcard .m2{position:static!important;padding:0 14px!important;pointer-events:auto;color:var(--paper)}
+.vgrid[data-m="list"] .vcard .m2 .t{color:var(--paper)}.vgrid[data-m="list"] .vcard .m2 .s{color:var(--dim)}
+.vgrid[data-m="list"] .vcard .m2 a{opacity:1;transform:none;border-color:var(--line)!important;color:var(--paper)!important;background:none!important}
+.vgrid[data-m="list"] .vth::after{display:none}
+.vgrid[data-m="list"] .vcard:hover{transform:translateX(5px)}
+
+/* SCROLLFX: scroll-linked motion like the homepage: the banner drifts and fades, headings slide, rows draw in, cards rise at their own speed */
+.hero .in{will-change:transform,opacity}
+.hero .hv,.hero .bg{will-change:transform}
+.sfx{opacity:0;transform:translate3d(0,46px,0);filter:blur(8px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1),filter .9s ease;transition-delay:var(--d,0s)}
+.sfx.in{opacity:1;transform:none;filter:none}
+.sfx.l{transform:translate3d(-60px,0,0)}.sfx.in.l{transform:none}
+.sfx-h{display:inline-block;clip-path:inset(0 0 100% 0);transform:translate3d(0,40%,0);transition:clip-path 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.sfx-h.in{clip-path:inset(-10% 0 -10% 0);transform:none}
+.vgrid .vcard.sfx{transition-delay:calc(var(--k,0)*70ms)}
+@media (prefers-reduced-motion:reduce){.sfx,.sfx-h{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="bar"><a class="bn" href="https://stevyvergouwen.com/" aria-label="Stevy Vergouwen, to the website">Stevy Vergouwen</a><span id="barr">Delivery</span></div>
-<div id="app"><div class="boot" aria-hidden="true"><span></span></div></div>
+<div id="app"></div>
 <div class="lb" id="lb" role="dialog" aria-label="Photo"><button class="x" id="lbx">Close</button><button class="p ic" id="lbp" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="n ic" id="lbn" aria-label="Next">›</button><div class="bt"><button id="lbh">♡ Favourite</button><a id="lbd" href="#"><button class="pri" type="button">Download</button></a><a id="lbd2" href="#" style="display:none"><button type="button">Web size</button></a></div></div>
 <div class="sheet" id="rsheet"><div class="c"><h3>Leave a review</h3><p class="eyebrow">Did you like working with me?</p><div class="stars" id="stars"><button data-n="1" aria-label="1 star">☆</button><button data-n="2" aria-label="2 stars">☆</button><button data-n="3" aria-label="3 stars">☆</button><button data-n="4" aria-label="4 stars">☆</button><button data-n="5" aria-label="5 stars">☆</button></div><label>Your review<textarea id="rt" rows="5"></textarea></label><label>Your name<input id="rn2" autocomplete="name"></label><label>Company or role (optional)<input id="rc"></label><label class="chk"><input type="checkbox" id="rp"> You may show this review (with my name) on stevyvergouwen.com</label><div class="acts" style="margin-top:18px"><button class="pri" id="rs">Send review</button><button id="rx">Cancel</button></div><div class="msg" id="rmsg"></div></div></div>
 <div class="sheet" id="sheet"><div class="c"><h3 id="sh">Send feedback</h3><p class="eyebrow" id="sp"></p><label>Your name<input id="fn" autocomplete="name"></label><label id="femw">Your email, for a copy<input id="fem" type="email" autocomplete="email" placeholder="you@company.com"></label><label>Note<textarea id="fnote" rows="4" placeholder="Anything we should change, or any shots you loved?"></textarea></label><div class="acts" style="margin-top:18px"><button class="pri" id="sa">Approve</button><button id="sc">Request changes</button><button id="sx">Cancel</button></div><div class="msg" id="smsg"></div></div></div>
@@ -371,7 +459,9 @@ function gate(info, msg) {
   }
   if (info.error === "device") {   // a personal link on a new device: a code to the mail of that link
     app.innerHTML = `<div class="gate"><div style="width:min(420px,100%)"><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:clamp(1.8rem,6vw,2.6rem);margin:10px 0 6px">${esc(info.title || "Delivery")}</h1><p class="note" style="margin:0 auto 22px">New device. To keep this delivery private, we sent a 6-digit code to ${esc(info.mail || "your email")}. Fill it in and this device stays signed in.</p><form id="df" style="display:flex;flex-direction:column;gap:10px;text-align:left"><input id="dc" inputmode="numeric" autocomplete="one-time-code" maxlength="12" placeholder="6-digit code" style="letter-spacing:.4em;text-align:center;font-size:1.3rem"><button class="pri">Open</button></form><p class="note" style="margin-top:18px"><a href="#" id="dr" style="text-decoration:underline">Send the code again</a></p><p class="note" style="margin-top:8px">Not your link? <a href="#" id="dm" style="text-decoration:underline">Sign in with your own email</a></p><div class="msg" id="gm"></div></div></div>`;
-    const send = async () => { try { const r = await fetch(url("device-code"), { method: "POST" }); $("#gm").textContent = r.ok ? "Code sent. It works for 10 minutes." : "Could not send a code. Try again in a minute."; } catch (x) { $("#gm").textContent = "Could not send a code."; } };
+    let until = 0, tick = 0;   // a new code can be asked for once a minute: the link counts down
+    const wacht = () => { clearInterval(tick); const dr = $("#dr"); if (!dr) return; const upd = () => { const n = Math.ceil((until - Date.now()) / 1000); if (n > 0) { dr.textContent = `Send the code again in ${n} s`; dr.style.opacity = ".5"; dr.style.pointerEvents = "none"; } else { clearInterval(tick); dr.textContent = "Send the code again"; dr.style.opacity = ""; dr.style.pointerEvents = ""; } }; upd(); tick = setInterval(upd, 500); };
+    const send = async () => { if (Date.now() < until) return; until = Date.now() + 60000; wacht(); try { const r = await fetch(url("device-code"), { method: "POST" }); $("#gm").textContent = r.ok ? "Code sent. It works for 10 minutes." : "Could not send a code. Try again in a minute."; } catch (x) { $("#gm").textContent = "Could not send a code."; } };
     send(); $("#dr").onclick = e => { e.preventDefault(); send(); }; $("#dm").onclick = e => { e.preventDefault(); try { localStorage.removeItem("dt:" + slug); } catch (x) {} gate({ title: info.title, request: true }); };
     $("#df").onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Checking…"; try { const r = await fetch(url("device-verify"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: $("#dc").value }) }); if (!r.ok) { $("#gm").textContent = r.status === 429 ? "Too many tries. Wait a while." : "That code is not right."; return; } M = await load(); render(); } catch (x) { $("#gm").textContent = x.msg || "That did not work."; } };
     return;
@@ -383,7 +473,7 @@ function gate(info, msg) {
   ${info.request ? `<p class="note" style="margin-top:22px">No access yet? <a href="#" id="rq" style="text-decoration:underline">Ask Stevy for it</a></p><form id="rf" style="display:none;flex-direction:column;gap:10px;text-align:left;margin-top:10px"><input id="rn" placeholder="Your name" autocomplete="name"><input id="re" type="email" placeholder="Your email" autocomplete="email" required><button class="pri">Request access</button></form>` : ""}
   <div class="msg" id="gm">${esc(msg || "")}</div></div></div>`;
   const ef = $("#ef"), cf = $("#cf"), rf = $("#rf"), gf = $("#gf"); let mail = "";
-  ef.onsubmit = async e => { e.preventDefault(); mail = $("#em").value.trim(); put2("sv-email", mail); $("#gm").textContent = "Sending…"; try { if (!(demo || q.has("demogate"))) { const r = await fetch(`${ENDPOINT}/delivery/${slug}/code-request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail }) }); if (!r.ok) throw 0; } ef.style.display = "none"; cf.style.display = "flex"; $("#cd").focus(); $("#gm").textContent = "If this address has access, a code is on its way. It works for 10 minutes."; } catch { $("#gm").textContent = "That did not work. Check the address and try again."; } };
+  ef.onsubmit = async e => { e.preventDefault(); mail = $("#em").value.trim(); put2("sv-email", mail); $("#gm").textContent = "Sending…"; try { if (!(demo || q.has("demogate"))) { const r = await fetch(`${ENDPOINT}/delivery/${slug}/code-request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail }) }); if (!r.ok) throw 0; } ef.style.display = "none"; cf.style.display = "flex"; $("#cd").focus(); $("#gm").textContent = "If this address has access, a code is on its way (10 minutes). Not on the list? Stevy received a notification and will let you in."; } catch { $("#gm").textContent = "That did not work. Check the address and try again."; } };
   cf.onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Checking…"; try { if (demo || q.has("demogate")) { $("#gm").textContent = "Demo: in real life you are in now."; return; } const r = await fetch(`${ENDPOINT}/delivery/${slug}/code-verify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail, code: $("#cd").value, dev: DEV }) }); const j = await r.json().catch(() => ({})); if (!r.ok || !j.token) { $("#gm").textContent = r.status === 429 ? "Too many tries. Wait a while." : "That code is not right."; return; } try { localStorage.setItem("dt:" + slug, j.token); } catch {} M = await load(); render(); } catch (x) { $("#gm").textContent = x.msg || "That did not work."; } };
   if ($("#rq")) $("#rq").onclick = e => { e.preventDefault(); rf.style.display = "flex"; };
   if (rf) rf.onsubmit = async e => { e.preventDefault(); $("#gm").textContent = "Sending…"; try { if (demo || q.has("demogate")) { $("#gm").textContent = "Demo: Stevy would be asked now."; return; } const r = await fetch(`${ENDPOINT}/delivery/${slug}/request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: $("#rn").value, email: $("#re").value }) }); if (!r.ok) throw 0; $("#gm").textContent = "Thanks. Stevy has been asked, you get an email once it is approved."; } catch { $("#gm").textContent = "That did not work. Try again."; } };
@@ -413,13 +503,13 @@ function videoHtml(V) {
       const mf = [...new Set(mine.map(o => o.x.fmt))].filter(f => fmts.includes(f)).sort((p, q) => fmts.indexOf(p) - fmts.indexOf(q));
       const counts = mf.map(f => `${f} · ${mine.filter(o => o.x.fmt === f).length}`).join("  /  ");
       return `<details class="art" data-a="${esc(a)}" ${single || arts.length <= 2 ? "open" : ""}><summary>${(() => { const s = M.scope ? null : slotFor(a, LU); return s && s.t ? `<span class="at">${esc(s.t)}</span>` : ""; })()}<span class="an">${esc(a)}</span>${mine[0].x.asub ? `<a class="dla" href="${zip(mine[0].x.asub)}" data-size="${size}" title="Download all clips · ${fmtB(size)}" aria-label="Download all clips of ${esc(a)}, ${fmtB(size)}"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M6.2 0h1.6v8.2l2.6-2.6 1.1 1.1L7 11 2.5 6.7l1.1-1.1 2.6 2.6z"/><path d="M1 12h12v1.5H1z"/></svg></a>` : ""}<span class="am">${counts}</span><span class="as">${fmtB(size)}</span><span class="ch">›</span></summary><div class="body">
-        <div class="bar2">${M.comments ? `<button type="button" data-apall="1">Approve all</button>` : ""}${M.share && !M.scope && arts.length > 1 ? `<button type="button" data-share="${esc(mine[0].x.asub.replace(/\/CLIPS$/i, ""))}" data-name="${esc(a)}">Share</button>` : ""}</div>
+        <div class="bar2">${fbOn() ? `<button type="button" data-apall="1">Approve all</button>` : ""}${M.share && !M.scope && arts.length > 1 ? `<button type="button" data-share="${esc(mine[0].x.asub.replace(/\/CLIPS$/i, ""))}" data-name="${esc(a)}">Share</button>` : ""}</div>
         ${mf.flatMap(f => { const inF = mine.filter(o => o.x.fmt === f), rs = [...new Set(inF.map(o => o.x.res))].sort((p, q) => ({ "HD": 0, "4K": 1 }[p] ?? 5) - ({ "HD": 0, "4K": 1 }[q] ?? 5)); return rs.map((r, ri) => ({ f, r, ri, nr: rs.length, set: inF.filter(o => o.x.res === r), all: inF })); }).map(g => {
           const sz = g.set.reduce((s, o) => s + (o.v.size || 0), 0), allSz = g.all.reduce((s, o) => s + (o.v.size || 0), 0), vert = /^(9:16|4:5)$/.test(g.f), rfn = g.set[0].x.rf, title = g.f + (g.r ? " · " + g.r : "");
           return `<details class="fg" data-f="${esc(g.f)}" ${g.ri === 0 && g.f === mf[0] ? "open" : ""}><summary class="fh"><span class="ch2">›</span><b>${esc(title)}</b><span class="c">${g.set.length} clips · ${fmtB(sz)}</span>${rfn && g.ri === 0 ? `<a class="fdl" href="${zip(g.set[0].x.sub + "/" + rfn)}" data-size="${allSz}" title="Download all ${esc(g.f)} clips${g.nr > 1 ? ", all qualities" : ""} · ${fmtB(allSz)}" aria-label="Download all ${esc(g.f)} clips, ${fmtB(allSz)}"><svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M6.2 0h1.6v8.2l2.6-2.6 1.1 1.1L7 11 2.5 6.7l1.1-1.1 2.6 2.6z"/><path d="M1 12h12v1.5H1z"/></svg><span>${fmtB(allSz)}</span></a>` : ""}</summary>
             <div class="vgrid" style="--w:${vert ? 190 : 300}px">${g.set.map(o => `<div class="vcard vid" data-v="${o.i}" data-fmt="${esc(o.x.fmt)}" data-res="${esc(o.x.res)}"><div class="vth" style="--ar:${o.x.ar}"><video class="pv" muted playsinline preload="none"></video><span class="okb">✓</span><span class="cb"></span><div class="bd"><i>${esc(o.x.fmt)}</i>${o.x.res ? `<i>${esc(o.x.res)}</i>` : ""}</div><div class="pl">▶</div></div>
-              <div class="m2"><span class="t" title="${esc(o.v.name)}">${esc(o.x.label)}</span><span class="s">${fmtB(o.v.size)}</span>${M.comments ? `<button class="ap" type="button">Approve</button>` : ""}<a href="${file(o.v.path)}">Download</a></div>
-              ${M.comments ? `<details class="cm2"><summary>Feedback</summary><form><span class="tc">0:00</span><input placeholder="Your comment at this moment" aria-label="Comment"><button class="pri">Add</button></form><div class="cl"></div></details>` : ""}</div>`).join("")}</div></details>`; }).join("")}
+              <div class="m2"><span class="t" title="${esc(o.v.name)}">${esc(o.x.label)}</span><span class="s">${fmtB(o.v.size)}</span>${fbOn() ? `<button class="ap" type="button">Approve</button>` : ""}<a href="${file(o.v.path)}">Download</a></div>
+              ${fbOn() ? `<details class="cm2"><summary>Feedback</summary><form><span class="tc">0:00</span><input placeholder="Your comment at this moment" aria-label="Comment"><button class="pri">Add</button></form><div class="cl"></div></details>` : ""}</div>`).join("")}</div></details>`; }).join("")}
       </div></details>`; }).join("")}</div></section>`;
 }
 function wireVideo() {
@@ -508,15 +598,17 @@ function heroVideo() {
     }
     if (!list.length) return;
     const hero = document.querySelector(".hero"); if (!hero || hero.querySelector(".hv")) return;
-    const mk = () => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "auto"; v.setAttribute("aria-hidden", "true"); hero.insertBefore(v, hero.querySelector(".in")); return v; };
+    const mk = () => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "metadata"; v.disableRemotePlayback = true; v.setAttribute("aria-hidden", "true"); hero.insertBefore(v, hero.querySelector(".in")); return v; };
     const vs = [mk(), mk()]; let cur = 0, n = 0, timer = null;
     const show = (v, clip) => new Promise(res => { v.loop = list.length === 1; v.addEventListener("canplay", () => res(true), { once: true }); v.addEventListener("error", () => res(false), { once: true }); v.src = stream(clip.path) + "#t=0.5"; });
     const next = async () => {
       const v = vs[cur], other = vs[1 - cur], clip = list[n % list.length]; n++;
       const ok = await show(v, clip); if (!ok) { if (n < list.length * 2) return next(); return; }
       v.currentTime = 0.5; v.play().catch(() => {}); v.classList.add("on"); hero.classList.add("hasvid"); other.classList.remove("on");
-      setTimeout(() => { if (!other.classList.contains("on")) { other.pause(); } }, 1500);
+      setTimeout(() => { if (!other.classList.contains("on")) { other.pause(); other.removeAttribute("src"); other.load(); } }, 1800);   // the faded-out clip frees its decoder
       cur = 1 - cur; if (list.length > 1) timer = setTimeout(next, 9000);
+      // a clip that stalls or freezes for 2.5 s is swapped for the next one (or restarted when it is the only one)
+      let last = v.currentTime, still = 0; const wd = setInterval(() => { if (!v.isConnected || !v.classList.contains("on")) return clearInterval(wd); if (v.paused && !v.ended) v.play().catch(() => {}); if (Math.abs(v.currentTime - last) < .05) still++; else still = 0; last = v.currentTime; if (still >= 3) { clearInterval(wd); if (list.length > 1) { clearTimeout(timer); next(); } else { v.currentTime = 0.5; v.play().catch(() => {}); } } }, 900);
     };
     setTimeout(next, 600);
   } catch (e) { /* the photo stays */ }
@@ -524,15 +616,15 @@ function heroVideo() {
 
 /* a quiet nudge after a while: liked the work? leave a review for the website */
 function reviewNudge() {
-  if (M.scope) return;
+  if (M.scope || M.guest) return;
   try {
     const K = "sv-nudge-" + slug, till = +(localStorage.getItem(K) || 0); if (!demo && till > Date.now()) return;
     if (document.querySelector(".nzo")) return;
     const o = document.createElement("div"); o.className = "nzo corner"; o.setAttribute("role", "dialog"); o.setAttribute("aria-labelledby", "nzt");
-    o.innerHTML = '<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">Stevy Vergouwen</div><h2 id="nzt">Liked our collab?</h2><p>A short review on my website means a lot. It takes a minute, and with your OK it appears on stevyvergouwen.com.</p><div class="row"><button class="go" type="button">Leave a review</button><button class="no" type="button">Not now</button></div></div>';
+    o.innerHTML = '<div class="nz"><div class="eb">★★★★★</div><h2 id="nzt">Liked our collab?</h2><p>A short review means a lot. It takes a minute, and with your OK it appears on stevyvergouwen.com.</p><div class="row"><button class="go" type="button">Leave a review</button><button class="no" type="button">Not now</button></div></div>';
     document.body.appendChild(o);
     const later = d => { try { localStorage.setItem(K, String(Date.now() + d * 864e5)); } catch (e) {} o.classList.remove("on"); setTimeout(() => o.remove(), 700); };
-    o.querySelector(".x").onclick = () => later(14); o.querySelector(".no").onclick = () => later(14);
+    o.querySelector(".no").onclick = () => later(14);
     document.addEventListener("keydown", e => { if (e.key === "Escape" && o.classList.contains("on")) later(14); });
     o.querySelector(".go").onclick = () => { later(60); const r = document.getElementById("rsheet"); if (r) setTimeout(() => r.classList.add("on"), 350); };
     let shown = false; const show = () => { if (shown || document.querySelector(".thx")) return; shown = true; o.classList.add("on"); flickerTitle(o.querySelector("h2")); };
@@ -551,29 +643,35 @@ function reviewNudge() {
 function downloadAll() {
   const bar = document.querySelector(".bar"); if (!bar) return;
   let dl = bar.querySelector(".dl"); if (dl) { const r0 = dl.querySelector("#barr"); if (r0) bar.appendChild(r0); dl.remove(); } const old = document.querySelector(".dlp"); if (old) old.remove();
-  const P = M.photos || [], V = M.videos || []; if (M.select || M.locked || (!P.length && !V.length)) return;
+  const P = M._all || M.photos || [], V = M.videos || []; if (M.select || M.locked || (!P.length && !(M._pv || []).length && !V.length)) return;
   const root = M.root || (demo ? "/dd-media" : ""), rel = p => root ? String(p).slice(root.length).replace(/^\//, "") : String(p).replace(/^\/[^/]*\//, "");
   const dir = p => rel(p).split("/").slice(0, -1).join("/");
   const hi = P.find(x => x.high), lo = P.find(x => x.low && x.low !== (hi && hi.high));
   const zip = sub => demo ? "#" : url("zip", { q: { sub: M.scope && sub.toLowerCase().startsWith(M.scope.toLowerCase()) ? sub.slice(M.scope.length).replace(/^\//, "") : sub } });
+  window.__zip = zip;   // the shoot buttons use it for their own download
   const parent = hi && lo ? dir(hi.high).split("/").slice(0, -1).join("/") : "";
-  const nHi = P.filter(x => x.high).length, nLo = P.filter(x => x.low).length, ontbreekt = P.filter(x => !x.high || !x.low).length;
+  const PV = M._pv || P, pv = PV.find(x => x.preview), nPv = PV.filter(x => x.preview).length, albumLeeg = !!M._all && !(M._album || []).length;
+  const nHi = P.filter(x => x.high).length, nLo = P.filter(x => x.low).length, ontbreekt = (M._album || P).filter(x => !x.high || !x.low).length;
   const I = V.map(vinfo), arts = [...new Set(I.map(x => x.artist))].sort((a, b) => a.localeCompare(b));
-  const artRows = arts.map(a => { const mine = V.map((v, i) => ({ v, x: I[i] })).filter(o => o.x.artist === a), sz = mine.reduce((s, o) => s + (o.v.size || 0), 0); return mine[0].x.asub ? { a, sz, href: zip(mine[0].x.asub) } : null; }).filter(Boolean);
+  const artRows = arts.map(a => { const mine = V.map((v, i) => ({ v, x: I[i] })).filter(o => o.x.artist === a), sz = mine.reduce((s, o) => s + (o.v.size || 0), 0); return mine[0].x.asub ? { a, sz, href: zip(mine[0].x.asub), huge: mine.filter(o => (o.v.size || 0) > 3.9e9) } : null; }).filter(Boolean);
+  const artRowHtml = (r, sub) => r.huge.length ? r.huge.map(o => row(r.a + " · " + o.x.label, "bigger than 4 GB: no zip possible, direct download", file(o.v.path), o.v.size)).join("") : row(r.a, sub, r.href, r.sz);
   const row = (t, sub, href, size) => `<a href="${href}"${size ? ` data-size="${size}"` : ""}><span>${esc(t)}${sub ? `<em>${esc(sub)}</em>` : ""}</span><small>${esc(size ? fmtB(size) : "")}</small></a>`;
-  const photoAll = M.nodl ? "" : parent ? row("Photos, as in the folder", `HighRes + LowRes · ${P.length} photos`, zip(parent)) : "";
-  const photoHi = M.nodl ? "" : hi ? row("High resolution only", `${nHi} photos`, zip(dir(hi.high))) : "";
+  const photoAll = M.nodl || M.guest ? "" : parent ? row("Photos, as in the folder", `HighRes + LowRes · ${P.length} photos`, zip(parent)) : "";
+  const photoHi = M.nodl || M.guest ? "" : hi ? row("High resolution only", `${nHi} photos`, zip(dir(hi.high))) : "";
+  const photoPv = M.nodl ? "" : pv ? row("Previews", `${nPv} photos, in their own folder`, zip(dir(pv.preview))) : "";
   const photoLo = M.nodl ? "" : lo ? row("Web size only", `${nLo} photos`, zip(dir(lo.low))) : "";
-  const parts = [photoAll || photoHi].filter(Boolean).concat(artRows.map(r => row(r.a, "clips", r.href, r.sz)));
+  const perShoot = (M.nodl || M.guest || M.locked || !(M.groups || []).length) ? [] : (M.groups || []).map(g => { const n = P.filter(p => (p.group || "").toLowerCase() === String(g.k).toLowerCase()).length; return n ? row(g.l, "HighRes + LowRes · " + n + " photos", zip(g.k)) : ""; }).filter(Boolean);
+  const parts = M.guest ? [] : [photoAll || photoHi].filter(Boolean).concat(artRows.map(r => artRowHtml(r, "clips")));
   const totVid = V.reduce((s, v) => s + (v.size || 0), 0);
   dl = document.createElement("div"); dl.className = "dl";
   const right = bar.querySelector("#barr"); right.parentNode.insertBefore(dl, right); dl.appendChild(right);
   const b = document.createElement("button"); b.className = "dlb"; b.type = "button"; b.textContent = "Download all"; b.setAttribute("aria-haspopup", "true"); dl.appendChild(b);
   const panel = document.createElement("div"); panel.className = "dlp"; panel.setAttribute("role", "menu");
-  panel.innerHTML = `<h4>Everything, as in the Dropbox folder</h4>${parts.join("")}<p class="n">In parts, because one zip of this size is not possible. Every part keeps the folder structure, so unzipped they fit together.</p>`
-    + (P.length && !M.nodl ? `<h4>Photos only</h4>${photoAll}${photoHi}${photoLo}<p class="n">${ontbreekt ? `Checked: ${ontbreekt} photo${ontbreekt === 1 ? " has" : "s have"} no matching ${nHi < nLo ? "high resolution" : "web size"} file yet.` : `Checked: all ${P.length} photos are there in high resolution and in web size.`}</p>` : "")
+  panel.innerHTML = (parts.length ? `<h4>Everything, as in the Dropbox folder</h4>${parts.join("")}<p class="n">In parts, because one zip of this size is not possible. Every part keeps the folder structure, so unzipped they fit together.</p>` : "")
+    + (perShoot.length > 1 ? `<h4>Per shoot</h4>${perShoot.join("")}<p class="n">One zip per day and city, with HighRes and LowRes inside.</p>` : "")
+    + (((P.length || PV.length) && !M.nodl) ? `<h4>Photos only</h4>${photoPv}${photoAll}${photoHi}${photoLo}<p class="n">${albumLeeg ? "These are the previews: low res, ready to share on social media. The full album, high res and low res, follows and you get an email when it is uploaded." : ontbreekt ? `Checked: ${ontbreekt} photo${ontbreekt === 1 ? " has" : "s have"} no matching ${nHi < nLo ? "high resolution" : "web size"} file yet.` : `Checked: all ${(M._album || P).length} photos are there in high resolution and in web size.`}</p>` : "")
     + (M.dropbox ? `<h4>Prefer Dropbox?</h4><a href="${esc(M.dropbox)}" target="_blank" rel="noopener"><span>Open in Dropbox<em>The same folder, in your own Dropbox</em></span><small>↗</small></a>` : "")
-    + (artRows.length ? `<h4>Video only, per artist · ${fmtB(totVid)}</h4>${artRows.map(r => row(r.a, "", r.href, r.sz)).join("")}` : "");
+    + (artRows.length ? `<h4>Video only, per artist · ${fmtB(totVid)}</h4>${artRows.map(r => artRowHtml(r, "")).join("")}` : "");
   document.body.appendChild(panel);
   const close = () => panel.classList.remove("on");
   b.onclick = e => { e.stopPropagation(); panel.classList.toggle("on"); };
@@ -588,7 +686,17 @@ function deliveredLine() {
   if (P) parts.push("Photography");
   return parts.join(" + ");
 }
-function deliveredCounts() { const P = (M.photos || []).length, V = (M.videos || []).length; return [V ? V + " clips" : "", P ? P + " photos" : ""].filter(Boolean).join(" · "); }
+/* the same clip in 4x5, 4x3, 9x16 and 16x9, HD or 4K, is one video */
+function uniqueVideos(list) {
+  const keys = new Set();
+  for (const v of list || []) {
+    const parts = String(v.group || v.path || "").split(/ \/ |\//).filter(Boolean), ci = parts.findIndex(x => /^clips$/i.test(x)), art = ci > 0 ? parts[ci - 1] : "";
+    const name = String(v.name || v.path || "").split("/").pop().replace(/\.(mp4|mov)$/i, "").replace(/-(\d{1,2}x\d{1,2}|square|story|reel|wide)-(hd|4k|uhd|fhd)/i, "").toLowerCase();
+    keys.add(art.toLowerCase() + "|" + name);
+  }
+  return keys.size;
+}
+function deliveredCounts() { const P = (M._all || M.photos || []).length, V = uniqueVideos(M.videos); return [V ? V + " clips" : "", P ? P + " photos" : ""].filter(Boolean).join(" · "); }
 
 /* Drift, as on the Explore page of the website: the photos float in a dark 3D space, scroll, drag or arrow keys fly through them */
 function openDrift() {
@@ -635,11 +743,9 @@ function wmSrc(src) {
     im.onload = () => { try {
       const w = Math.min(1024, im.naturalWidth), r = w / im.naturalWidth, c = document.createElement("canvas"); c.width = w; c.height = Math.round(im.naturalHeight * r);
       const x = c.getContext("2d"); x.drawImage(im, 0, 0, c.width, c.height);
-      const t = String(M.wm || "STEVYVERGOUWEN.COM").toUpperCase(), fs = Math.max(14, Math.round(c.width / 22));
-      x.save(); x.translate(c.width / 2, c.height / 2); x.rotate(-0.42); x.font = `700 ${fs}px "Helvetica Neue",Helvetica,Arial,sans-serif`; x.textAlign = "center"; x.textBaseline = "middle";
-      const step = fs * 4.2, span = Math.hypot(c.width, c.height);
-      for (let yy = -span; yy < span; yy += step) for (let xx = -span; xx < span; xx += fs * t.length * 0.9 + fs * 3) { x.lineWidth = Math.max(1, fs / 14); x.strokeStyle = "rgba(0,0,0,.28)"; x.strokeText(t, xx + ((yy / step) % 2 ? fs * 5 : 0), yy); x.fillStyle = "rgba(255,255,255,.34)"; x.fillText(t, xx + ((yy / step) % 2 ? fs * 5 : 0), yy); }
-      x.restore(); res(c.toDataURL("image/jpeg", .82)); } catch (e) { res(src); } };
+      const t = String(M.wm || "Stevy Vergouwen"), fs = Math.max(16, Math.round(c.width / 15));   // one quiet mark in the middle
+      x.font = `500 ${fs}px "Helvetica Neue",Helvetica,Arial,sans-serif`; x.textAlign = "center"; x.textBaseline = "middle"; x.fillStyle = "rgba(255,255,255,.34)"; x.shadowColor = "rgba(0,0,0,.35)"; x.shadowBlur = fs / 6; x.fillText(t, c.width / 2, c.height / 2);
+      res(c.toDataURL("image/jpeg", .82)); } catch (e) { res(src); } };
     im.onerror = () => res(src); im.src = src; });
   wmCache.set(src, pr); return pr;
 }
@@ -658,7 +764,7 @@ function selGuide() {
 
 addEventListener("scroll", () => { const b = document.querySelector(".bar"); if (b) b.classList.toggle("sc", scrollY > 40); }, { passive: true });
 /* a review can always be left, not only through the popup */
-function reviewLink() {
+function reviewLink() { if (M.guest) return;
   const bar = document.querySelector(".bar"); if (!bar || M.select) return; if (bar.querySelector(".rvl")) return;
   const b = document.createElement("button"); b.className = "rvl"; b.type = "button"; b.textContent = "Leave a review";
   b.onclick = () => { const r = document.getElementById("rsheet"); if (r) r.classList.add("on"); };
@@ -671,21 +777,21 @@ const FBK = "sv-fb2-" + slug; let liveT = 0, fbDraw = [];
 function loadFb() { try { const d = JSON.parse(localStorage.getItem(FBK) || "{}"); (d.comments || []).forEach(c => comments.push({ ...c, id: c.id || String(c.at) + Math.random().toString(36).slice(2, 5) })); (d.approved || []).forEach(a => appr.add(a)); } catch (e) {} }
 function saveFb() { put2(FBK, JSON.stringify({ comments, approved: [...appr] })); liveSend(); }
 function liveSend() {
-  if (demo || !M || !M.comments) return; clearTimeout(liveT);
+  if (demo || !M || !fbOn()) return; clearTimeout(liveT);
   liveT = setTimeout(() => { fetch(url("live", { q: { v: vidId } }), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ name: ($("#fn") && $("#fn").value) || rem("sv-name"), comments, approved: [...appr] }) }).catch(() => {}); }, 900);
 }
 async function restoreFb() {
-  if (demo || !M.comments) return;
+  if (demo || !fbOn()) return;
   try { const r = await fetch(url("live", { q: { v: vidId } }), { headers: { "x-pass": kk(), "x-tok": tk() } }); if (!r.ok) return; const d = await r.json();
     let ch = false; (d.comments || []).forEach(c => { if (!comments.some(x => x.file === c.file && x.text === c.text && Math.abs(x.t - c.t) < 0.5)) { comments.push({ ...c, id: String(c.at) + Math.random().toString(36).slice(2, 5) }); ch = true; } });
     (d.approved || []).forEach(a => { if (!appr.has(a)) { appr.add(a); ch = true; } }); if (ch) { fbDraw.forEach(f => f()); stat(); put2(FBK, JSON.stringify({ comments, approved: [...appr] })); } } catch (e) {}
 }
 /* the guide: what to do, in four steps */
 function fbGuide(force) {
-  if (!M.comments) return; const K = "sv-fbguide-" + slug; try { if (!force && sessionStorage.getItem(K)) return; } catch (e) {}
+  if (!fbOn()) return; const K = "sv-fbguide-" + slug; try { if (!force && sessionStorage.getItem(K)) return; } catch (e) {}
   if (document.querySelector(".nzo.fg")) return;
   const o = document.createElement("div"); o.className = "nzo fg"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); o.setAttribute("aria-labelledby", "fgt");
-  o.innerHTML = `<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">Your feedback</div><h2 id="fgt">Review the video</h2><ol><li>Open a clip and watch it. Take your time.</li><li>Pause where something should change and write it down: it is saved at that exact moment.</li><li>Press Approve on every clip that is good. A check mark appears on it.</li><li>When you are done, press Send feedback. Stevy sees your notes as you write them.</li></ol><p class="small">You can change or delete a comment, and take back an approval, until you are done.</p><div class="row"><button class="go" type="button">Start</button></div></div>`;
+  o.innerHTML = `<div class="nz"><button class="x" type="button" aria-label="Close">×</button><div class="eb">Your feedback</div><h2 id="fgt">Review the clips</h2><ol><li><b>Watch</b>Open a clip and take your time.</li><li><b>Comment</b>Pause where something should change and write it down. It is saved at that exact moment.</li><li><b>Approve</b>Press Approve on every clip that is good.</li><li><b>Send</b>When you are done, press Send feedback.</li></ol><p class="small">Until you send, you can still edit a comment or take an approval back.</p><div class="row"><button class="go" type="button">Start</button></div></div>`;
   document.body.appendChild(o); const done = () => { try { sessionStorage.setItem(K, "1"); } catch (e) {} o.classList.remove("on"); setTimeout(() => o.remove(), 600); };
   o.querySelector(".x").onclick = done; o.querySelector(".go").onclick = done; o.addEventListener("click", e => { if (e.target === o) done(); });
   setTimeout(() => { o.classList.add("on"); flickerTitle(o.querySelector("h2")); }, force ? 50 : 700);
@@ -703,12 +809,12 @@ function thanksAfterDownload() {
 function showThanks() {
   if (document.querySelector(".thx,.nzo.on")) return; const K = "sv-thx-" + slug; try { localStorage.setItem(K, String(Date.now() + 12 * 36e5)); } catch (x) {}
   const t = document.createElement("div"); t.className = "thx"; t.setAttribute("role", "status");
-  t.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><div class="eb">Thank you</div><h3>Enjoy the files.</h3><p>Would be amazing if you tag me when you post them: <b>@stevyvergouwen</b>.</p><p>Love to work together again soon. If you liked it, spread the word.</p><div class="row"><button class="pri" type="button" data-c>Copy my handle</button><a href="https://stevyvergouwen.com/" target="_blank" rel="noopener">See what else I do</a><button type="button" data-r>Leave a review</button></div>';
+  t.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><div class="eb">Thank you</div><h3>Enjoy the content.</h3><p>Would be amazing if you tag me when you post them: <b>@stevyvergouwen</b>.</p><p>Love to work together again soon. If you liked it, spread the word.</p><div class="row"><a class="pri ig" href="https://www.instagram.com/stevyvergouwen/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>Check me out on Instagram</a><button type="button" data-c>Copy my handle</button><a href="https://stevyvergouwen.com/" target="_blank" rel="noopener">See what else I do</a>' + (M.guest ? "" : '<button type="button" data-r>Leave a review</button>') + '</div>';
   document.body.appendChild(t); requestAnimationFrame(() => t.classList.add("on")); flickerTitle(t.querySelector("h3"));
   const close = () => { t.classList.remove("on"); setTimeout(() => t.remove(), 700); };
   t.querySelector(".x").onclick = close; setTimeout(close, 22000);
   t.querySelector("[data-c]").onclick = async e => { try { await navigator.clipboard.writeText("@stevyvergouwen"); e.target.textContent = "Copied"; } catch (x) { e.target.textContent = "@stevyvergouwen"; } };
-  t.querySelector("[data-r]").onclick = () => { close(); const r = document.getElementById("rsheet"); if (r) r.classList.add("on"); };
+  const rb = t.querySelector("[data-r]"); if (rb) rb.onclick = () => { close(); const r = document.getElementById("rsheet"); if (r) r.classList.add("on"); };
 }
 
 /* the timetable lives in the video list: each artist carries its set time, in running order */
@@ -770,6 +876,70 @@ function shareButton() {
   const anchor = bar.querySelector(".rvl") || bar.querySelector(".dl") || bar.querySelector("#barr"); anchor.parentNode.insertBefore(b, anchor);
 }
 
+/* the client invites friends herself: a link per friend, no code, 30 days, Stevy can take each one back */
+/* every album is also a shop window: whoever opens it can go and look at the rest of the work */
+/* feedback and approval is for video: a photo album never shows it, whatever the flag says */
+function fbOn() { return !!M.comments && (M.videos || []).length > 0; }
+function togetherStrip() {
+  const t = M.together; if (!t || M.guest || M.select || !t.shoots) return "";
+  const total = t.total || t.shoots + 1, since = t.since ? new Date(t.since + "T12:00").toLocaleDateString("en-GB", { month: "long", year: "numeric" }) : "";
+  if (total < 2) return "";
+  const cell = (v, l, n) => `<div><b${n ? ` data-cu="${n}"` : ""}>${n ? 0 : v}</b><span>${l}</span></div>`;
+  return `<div class="tgh">Working together</div><div class="tgs">${cell(total, "shoots so far", total)}${since ? cell(since, "since") : ""}</div>`;
+}
+/* the day/city buttons: show one shoot at a time, or all */
+function wireGroups() {
+  const chips = [...document.querySelectorAll(".gchips button")]; if (!chips.length) return;
+  chips.forEach(b => b.onclick = () => {
+    const g = (b.dataset.gf || "").toLowerCase(); chips.forEach(x => x.classList.toggle("on", x === b));
+    document.querySelectorAll("#grid [data-g]").forEach(el => { el.style.display = !g || (el.dataset.g || "").toLowerCase() === g ? "" : "none"; });
+    const old = document.querySelector(".gdl"); if (old) old.remove();
+    const q = M._all || M.photos || [], n = q.filter(p => (p.group || "").toLowerCase() === g).length;
+    if (g && n && window.__zip && !M.nodl && !M.guest && !M.locked) { const a = document.createElement("a"); a.className = "gdl"; a.href = window.__zip(b.dataset.gf); a.innerHTML = `<span>↓ ${esc(b.firstChild.textContent)}</span><small>${n} photos</small>`; document.querySelector(".gchips").after(a); }
+  });
+}
+function countUp() {
+  const els = [...document.querySelectorAll(".tg b[data-n]")]; if (!els.length) return;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; io.unobserve(e.target);
+    const to = +e.target.dataset.n, t0 = performance.now(), d = 1500;
+    if (still) { e.target.textContent = to.toLocaleString("en-GB"); return; }
+    const step = now => { const k = Math.min(1, (now - t0) / d), v = Math.round(to * (1 - Math.pow(1 - k, 3))); e.target.textContent = v.toLocaleString("en-GB"); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }), { threshold: .6 });
+  els.forEach(el => io.observe(el));
+}
+function moreWork() {
+  if (M.select || !M.guest) return "";
+  const c = "Photos by Stevy Vergouwen";
+  return `<section class="mw"><div class="eyebrow">${c}</div><h2>Events, artists and brands, as photos and multicam films.</h2><div class="row"><a class="go" href="https://stevyvergouwen.com/work/" target="_blank" rel="noopener">See my work</a><a href="https://www.instagram.com/stevyvergouwen/" target="_blank" rel="noopener">Follow me on Instagram</a><a href="https://stevyvergouwen.com/start/" target="_blank" rel="noopener">Let’s work</a></div></section>`;
+}
+function inviteButton() {
+  const bar = document.querySelector(".bar"); if (!bar || bar.querySelector(".inv-b") || !M.guestOk) return;
+  const b = document.createElement("button"); b.className = "shb inv-b"; b.type = "button"; b.title = "Invite guests with their own link"; b.innerHTML = '<span class="sht" style="display:inline">Invite guests</span>'; b.onclick = () => inviteSheet();
+  const anchor = bar.querySelector(".rvl") || bar.querySelector(".dl") || bar.querySelector("#barr"); anchor.parentNode.insertBefore(b, anchor);
+}
+async function inviteSheet() {
+  document.querySelector(".nzo.invite")?.remove();
+  const o = document.createElement("div"); o.className = "nzo invite"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true");
+  o.innerHTML = `<div class="nz"><div class="eb">Share</div><h2>Share with friends and colleagues</h2><p>Copy one link and paste it in a group chat. Anyone with it can watch the photos and save them, for 30 days. No email needed.</p><div class="row" style="margin-bottom:6px"><button class="go" id="ivg" type="button" style="width:100%">Copy a link for a group</button></div><p class="note" style="margin:16px 0 8px;font-size:11px">Or one link per person, so you can see who opened what:</p><div class="row" style="margin-bottom:14px"><input id="ivl" placeholder="Name (optional)" maxlength="40" style="flex:1;min-width:0"><button class="no" id="ivb" type="button">Create link</button></div><div id="ivs" class="ivs"></div><div class="row" style="margin-top:14px"><button class="no" id="ivx" type="button">Done</button></div></div>`;
+  document.body.appendChild(o); requestAnimationFrame(() => o.classList.add("on"));
+  const close = () => { o.classList.remove("on"); setTimeout(() => o.remove(), 500); }; o.querySelector("#ivx").onclick = close; o.addEventListener("click", e => { if (e.target === o) close(); });
+  const post = async body => { const r = await fetch(url("guest"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify(body) }); const j = await r.json().catch(() => ({})); return { ok: r.ok, status: r.status, j }; };
+  const draw = (list, fresh) => { const box = o.querySelector("#ivs"); box.innerHTML = (list || []).slice().reverse().map((g, i) => `<div class="ivr${fresh && i === 0 ? " new" : ""}"><span>${esc(g.label)}<em>${esc(g.at || "")}</em></span><button type="button" data-l="${esc(g.link)}" data-n="${esc(g.label)}">${navigator.share && matchMedia("(hover:none)").matches ? "Send" : "Copy"}</button></div>`).join("") || '<p class="note" style="margin:0">No links yet.</p>';
+    box.querySelectorAll("button").forEach(bt => bt.onclick = async () => { const l = bt.dataset.l; if (navigator.share && matchMedia("(hover:none)").matches) { try { await navigator.share({ title: M.title, text: "Photos from " + M.title, url: l }); } catch (e) {} } else { try { await navigator.clipboard.writeText(l); bt.textContent = "Copied"; setTimeout(() => { bt.textContent = "Copy"; }, 1500); } catch (e) { prompt("Copy this link", l); } } }); };
+  post({ list: true }).then(x => { if (x.ok) draw(x.j.guests); });
+  o.querySelector("#ivg").onclick = async () => {
+    const g = o.querySelector("#ivg"); g.disabled = true; const x = await post({ label: "Group link" }); g.disabled = false;
+    if (!x.ok) { o.querySelector("#ivs").innerHTML = `<p class="note" style="margin:0">${x.status === 409 ? "That is the limit of " + (x.j.max || 25) + " links. Ask Stevy for more." : "That did not work, try again."}</p>`; return; }
+    draw(x.j.guests, true); const l = (x.j.guests || []).slice(-1)[0]?.link || x.j.link;
+    if (navigator.share && matchMedia("(hover:none)").matches) { try { await navigator.share({ title: M.title, text: "Photos from " + M.title, url: l }); g.textContent = "Shared"; } catch (e) {} }
+    else { try { await navigator.clipboard.writeText(l); g.textContent = "Link copied. Paste it in your group"; } catch (e) { prompt("Copy this link", l); } }
+    setTimeout(() => { g.textContent = "Copy a link for a group"; }, 3500);
+  };
+  o.querySelector("#ivb").onclick = async () => { const lab = o.querySelector("#ivl").value; const b = o.querySelector("#ivb"); b.disabled = true; const x = await post({ label: lab }); b.disabled = false; if (x.ok) { o.querySelector("#ivl").value = ""; draw(x.j.guests, true); } else o.querySelector("#ivs").innerHTML = `<p class="note" style="margin:0">${x.status === 409 ? "That is the limit of " + (x.j.max || 25) + " links. Ask Stevy for more." : "That did not work, try again."}</p>`; };
+}
 /* a selection delivery: what you picked stays visible on any device, and the finished photos are one click away */
 async function selectionExtras() {
   if (!M.select) return; const bar = document.querySelector(".fb .acts"); if (!bar) return;
@@ -778,30 +948,106 @@ async function selectionExtras() {
   if (M.final && !document.getElementById("finalb")) { const b = document.createElement("button"); b.id = "finalb"; b.type = "button"; b.className = "pri"; b.textContent = "View final photos"; b.onclick = async () => { b.textContent = "Opening…"; try { const r = await fetch(url("final"), { headers: { "x-tok": tk(), "x-pass": kk() } }); const j = await r.json(); if (!j.link) throw 0; location.href = j.link; } catch (e) { b.textContent = "Not ready yet"; setTimeout(() => { b.textContent = "View final photos"; }, 2500); } }; bar.insertBefore(b, bar.firstChild); }
 }
 
+const takenAt = (p, i) => { const m = /^(\d{4})(\d{2})(\d{2})[_-](\d{2})(\d{2})/.exec(p.name || ""); if (!m) return "Photo " + (i + 1); const d = new Date(+m[1], +m[2] - 1, +m[3]); return `${d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })} · ${m[4]}:${m[5]}`; };   // the file name starts with the day and the time the photo was taken
+const sizeLine = p => [p.hs ? "High res " + fmtB(p.hs) : "", p.ls ? "Low res " + fmtB(p.ls) : "", !p.hs && !p.ls && p.ps ? fmtB(p.ps) : ""].filter(Boolean).join(" · ");
+addEventListener("message", e => { if (e.data && typeof e.data.svOpen === "number" && M && M.photos && M.photos[e.data.svOpen]) open(e.data.svOpen); });
+/* the banner: the photo the app picked (faces found there), else a horizontal one; a vertical photo is zoomed in to a wide banner and kept aligned on the faces, never cut through them */
+/* the opening picture: like the website, a few of the best photos that fade into each other, the first one chosen by the app (faces never cut off). Nothing is shown until the first photo is in, so it never jumps. */
+function heroFit() {
+  const bg = document.querySelector(".hero .bg"), hero = document.querySelector(".hero"); if (!bg || !hero) return;
+  const all = [...(M._all || M.photos || []), ...(M._pv || [])]; if (!all.length) return;
+  clearInterval(heroFit.t); bg.innerHTML = "";
+  const lead = M.hero && all.find(p => p.name === M.hero.n);
+  const pool = all.filter(p => p !== lead);
+  (async () => {
+    // no guessing from thumbnails: a handful of photos spread over the album, wide ones first when their shape is known
+    const spread = n => { const out = [], step = Math.max(1, pool.length / n); for (let k = 0; k < n && Math.floor(k * step) < pool.length; k++) out.push(pool[Math.floor(k * step)]); return out; };
+    const wide = pool.filter(p => p.ar && p.ar > 1.15), picks = (wide.length >= 4 ? wide.filter((_, k) => k % Math.max(1, Math.floor(wide.length / 6)) === 0) : spread(6)).slice(0, 6);
+    const list = [...(lead ? [lead] : []), ...picks].slice(0, 7); if (!list.length) return;
+    const layers = list.map((p, k) => { const el = document.createElement("i"), u = thumb(p.thumb, "w2048h1536"); el.innerHTML = "<s></s>"; el.querySelector("s").style.backgroundImage = `url('${u}')`; bg.appendChild(el); return { el, p, u, k }; });
+    // every photo fills the picture, standing ones too: zoomed in, the face of the app's choice kept in view
+    const place = (L, im) => { const W = hero.clientWidth, H = hero.clientHeight, fx = lead && L.p === lead ? M.hero.x : .5, fy = lead && L.p === lead ? M.hero.y : .36, sc = Math.max(W / im.naturalWidth, H / im.naturalHeight), vx = W / (im.naturalWidth * sc), vy = H / (im.naturalHeight * sc), pos = (c, v) => v >= .999 ? 50 : Math.min(100, Math.max(0, (c - v / 2) / (1 - v) * 100)); L.el.querySelector("s").style.backgroundPosition = `${pos(fx, vx)}% ${pos(fy, vy)}%`; };
+    const ready = [];
+    const shown = L => new Promise(res => { const im = new Image(); im.onload = () => { place(L, im); L.im = im; res(true); }; im.onerror = () => res(false); im.src = L.u; });
+    if (!(await shown(layers[0]))) return;
+    layers[0].el.classList.add("on"); ready.push(layers[0]);
+    addEventListener("resize", () => ready.forEach(L => L.im && place(L, L.im)));
+    layers.slice(1).forEach(L => shown(L).then(ok => { if (!ok) return; ready.push(L); const t = hero.querySelector(".hn .t"), h = hero.querySelector(".hn"); if (t) t.textContent = String(ready.length).padStart(2, "0"); if (h && ready.length === 2) { h.classList.remove("go"); void h.offsetWidth; h.classList.add("go"); } }));
+    // a quiet counter with a line that fills while the picture stays
+    let hn = hero.querySelector(".hn"); if (!hn) { hn = document.createElement("div"); hn.className = "hn"; hn.innerHTML = '<span class="a">01</span><u></u><em class="t"></em>'; hero.appendChild(hn); }
+    const pad = n => String(n).padStart(2, "0"), tell = k => { hn.querySelector(".a").textContent = pad(k + 1); hn.querySelector(".t").textContent = pad(Math.max(ready.length, 1)); hn.classList.remove("go"); void hn.offsetWidth; if (ready.length > 1) hn.classList.add("go"); };
+    tell(0);
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let cur = 0; heroFit.t = setInterval(() => {
+      if (ready.length < 2 || document.hidden) return;
+      const prev = ready[cur % ready.length]; cur = (cur + 1) % ready.length; const nx = ready[cur];
+      prev.el.classList.remove("on"); prev.el.classList.add("out"); nx.el.classList.remove("out"); nx.el.classList.add("on");
+      setTimeout(() => { if (prev !== ready[cur]) prev.el.classList.remove("out"); }, 2600);
+      tell(cur);
+    }, 6500);
+  })();
+}
+/* phone: the share sheet with the image file in it (iOS and Android offer Save Image / Save to Photos there) */
+const touchShare = () => !!(navigator.canShare && matchMedia("(hover:none)").matches);
+const dlUrl = p => file((M._all && M._tab === "p" && M._res === "low" ? p.low : p.high) || p.high || p.low || p.thumb);
+const asFile = async p => { const b = await (await fetch(dlUrl(p))).blob(); return new File([b], (p.name || "photo") + ".jpg", { type: b.type || "image/jpeg" }); };
+const saveOne = async p => { try { const f = await asFile(p); if (navigator.canShare({ files: [f] })) await navigator.share({ files: [f] }); else location.href = dlUrl(p); } catch (e) { if (!e || e.name !== "AbortError") location.href = dlUrl(p); } };
+/* "Save all previews to Photos": the files are fetched beforehand, so the tap itself can open the share sheet at once (a phone only allows that straight after a tap) */
+const fcache = new Map();
+function saveAllWire() {
+  const btn = $("#svall"); if (!btn) return; const L = M.photos || []; let busy = false, k = 0;
+  const done = () => L.filter(p => fcache.has(p.id)).length;
+  const label = () => { const n = done(); btn.disabled = n < L.length; btn.textContent = n < L.length ? `Getting the previews… ${n} / ${L.length}` : `Download all ${L.length} previews`; };
+  label(); let i = 0; const run = async () => { while (i < L.length) { const p = L[i++]; if (!fcache.has(p.id)) { try { fcache.set(p.id, await asFile(p)); } catch (e) { /* retried on tap */ } } label(); } };
+  Promise.all([run(), run(), run()]).then(() => { if (done() < L.length) { btn.disabled = false; btn.textContent = `Save the ${done()} that are ready`; } });
+  btn.onclick = async () => { if (busy) return; const fs = L.map(p => fcache.get(p.id)).filter(Boolean); if (!fs.length) return; busy = true;
+    try { if (!navigator.canShare || !navigator.canShare({ files: fs })) { for (const f of fs) { const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); await new Promise(r => setTimeout(r, 400)); } btn.textContent = "Done. Tap to download again"; busy = false; return; } if (navigator.canShare({ files: fs })) { await navigator.share({ files: fs }); btn.textContent = "Done. Tap to download again"; } else throw new Error("many"); }
+    catch (e) { if (e && e.name === "AbortError") { busy = false; return; } const part = fs.slice(k * 12, k * 12 + 12); try { await navigator.share({ files: part }); k++; btn.textContent = k * 12 >= fs.length ? "Done. Tap to download again" : `${Math.min(k * 12, fs.length)} of ${fs.length} done. Tap for the next ${Math.min(12, fs.length - k * 12)}`; if (k * 12 >= fs.length) k = 0; } catch (x) { /* cancelled */ } }
+    busy = false; };
+}
+/* a click opens the photo by growing out of its own place */
+const zoomIn = (i, el) => { open(i); const src = el && (el.querySelector ? el.querySelector("img") : el); if (!src || matchMedia("(prefers-reduced-motion: reduce)").matches) return; const p = M.photos[i], r = src.getBoundingClientRect(), ar = (src.naturalWidth / (src.naturalHeight || 1)) || p.ar || 1.5, vw = innerWidth, vh = innerHeight * .84; let w = Math.min(vw * .94, vh * ar), h = w / ar; if (h > vh) { h = vh; w = h * ar; } const L = (vw - w) / 2, T = (innerHeight - h) / 2 - 8, c = new Image(); c.src = src.currentSrc || src.src; c.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;object-fit:cover;z-index:260;border-radius:6px;transition:all .55s cubic-bezier(.2,.85,.2,1);pointer-events:none`; document.body.appendChild(c); const lbi = $("#lbi"); lbi.style.opacity = "0"; requestAnimationFrame(() => requestAnimationFrame(() => Object.assign(c.style, { left: L + "px", top: T + "px", width: w + "px", height: h + "px", borderRadius: "2px" }))); setTimeout(() => { lbi.style.opacity = ""; c.remove(); }, 620); };
+const tot = n => n ? " · " + fmtB(n) : "";
+const sizeChip = p => { if (M._all && M._tab === "p") { const lo = M._res === "low"; return `<span class="sz">${lo ? "Low res " + fmtB(p.ls) : "High res " + fmtB(p.hs)}</span>`; } const a = p.hs ? `High ${fmtB(p.hs)}` : "", b = p.ls ? `Low ${fmtB(p.ls)}` : "", c = !a && !b && p.ps ? fmtB(p.ps) : ""; const t = [a, b, c].filter(Boolean).join(" · "); return t ? `<span class="sz">${t}</span>` : ""; };
 function render() {
+  if ((M.previews || []).length && !M.select && !M.locked) { if (!M._all) { M._all = M.photos; M._album = M._all.filter(x => x.high || x.low); M._pv = M.previews; M._tab = M._album.length ? "p" : "pv"; M._res = M._album.some(x => x.high) ? "high" : "low"; } M.photos = M._tab === "pv" ? M._pv : M._album.filter(x => M._res === "low" ? x.low : x.high); }   // previews and the full album each get their own tab in the same link; the album stays empty until high and low res are in
   { const a = albums().filter(x => x.slug !== slug); a.unshift({ slug, title: M.title, client: M.client || "", at: Date.now() }); put2("sv-albums", JSON.stringify(a.slice(0, 20))); }
-  const P = M.photos, V = M.videos; $("#barr").textContent = M.client || "Delivery";
+  const P = M.photos, V = M.videos, split = !!M._all; $("#barr").textContent = M.client || "Delivery";
   const date = M.date ? new Date(M.date + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
-  app.innerHTML = `<header class="hero"><div class="bg" style="background-image:url('${P[0] ? thumb(P[0].thumb, "w2048h1536") : ""}')"></div><div class="in"><div class="eyebrow">${esc((artistName() ? [M.title, date] : [M.client ? "For " + M.client : "", date]).filter(Boolean).join(" · "))}</div><h1>${esc(artistName() || M.title)}</h1><p class="sub">${esc(deliveredLine())}<span>${esc(deliveredCounts())}</span></p>${M.locked && !M.select ? `<p class="lockn">Preview with watermark. The final files are released after approval.</p>` : ""}${artistName() ? `<p class="note">Thanks for playing at ${esc(M.title)}. Your clips and audio are below.</p>` : M.note ? `<p class="note">${esc(M.note)}</p>` : ""}${M.location ? `<p class="loc"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5.5 12S10 8 10 5a4.5 4.5 0 10-9 0c0 3 4.5 7 4.5 7z"/><circle cx="5.5" cy="5" r="1.6"/></svg>${esc(M.location)}</p>` : ""}<div class="acts">${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
-  <main><div class="tabs">${P.length ? `<button class="on" data-t="p">Photos · ${P.length}</button>` : ""}${V.length ? `<button class="${P.length ? "" : "on"}" data-t="v">Video · ${V.length}</button>` : ""}<span class="sp"></span><button id="theme" class="tg" type="button" aria-label="Switch between dark and light" title="Dark / light"><i></i></button></div>
-  ${P.length ? `<section class="sec" id="sp"><h2>Photos</h2><div class="view" id="view"><button data-l="large">Large</button><button data-l="small">Small</button><button data-l="list">List</button>${M.select ? "" : `<button data-l="board">Board</button><button data-l="float">Float</button>`}</div><div class="alt" id="alt"></div><div class="grid" id="grid">${P.map((p, i) => `<figure class="ph" data-i="${i}"><img data-src="${thumb(p.thumb, "w640h480")}" alt="${esc(p.name)}"><figcaption class="nm">${esc(p.name)}</figcaption><div class="tools"><button class="ic heart" data-h="${i}" aria-label="Favourite">♡</button>${M.select ? "" : `<a class="ic" href="${file(p.high || p.low || p.thumb)}" aria-label="Download" data-dl><button class="ic" type="button">↓</button></a>`}</div></figure>`).join("")}</div></section>` : ""}
-  ${V.length ? videoHtml(V) : ""}${M.scope ? `<div class="igb"><p><b>Would be lovely if you spread the word.</b><br>Tag <b>@stevyvergouwen</b> when you share your content. Curious what else I make? Events, multicam sets, presskits and more.</p><div class="row"><a href="https://www.instagram.com/stevyvergouwen/" target="_blank" rel="noopener">Follow @stevyvergouwen</a><a class="two" href="https://stevyvergouwen.com/" target="_blank" rel="noopener">See my work</a></div></div>` : ""}<div class="rv"><p><b style="color:var(--paper)">Happy with the work?</b><br>A short review means a lot, and with your OK it can appear on stevyvergouwen.com.</p><button id="rvb">Leave a review</button></div></main>
-  <div class="fb"><div class="st" id="fst"></div>${(M.select || M.comments) ? `<span class="pbar"><i id="fpb"></i></span>` : ""}<div class="acts">${M.comments && !M.select ? `<button class="gl" id="fguide" type="button">Guide</button>` : ""}<button class="pri" id="fsend">Send feedback or approve</button></div></div>`;
-  wire(); stat(); document.body.classList.toggle("nofb", !(M.select || M.comments)); document.body.classList.toggle("locked", !!M.locked); document.body.classList.toggle("nodl", !!M.nodl); document.body.classList.toggle("artistpg", !!M.scope); if (!(M.select || M.comments)) document.querySelectorAll("#sp h2 small").forEach(el => { el.textContent = "click a photo to open it"; }); if (M.comments && !comments.length && !appr.size) loadFb(); fbDraw.forEach(f => f()); stat(); restoreFb(); fbGuide(false); thanksAfterDownload(); downloadAll(); reviewLink(); flickerTitle(document.querySelector(".hero h1")); heroVideo(); selGuide(); audioRows(); shareButton(); selectionExtras(); if (!M.select) reviewNudge();
+  if (!P.length && !V.length && !split) {   // nothing in the folder yet: the link already works and says so
+    app.innerHTML = `<header class="hero"><div class="bg"></div><div class="in"><div class="eyebrow">${esc([M.client || "", date].filter(Boolean).join(" · "))}</div><h1>${esc(M.title || "Your content")}</h1></div></header><main style="text-align:center;padding:clamp(40px,10vw,90px) 0"><h2 style="font:700 clamp(1.6rem,5vw,2.6rem) var(--sans);letter-spacing:-.03em;margin:0 0 12px">Content coming soon</h2><p style="color:var(--dim);max-width:46ch;margin:0 auto">Your photos and videos are being prepared. Keep this link: it fills up by itself, previews first, then the full set.</p></main>`;
+    return;
+  }
+  app.innerHTML = `<header class="hero"><div class="bg"></div><div class="in"><div class="eyebrow">${esc((artistName() ? [M.title, date] : [M.client || "", date]).filter(Boolean).join(" · "))}</div><h1>${esc(artistName() || M.title)}</h1><p class="sub">${esc(deliveredLine())}<span>${esc(deliveredCounts())}</span></p>${M.locked && !M.select ? `<p class="lockn">Preview with watermark. The final files are released after approval.</p>` : ""}${artistName() ? `<p class="note">Thanks for playing at ${esc(M.title)}. Your clips and audio are below.</p>` : M.note ? `<p class="note">${esc(M.note)}</p>` : ""}${M.guest ? `<p class="gpn" style="margin:0 0 12px;font:500 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--paper)">Photos by Stevy Vergouwen · <a href="https://stevyvergouwen.com/work/" target="_blank" rel="noopener" style="text-decoration:underline">See my work</a></p>` : ""}${M.location ? `<p class="loc"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5.5 12S10 8 10 5a4.5 4.5 0 10-9 0c0 3 4.5 7 4.5 7z"/><circle cx="5.5" cy="5" r="1.6"/></svg>${esc(M.location)}</p>` : ""}<div class="acts">${M.select ? `<span class="eyebrow" style="align-self:center">Pick up to ${M.select.limit} photos. Tap ♡ on the ones you want, then send your selection.</span>` : ""}</div></div></header>
+  ${togetherStrip()}<main><div class="tabs">${split ? `<button class="${M._tab === "pv" ? "on" : ""}" data-t="pv">Previews · ${M._pv.length}${tot(M._pv.reduce((a, x) => a + (x.ps || 0), 0))}</button><button class="${M._tab === "p" ? "on" : ""}" data-t="p">Full album · ${M._album.length || "empty"}${tot(M._album.reduce((a, x) => a + (x.hs || 0) + (x.ls || 0), 0))}</button>` : P.length ? `<button class="on" data-t="p">Photos · ${P.length}</button>` : ""}${V.length ? `<button class="${P.length ? "" : "on"}" data-t="v">Video · ${V.length}</button>` : ""}<span class="sp"></span><button id="theme" class="tg" type="button" aria-label="Switch between dark and light mode" title="Switch to light mode"><svg class="sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg></button></div>
+  ${split && !P.length ? `<section class="sec" id="sp"><h2>Full album</h2><div style="text-align:center;padding:clamp(40px,9vw,80px) 0"><p style="font:700 clamp(1.4rem,4.5vw,2.2rem) var(--sans);letter-spacing:-.03em;margin:0 0 10px">Coming soon</p><p style="color:var(--dim);max-width:46ch;margin:0 auto">The full album, in high res and low res, appears here, on this same page, as soon as it is uploaded. ${M.guest ? "Check back later." : "You get an email when it is. Keep this link."}</p></div></section>` : ""}${P.length ? `<section class="sec" id="sp"><h2>${split ? (M._tab === "pv" ? "Previews" : "Full album") : "Photos"}</h2><div class="view" id="view"><button data-l="large">Large</button><button data-l="small">Small</button><button data-l="list">List</button>${M.select ? "" : ``}</div>${(() => { const gl = M.groups || [], q = M._all || M.photos || []; if (gl.length < 2 || M.select) return ""; return `<div class="gchips"><button type="button" class="on" data-gf="">All</button>${gl.map(g => { const n = q.filter(p => (p.group || "").toLowerCase() === String(g.k).toLowerCase()).length; return `<button type="button" data-gf="${esc(g.k)}">${esc(g.l)}<small>${n ? n : "soon"}</small></button>`; }).join("")}</div>`; })()}${split && M._tab === "p" && M._album.length ? `<div class="resrow"><button type="button" class="kb${M._res === "high" ? " on" : ""}" data-r="high"${M._album.some(x => x.high) ? "" : " disabled"}>High res · ${M._album.filter(x => x.high).length}${tot(M._album.reduce((a, x) => a + (x.hs || 0), 0))}</button><button type="button" class="kb${M._res === "low" ? " on" : ""}" data-r="low"${M._album.some(x => x.low) ? "" : " disabled"}>Low res · ${M._album.filter(x => x.low).length}${tot(M._album.reduce((a, x) => a + (x.ls || 0), 0))}</button></div>` : ""}${split && M._tab === "pv" ? `<div class="pvn"><b>These are the previews.</b> Low res, ready to share on social media. The full album, in high res and low res, comes in its own tab.</div>` : ""}${split && M._tab === "pv" && matchMedia("(hover:none)").matches ? `<button type="button" class="pri" id="svall" style="width:100%;margin:0 0 14px;padding:15px">Download all previews</button>` : ""}<div class="alt" id="alt"></div><div class="grid" id="grid">${(() => {
+    const gl = M.groups || [], fig = (p, i) => `<figure class="ph" data-g="${esc(p.group || "")}" data-i="${i}"><img data-src="${thumb(p.thumb, "w640h480")}" alt="${esc(p.name)}"><figcaption class="nm">${esc(p.name)}</figcaption>${sizeChip(p)}<div class="tools"><button class="ic heart" data-h="${i}" aria-label="Favourite">♡</button>${M.select ? "" : `<a class="ic" href="${file((M._all && M._res === "low" ? p.low : p.high) || p.high || p.low || p.thumb)}" aria-label="Download" data-dl><button class="ic" type="button">↓</button></a>`}</div></figure>`, lab = g => { const x = gl.find(y => String(y.k).toLowerCase() === String(g).toLowerCase()); return x ? x.l : g; };
+    const many = gl.length > 1 || new Set(P.map(p => p.group || "")).size > 1;
+    if (!many) return P.map(fig).join("");
+    const order = gl.map(x => x.k), seen = new Set(order.map(k => k.toLowerCase()));
+    for (const p of P) { const g = p.group || ""; if (!seen.has(g.toLowerCase())) { seen.add(g.toLowerCase()); order.push(g); } }
+    return order.map(k => { const it = P.map((p, i) => [p, i]).filter(([p]) => (p.group || "").toLowerCase() === k.toLowerCase());
+      return `<h3 class="gh" data-g="${esc(k)}">${esc(lab(k) || "Photos")}<span>${it.length ? it.length + " photos" : "coming soon"}</span></h3>` + (it.length ? it.map(([p, i]) => fig(p, i)).join("") : `<p class="gsoon" data-g="${esc(k)}">Photos coming soon. They appear here by themselves as soon as they are uploaded.</p>`); }).join("");
+  })()}</div>${split && M._tab === "pv" ? `<div class="fa"><h3>Full album</h3>${M._album.length ? `<p>The full album is ready, in high res and low res.</p><button type="button" id="gofa">Open the full album</button>` : `<p>Empty for now. The photos appear here, on this same page, as soon as they are uploaded.${M.guest ? " Check back later." : " You get an email when they are."}</p>`}</div>` : ""}</section>` : ""}
+  ${V.length ? videoHtml(V) : ""}${M.scope ? `<div class="igb"><p><b>Would be lovely if you spread the word.</b><br>Tag <b>@stevyvergouwen</b> when you share your content. Curious what else I make? Events, multicam sets, presskits and more.</p><div class="row"><a href="https://www.instagram.com/stevyvergouwen/" target="_blank" rel="noopener">Follow @stevyvergouwen</a><a class="two" href="https://stevyvergouwen.com/" target="_blank" rel="noopener">See my work</a></div></div>` : ""}${M.guest ? "" : `<div class="rv"><p><b style="color:var(--paper)">Happy with the work?</b><br>A short review means a lot, and with your OK it can appear on stevyvergouwen.com.</p><button id="rvb">Leave a review</button></div>`}${moreWork()}</main>
+  <div class="fb"><div class="st" id="fst"></div>${(M.select || fbOn()) ? `<span class="pbar"><i id="fpb"></i></span>` : ""}<div class="acts">${fbOn() && !M.select ? `<button class="gl" id="fguide" type="button">Guide</button>` : ""}<button class="pri" id="fsend">Send feedback or approve</button></div></div>`;
+  countUp(); wireGroups();
+  wire(); stat(); document.body.classList.toggle("nofb", !(M.select || fbOn())); document.body.classList.toggle("locked", !!M.locked); document.body.classList.toggle("nodl", !!M.nodl); document.body.classList.toggle("artistpg", !!M.scope); if (!(M.select || fbOn())) document.querySelectorAll("#sp h2 small").forEach(el => { el.textContent = "click a photo to open it"; }); if (fbOn() && !comments.length && !appr.size) loadFb(); fbDraw.forEach(f => f()); stat(); restoreFb(); fbGuide(false); thanksAfterDownload(); downloadAll(); reviewLink(); flickerTitle(document.querySelector(".hero h1")); heroFit(); heroVideo(); selGuide(); audioRows(); shareButton(); inviteButton(); selectionExtras(); if (!M.select) reviewNudge();
 }
 const eurT = n => "€" + (Math.round(n * 100) / 100).toLocaleString("nl-NL", { minimumFractionDigits: n % 1 ? 2 : 0 });
-function stat() { if (M.comments && !M.select) { const n = (M.videos || []).length, pb = $("#fpb"); if (pb && n) pb.style.width = Math.min(100, appr.size / n * 100) + "%"; const fbx = $(".fb"); if (fbx) fbx.classList.toggle("full", n > 0 && appr.size >= n); const fs0 = $("#fst"); if (fs0) fs0.textContent = `${appr.size} / ${n} videos approved · ${comments.length} comment${comments.length === 1 ? "" : "s"}`; } if (M.select) { const lim = M.select.limit, pb = $("#fpb"); if (pb) pb.style.width = Math.min(100, fav.size / lim * 100) + "%"; const fbx = $(".fb"); if (fbx) fbx.classList.toggle("full", fav.size >= lim); } $("#fst").textContent = M.select ? (fav.size > M.select.limit ? `${M.select.limit} included + ${fav.size - M.select.limit} extra: ${eurT((fav.size - M.select.limit) * M.select.extra)} extra in total` : fav.size === M.select.limit ? `${fav.size} / ${M.select.limit} chosen. That is your selection: send it${M.select.extra ? `, or add more for ${eurT(M.select.extra)} each` : ", or swap one"}.` : `${fav.size} / ${M.select.limit} chosen, ${M.select.limit - fav.size} to go`) : (M.comments ? `${appr.size} / ${(M.videos || []).length} videos approved · ${comments.length} comment${comments.length === 1 ? "" : "s"}` : `${fav.size} favourite${fav.size === 1 ? "" : "s"}`); const fs = $("#fsend"); if (fs) fs.textContent = M.select ? "Send my selection" : "Send feedback or approve"; document.querySelectorAll(".ph").forEach(f => f.classList.toggle("fav", fav.has(M.photos[f.dataset.i].id))); document.querySelectorAll(".heart").forEach(h => h.textContent = fav.has(M.photos[h.dataset.h].id) ? "♥" : "♡"); }
+function stat() { if (fbOn() && !M.select) { const n = (M.videos || []).length, pb = $("#fpb"); if (pb && n) pb.style.width = Math.min(100, appr.size / n * 100) + "%"; const fbx = $(".fb"); if (fbx) fbx.classList.toggle("full", n > 0 && appr.size >= n); const fs0 = $("#fst"); if (fs0) fs0.textContent = `${appr.size} / ${n} videos approved · ${comments.length} comment${comments.length === 1 ? "" : "s"}`; } if (M.select) { const lim = M.select.limit, pb = $("#fpb"); if (pb) pb.style.width = Math.min(100, fav.size / lim * 100) + "%"; const fbx = $(".fb"); if (fbx) fbx.classList.toggle("full", fav.size >= lim); } $("#fst").textContent = M.select ? (fav.size > M.select.limit ? `${M.select.limit} included + ${fav.size - M.select.limit} extra: ${eurT((fav.size - M.select.limit) * M.select.extra)} extra in total` : fav.size === M.select.limit ? `${fav.size} / ${M.select.limit} chosen. That is your selection: send it${M.select.extra ? `, or add more for ${eurT(M.select.extra)} each` : ", or swap one"}.` : `${fav.size} / ${M.select.limit} chosen, ${M.select.limit - fav.size} to go`) : (fbOn() ? `${appr.size} / ${(M.videos || []).length} videos approved · ${comments.length} comment${comments.length === 1 ? "" : "s"}` : `${fav.size} favourite${fav.size === 1 ? "" : "s"}`); const fs = $("#fsend"); if (fs) fs.textContent = M.select ? "Send my selection" : "Send feedback or approve"; document.querySelectorAll(".ph").forEach(f => f.classList.toggle("fav", fav.has(M.photos[f.dataset.i].id))); document.querySelectorAll(".heart").forEach(h => h.textContent = fav.has(M.photos[h.dataset.h].id) ? "♥" : "♡"); }
 function wire() {
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const im = e.target.querySelector("img"); if (im && !im.src) setImg(im, im.dataset.src); e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "300px" }); document.querySelectorAll(".ph").forEach((f, i) => { f.style.transitionDelay = (i % 8) * 40 + "ms"; io.observe(f); });
   const showTab = (t, scroll) => {
     document.querySelectorAll(".tabs button[data-t]").forEach(x => x.classList.toggle("on", x.dataset.t === t));
-    const sp = $("#sp"), sv = $("#sv"); if (sp) sp.style.display = t === "p" ? "" : "none"; if (sv) sv.style.display = t === "v" ? "" : "none";
+    if (M._all && (t === "p" || t === "pv") && t !== M._tab) { M._tab = t; try { sessionStorage.setItem("dtab:" + slug, t); } catch (e) {} render(); window.scrollTo({ top: Math.max(0, $(".tabs").getBoundingClientRect().top + scrollY - 64), behavior: "auto" }); return; }
+    const sp = $("#sp"), sv = $("#sv"); if (sp) sp.style.display = (t === "p" || t === "pv") ? "" : "none"; if (sv) sv.style.display = t === "v" ? "" : "none";
     try { sessionStorage.setItem("dtab:" + slug, t); } catch (e) {}
     if (scroll) { const tb = $(".tabs"); window.scrollTo({ top: Math.max(0, tb.getBoundingClientRect().top + scrollY - 64), behavior: "auto" }); }
   };
-  document.querySelectorAll(".tabs button[data-t]").forEach(b => b.onclick = () => showTab(b.dataset.t, true));
-  { const hasP = (M.photos || []).length, hasV = (M.videos || []).length; let t = hasV >= 12 || !hasP ? "v" : "p"; try { const s = sessionStorage.getItem("dtab:" + slug); if (s === "p" && hasP || s === "v" && hasV) t = s; } catch (e) {} showTab(t, false); }
-  document.querySelectorAll(".ph").forEach(f => f.onclick = e => { if (e.target.closest("[data-h]")) { const id = M.photos[f.dataset.i].id; toggle(id); return; } if (e.target.closest("[data-dl]")) return; open(+f.dataset.i); });
+  document.querySelectorAll(".tabs button[data-t]").forEach(b => b.onclick = () => showTab(b.dataset.t, true)); if ($("#gofa")) $("#gofa").onclick = () => showTab("p", true); saveAllWire(); { const tb = $(".tabs"); if (tb) document.documentElement.style.setProperty("--vt", (parseFloat(getComputedStyle(tb).top) || 56) + tb.offsetHeight + "px"); } document.querySelectorAll(".resrow [data-r]").forEach(b => b.onclick = () => { M._res = b.dataset.r; render(); });
+  { const hasP = (M.photos || []).length, hasV = (M.videos || []).length; let t = M._all ? M._tab : hasV >= 12 || !hasP ? "v" : "p"; if (!M._all) { try { const s = sessionStorage.getItem("dtab:" + slug); if (s === "p" && hasP || s === "v" && hasV) t = s; } catch (e) {} } showTab(t, false); }
+  document.querySelectorAll(".ph").forEach(f => f.onclick = e => { if (e.target.closest("[data-h]")) { const id = M.photos[f.dataset.i].id; toggle(id); return; } if (e.target.closest("[data-dl]")) { if (touchShare()) { e.preventDefault(); saveOne(M.photos[+f.dataset.i]); } return; } zoomIn(+f.dataset.i, f); });
   wireVideo();
   if ($("#fguide")) $("#fguide").onclick = () => fbGuide(true);
   $("#fsend").onclick = () => { $("#sh").textContent = M.select ? "Send my selection" : "Send feedback"; $("#sa").textContent = M.select ? "Send selection" : "Approve"; $("#sc").style.display = M.select ? "none" : ""; $("#fnote").parentElement.style.display = M.select ? "none" : ""; try { if (!$("#fem").value) $("#fem").value = rem("sv-email") || ""; } catch (e) {} $("#sp").textContent = M.select ? `${fav.size} of ${M.select.limit} picked` : ""; $("#sheet").classList.add("on"); };
@@ -812,35 +1058,46 @@ function wire() {
     const alt = $("#alt"), P0 = M.photos || [];
     const seeded = (i, k) => { const x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); };
     const thumbOf = p => thumb(p.thumb, "w640h480");
-    const build = l => {   // creative views: ribbons that drift past (Board) and photos that float about (Float)
-      alt.innerHTML = ""; if (l !== "board" && l !== "float") return;
-      if (l === "board") {
-        const rows = innerWidth < 640 ? 2 : 3, hs = innerWidth < 640 ? [150, 190] : [210, 170, 240];
-        for (let r = 0; r < rows; r++) {
-          const mine = P0.map((p, i) => ({ p, i })).filter((_, k) => k % rows === r).sort((a, b) => seeded(a.i, r) - seeded(b.i, r));
-          const rib = document.createElement("div"); rib.className = "rib"; const tr = document.createElement("div"); tr.className = "tr"; tr.style.setProperty("--d", Math.max(40, mine.length * 5.2) + "s"); tr.style.setProperty("--h", hs[r % hs.length] + "px"); if (r % 2) tr.style.animationDirection = "reverse";
-          [...mine, ...mine].forEach(({ p, i }) => { const im = document.createElement("img"); im.src = thumbOf(p); im.alt = p.name; im.loading = "lazy"; im.draggable = false; im.onclick = () => open(i); tr.appendChild(im); });
-          rib.appendChild(tr); alt.appendChild(rib);
-        }
-      } else {
-        const fl = document.createElement("div"); fl.className = "fl";
-        P0.forEach((p, i) => { const f = document.createElement("img"); f.src = thumbOf(p); f.alt = p.name; f.loading = "lazy"; f.draggable = false; const w = (150 + seeded(i, 1) * 130) * (innerWidth < 640 ? .56 : 1); f.style.cssText = `width:${Math.round(w)}px;--r:${(seeded(i, 2) * 8 - 4).toFixed(1)}deg;--dx:${Math.round(seeded(i, 3) * 26 - 13)}px;--dy:${Math.round(seeded(i, 4) * 34 - 17)}px;--t:${(6 + seeded(i, 5) * 6).toFixed(1)}s;animation-delay:${(-seeded(i, 6) * 8).toFixed(1)}s;margin:${Math.round(seeded(i, 7) * 18)}px ${Math.round(seeded(i, 8) * 18)}px`; f.onclick = () => open(i); fl.appendChild(f); });
-        alt.appendChild(fl);
-      }
+    const measure = async list => { let i = 0; const run = async () => { while (i < list.length) { const p = list[i++]; if (p.ar) continue; await new Promise(res => { const im = new Image(); im.onload = () => { p.ar = im.naturalWidth / (im.naturalHeight || 1); res(); }; im.onerror = () => { p.ar = 1.5; res(); }; im.src = thumb(p.thumb, "w640h480"); }); } }; await Promise.race([Promise.all([run(), run(), run(), run(), run()]), new Promise(r => setTimeout(r, 9000))]); list.forEach(p => { if (!p.ar) p.ar = 1.5; }); };
+    /* Mosaic: one tidy wall of the whole album, every row filled edge to edge with the photos at their true shape. It builds itself as you scroll, the photo under the pointer lights up and the rest sit back. */
+    let buildNo = 0;
+    const mosaicBuild = async no => {
+      alt.innerHTML = '<div class="mz"><p class="mzl">Loading…</p></div>';
+      const st = document.createElement("div"); st.className = "mz"; let next = 0, rowsDone = 0, busy = false, lastW = 0;
+      const gap = innerWidth < 700 ? 6 : 8, H = innerWidth < 700 ? 150 : 250, BATCH = 48;
+      const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; io.unobserve(e.target); [...e.target.children].forEach((f, k) => { f.style.transitionDelay = (k * 70) + "ms"; f.classList.add("in"); }); }), { rootMargin: "0px 0px -6% 0px" });
+      const more = async () => {
+        if (busy || next >= P0.length || no !== buildNo) return; busy = true;
+        const part = P0.slice(next, next + BATCH); await measure(part); if (no !== buildNo) return; next += part.length;
+        const W = st.clientWidth || alt.clientWidth; lastW = W; let row = [], sum = 0; const flush = (last) => {
+          if (!row.length) return; const g = gap * (row.length - 1), rh = last && (W - g) / sum > H * 1.35 ? H : (W - g) / sum;
+          const el = document.createElement("div"); el.className = "mzr"; el.style.height = Math.round(rh) + "px";
+          row.forEach(p => { const f = document.createElement("figure"); f.style.width = Math.floor(rh * p.ar * 1000) / 1000 + "px"; f.dataset.i = P0.indexOf(p); f.dataset.n = String(P0.indexOf(p) + 1).padStart(2, "0"); const im = new Image(); im.alt = ""; im.decoding = "async"; im.draggable = false; im.src = thumb(p.thumb, "w640h480"); f.appendChild(im); el.appendChild(f); });
+          st.insertBefore(el, sentinel); io.observe(el); row = []; sum = 0; rowsDone++; };
+        for (const p of part) { row.push(p); sum += p.ar; if (sum * H + gap * (row.length - 1) >= W) flush(false); }
+        flush(next >= P0.length); busy = false; if (next < P0.length && sentinel.getBoundingClientRect().top < innerHeight * 2) more();
+      };
+      const sentinel = document.createElement("div"); sentinel.className = "mzs"; st.appendChild(sentinel);
+      alt.innerHTML = ""; alt.appendChild(st);
+      new IntersectionObserver(es => { if (es[0].isIntersecting) more(); }, { rootMargin: "0px 0px 1200px 0px" }).observe(sentinel);
+      st.addEventListener("click", e => { const f = e.target.closest && e.target.closest("figure"); if (f) zoomIn(+f.dataset.i, f); });
+      let rt = 0; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (no === buildNo && st.isConnected && Math.abs(st.clientWidth - lastW) > 40) { build("mosaic"); } }, 300); });
+      more();
     };
-    const apply = () => { const dflt = M.layout === "masonry" ? "board" : "large"; let l = store("dv-view", dflt); if (!["large", "small", "list", "board", "float"].includes(l) || (M.select && (l === "board" || l === "float"))) l = M.select ? "large" : dflt;
-      const cr = l === "board" || l === "float"; g.style.display = cr ? "none" : ""; alt.className = "alt" + (cr ? " on " + l : "");
-      g.className = "grid " + ({ large: "cells big", small: "cells small", list: "list", board: "masonry", float: "masonry" })[l]; g.style.removeProperty("--col"); build(l);
+    const build = l => { alt.innerHTML = ""; buildNo++; if (l === "mosaic") mosaicBuild(buildNo); };
+    const apply = () => { const dflt = "large"; let l = store("dv-view", dflt); if (!["large", "small", "list"].includes(l)) l = dflt;   // no moving view: large, small or a list
+      const cr = false; g.style.display = cr ? "none" : ""; alt.className = "alt" + (cr ? " on " + l : "");
+      g.className = "grid " + ({ large: "cells big", small: "cells small", list: "list" })[l]; g.style.removeProperty("--col"); build(l);
       document.querySelectorAll("#view [data-l]").forEach(b => b.classList.toggle("on", b.dataset.l === l)); };
     document.querySelectorAll("#view [data-l]").forEach(b => b.onclick = () => { put("dv-view", b.dataset.l); apply(); });
     apply();
   }
-  $("#theme").onclick = () => { const t = document.documentElement.dataset.theme === "light" ? "dark" : "light"; document.documentElement.dataset.theme = t; put("dv-theme", t); $("#theme").classList.toggle("sw", t === "light"); };
-  $("#theme").classList.toggle("sw", document.documentElement.dataset.theme === "light");
+  $("#theme").onclick = () => { const t = document.documentElement.dataset.theme === "light" ? "dark" : "light"; document.documentElement.dataset.theme = t; put("dv-theme", t); $("#theme").classList.toggle("sw", t === "light"); $("#theme").title = t === "light" ? "Switch to dark mode" : "Switch to light mode"; document.querySelectorAll("iframe.gfr").forEach(f => { try { f.contentDocument.documentElement.dataset.theme = t; } catch (e) {} }); $("#theme").classList.toggle("sw", t === "light"); };
+  $("#theme").classList.toggle("sw", document.documentElement.dataset.theme === "light"); $("#theme").title = document.documentElement.dataset.theme === "light" ? "Switch to dark mode" : "Switch to light mode";
   // review
   let stars = 0; const paint = () => document.querySelectorAll("#stars button").forEach(b => { b.textContent = +b.dataset.n <= stars ? "★" : "☆"; b.classList.toggle("on", +b.dataset.n <= stars); });
   document.querySelectorAll("#stars button").forEach(b => b.onclick = () => { stars = +b.dataset.n; paint(); });
-  new MutationObserver(() => { const s = $("#rsheet"), st = $("#stars"); if (s && st && s.classList.contains("on")) { st.classList.remove("fl"); void st.offsetWidth; st.classList.add("fl"); if (!$("#rc").value && M.client) $("#rc").value = M.client; } }).observe($("#rsheet"), { attributes: true, attributeFilter: ["class"] }); $("#rvb").onclick = () => $("#rsheet").classList.add("on"); if (q.get("review") === "1") setTimeout(() => $("#rsheet").classList.add("on"), 900); $("#rx").onclick = () => $("#rsheet").classList.remove("on");
+  new MutationObserver(() => { const s = $("#rsheet"), st = $("#stars"); if (s && st && s.classList.contains("on")) { st.classList.remove("fl"); void st.offsetWidth; st.classList.add("fl"); if (!$("#rc").value && M.client) $("#rc").value = M.client; } }).observe($("#rsheet"), { attributes: true, attributeFilter: ["class"] }); if ($("#rvb")) $("#rvb").onclick = () => $("#rsheet").classList.add("on"); if (q.get("review") === "1") setTimeout(() => $("#rsheet").classList.add("on"), 900); $("#rx").onclick = () => $("#rsheet").classList.remove("on");
   $("#rs").onclick = async () => { if (!stars || !$("#rt").value.trim()) { $("#rmsg").textContent = "Pick the stars and write a few words."; return; } $("#rmsg").textContent = "Sending…";
     try { if (!demo) { const r = await fetch(url("review"), { method: "POST", headers: { "Content-Type": "application/json", "x-pass": kk(), "x-tok": tk() }, body: JSON.stringify({ rating: stars, text: $("#rt").value, name: $("#rn2").value, company: $("#rc").value, publish: $("#rp").checked }) }); if (!r.ok) throw 0; } $("#rmsg").textContent = "Thank you, that means a lot."; setTimeout(() => $("#rsheet").classList.remove("on"), 1800); }
     catch { $("#rmsg").textContent = "Sending failed. Please try again."; } };
@@ -849,7 +1106,7 @@ function open(i) { const big = M.watermark && !M.wmserver ? "w640h480" : "w2048h
 function toggle(id) { if (fav.has(id)) fav.delete(id); else { if (M.select && fav.size >= M.select.limit && !M.select.extra) { $("#fst").textContent = `Limit reached: ${M.select.limit}. Remove one to pick another. Want more? Ask Stevy.`; return; } fav.add(id); } save(); stat(); }
 const closeLb = () => { clearInterval(window.__sl); $("#lb").classList.remove("on"); document.body.style.overflow = ""; };
 let tx = 0; $("#lb").addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true }); $("#lb").addEventListener("touchend", e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) open(cur + (dx < 0 ? 1 : -1)); }, { passive: true });
-$("#lbd").addEventListener("click", async e => { if (!(navigator.canShare && matchMedia("(hover:none)").matches)) return; const p = M.photos[cur]; try { e.preventDefault(); const b = await (await fetch(file(p.high || p.low || p.thumb))).blob(); const f = new File([b], p.name + ".jpg", { type: b.type || "image/jpeg" }); if (navigator.canShare({ files: [f] })) await navigator.share({ files: [f] }); else location.href = file(p.high || p.low || p.thumb); } catch { location.href = file(p.high || p.low || p.thumb); } });
+$("#lbd").addEventListener("click", e => { if (!touchShare()) return; e.preventDefault(); saveOne(M.photos[cur]); }); 
 $("#lbx").onclick = closeLb; $("#lbp").onclick = () => open(cur - 1); $("#lbn").onclick = () => open(cur + 1);
 $("#lbh").onclick = () => { toggle(M.photos[cur].id); open(cur); };
 document.addEventListener("keydown", e => { if (!$("#lb").classList.contains("on")) return; if (e.key === "Escape") closeLb(); if (e.key === "ArrowLeft") open(cur - 1); if (e.key === "ArrowRight") open(cur + 1); });
@@ -888,11 +1145,70 @@ $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").oncli
 /* every part of the page eases in one after the other, a soft rise out of a blur, like in the Projecten app */
 (() => {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const SEL = ".hero .in > *:not(h1), main > *, .sec, .tabs, section, .sh, .hl, .pv, .internal, figure, .ph, .vid, .card, .nz, footer";
+  const SEL = ".hero .in > *:not(h1), main > *, .sec, .tabs, section, .sh, .hl, .pv, .internal, figure, .ph, .vid, .card, .nz, footer, .tgh, .tgs > div";
   let n = 0, t = 0;
   const go = el => { if (el.__apin || !el.classList) return; el.__apin = 1; el.style.setProperty("--i", Math.min(n++, 16)); el.classList.add("apin"); clearTimeout(t); t = setTimeout(() => { n = 0; }, 150); };
   const scan = root => { if (root.nodeType !== 1) return; if (root.matches && root.matches(SEL)) go(root); if (root.querySelectorAll) root.querySelectorAll(SEL).forEach(go); };
   new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(scan))).observe(document.getElementById("app") || document.body, { childList: true, subtree: true });
+})();
+</script>
+<script>
+/* the number of shoots together counts up when it comes into view, like the figures in the Projecten app */
+(() => {
+  const run = b => { const to = +b.dataset.cu, t0 = performance.now(), d = 1100; if (matchMedia("(prefers-reduced-motion: reduce)").matches) { b.textContent = to; return; } const f = now => { const k = Math.min(1, (now - t0) / d); b.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); };
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); run(e.target); } }), { threshold: .6 });
+  const scan = r => { if (r.nodeType !== 1) return; (r.matches && r.matches("b[data-cu]") ? [r] : [...(r.querySelectorAll ? r.querySelectorAll("b[data-cu]") : [])]).forEach(b => io.observe(b)); };
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(scan))).observe(document.getElementById("app") || document.body, { childList: true, subtree: true });
+})();
+</script>
+<script>
+/* view mode of the clips: small, medium, large or a list; remembered on this device */
+(() => {
+  const key = "dv-vmode"; let mode = "m"; try { mode = localStorage.getItem(key) || "m"; } catch (e) {}
+  const apply = () => document.querySelectorAll(".vgrid").forEach(g => g.setAttribute("data-m", mode));
+  const mark = bar => bar.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.m === mode));
+  const build = () => {
+    if (!document.querySelector(".vgrid")) return; apply();
+    if (document.querySelector(".vm")) return;
+    const host = document.querySelector(".tabs") || document.querySelector("#app main"); if (!host) return;
+    const bar = document.createElement("div"); bar.className = "vm"; bar.setAttribute("role", "group"); bar.setAttribute("aria-label", "View");
+    bar.innerHTML = '<button data-m="s">S</button><button data-m="m">M</button><button data-m="l">L</button><button data-m="list">List</button>';
+    bar.onclick = e => { const b = e.target.closest("button"); if (!b) return; mode = b.dataset.m; try { localStorage.setItem(key, mode); } catch (x) {} mark(bar); apply(); };
+    mark(bar); const tg = host.querySelector(".tg"); tg ? host.insertBefore(bar, tg) : host.appendChild(bar);
+  };
+  new MutationObserver(() => build()).observe(document.getElementById("app") || document.body, { childList: true, subtree: true }); build();
+})();
+</script>
+<script>
+/* a group that has the same name as its folder shows one fold, not two */
+(() => {
+  const flat = () => document.querySelectorAll(".art").forEach(a => {
+    const fgs = a.querySelectorAll(".fg"); if (fgs.length !== 1) return;
+    const name = (a.querySelector(".an") || {}).textContent, g = fgs[0], t = (g.querySelector("summary b") || {}).textContent;
+    if (name && t && name.trim().toLowerCase() === t.trim().toLowerCase()) { g.open = true; g.classList.add("flat"); }
+  });
+  new MutationObserver(() => flat()).observe(document.getElementById("app") || document.body, { childList: true, subtree: true }); flat();
+})();
+</script>
+<script>
+/* SCROLLFX */
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const hero = () => document.querySelector(".hero");
+  let tick = false;
+  const upd = () => { tick = false; const h = hero(); if (!h) return; const y = scrollY, H = h.offsetHeight || 1, k = Math.min(1, y / H);
+    const bg = h.querySelector(".bg"), hv = h.querySelectorAll(".hv"), inn = h.querySelector(".in");
+    if (y < H * 1.3) { h.querySelectorAll(".bg,.hv").forEach(e => { e.style.translate = "0 " + (y * .32).toFixed(1) + "px"; }); if (inn) { inn.style.translate = "0 " + (-y * .18).toFixed(1) + "px"; inn.style.opacity = String(Math.max(0, 1 - k * 1.5)); } }
+    document.querySelectorAll(".vgrid .vcard.in, .pgrid .ph.in").forEach(c => { const r = c.getBoundingClientRect(); if (r.bottom < -200 || r.top > innerHeight + 200) return; const m = (r.top + r.height / 2 - innerHeight / 2) / innerHeight, sp = +(c.dataset.sp || 0); c.style.translate = "0 " + (m * sp * -34).toFixed(1) + "px"; }); };
+  addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px", threshold: .05 });
+  const mark = () => {
+    document.querySelectorAll("h2, .sh, .tgh").forEach(e => { if (e.__sfx || e.closest(".hero,.gate")) return; e.__sfx = 1; e.classList.add("sfx", "l"); io.observe(e); });
+    document.querySelectorAll(".vgrid").forEach(g => [...g.children].forEach((c, i) => { if (c.__sfx) return; c.__sfx = 1; c.classList.add("sfx"); c.style.setProperty("--k", i % 6); c.dataset.sp = String([.4, 1, .7][i % 3]); io.observe(c); }));
+    document.querySelectorAll(".ph:not(.sfx)").forEach((c, i) => { if (c.__sfx || c.closest(".vgrid")) return; c.__sfx = 1; c.classList.add("sfx"); c.style.setProperty("--d", (i % 5) * 0.06 + "s"); io.observe(c); });
+  };
+  new MutationObserver(() => { clearTimeout(mark.t); mark.t = setTimeout(mark, 120); }).observe(document.getElementById("app") || document.body, { childList: true, subtree: true });
+  mark(); upd();
 })();
 </script>
 </body>

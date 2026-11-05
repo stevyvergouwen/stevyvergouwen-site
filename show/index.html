@@ -99,83 +99,92 @@ footer{margin:30px var(--pad) 0;padding:40px 0 70px;color:var(--dim);font:10px v
 .apin{animation:apin .55s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i,0)*55ms)}
 figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 @media (prefers-reduced-motion:reduce){.apin{animation:none}}
-/* SKIN: the look of the Projecten app */
-:root{--ink:#07080c;--ink2:#0e1119;--paper:#e8eaf0;--dim:#98a3b8;--faint:#232a38;--line:rgba(160,185,255,.16);--blue:#6f9bff;--glow:rgba(111,155,255,.16)}
-html,body{background:var(--ink)}
-body{background:radial-gradient(1100px 640px at 88% -8%,rgba(111,155,255,.11),transparent 62%),radial-gradient(800px 560px at -8% 38%,rgba(111,155,255,.055),transparent 62%),var(--ink)!important;background-attachment:fixed}
+/* SKIN 4: the site's own palette in dark and in light (the tokens of the page are left alone), sharp corners, thin lines, calm motion */
 .apin{animation-fill-mode:backwards!important}
-.bar{background:rgba(7,8,12,.72);border-bottom:1px solid var(--line)}
-.btn{background:rgba(255,255,255,.04);border:1px solid var(--line);transition:all .3s cubic-bezier(.3,1.4,.5,1)}
-.btn:hover{border-color:rgba(111,155,255,.6);box-shadow:0 0 22px var(--glow)}
-.btn.fill{background:var(--blue);border-color:var(--blue);color:#06080f;box-shadow:0 0 26px rgba(111,155,255,.35)}
-.pill{background:rgba(255,255,255,.04);border:1px solid var(--line);backdrop-filter:blur(10px)}
-.pill b{color:var(--blue)}
-.internal{border:0!important;position:relative;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015))!important;backdrop-filter:blur(16px);box-shadow:inset 0 0 40px rgba(111,155,255,.035)}
-.internal::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(180deg,rgba(190,210,255,.30),rgba(190,210,255,.05) 55%,rgba(190,210,255,.10));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
-.flt button{background:rgba(255,255,255,.04);transition:all .3s cubic-bezier(.3,1.4,.5,1)}
-.flt button.on{background:rgba(111,155,255,.2);border-color:rgba(111,155,255,.55);color:var(--paper);box-shadow:0 0 22px var(--glow)}
-figure{transition:transform .5s cubic-bezier(.3,1.5,.5,1),box-shadow .4s ease}
-@media (hover:hover){figure:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(0,0,0,.5),0 0 28px var(--glow)}}
-.sh{position:relative;border-top:0!important}
-.sh::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,var(--blue),var(--line) 45%,transparent);transform-origin:left;animation:drw 1.1s .15s cubic-bezier(.2,.7,.2,1) backwards}
-@keyframes drw{from{transform:scaleX(0)}}
-header::before{content:"";position:absolute;inset:84px var(--pad) 30px;z-index:3;pointer-events:none;opacity:.75;animation:frm 1.4s .5s cubic-bezier(.2,.7,.2,1) backwards;background:
- linear-gradient(var(--blue),var(--blue)) left top/26px 1px no-repeat,linear-gradient(var(--blue),var(--blue)) left top/1px 26px no-repeat,
- linear-gradient(var(--blue),var(--blue)) right top/26px 1px no-repeat,linear-gradient(var(--blue),var(--blue)) right top/1px 26px no-repeat,
- linear-gradient(var(--blue),var(--blue)) left bottom/26px 1px no-repeat,linear-gradient(var(--blue),var(--blue)) left bottom/1px 26px no-repeat,
- linear-gradient(var(--blue),var(--blue)) right bottom/26px 1px no-repeat,linear-gradient(var(--blue),var(--blue)) right bottom/1px 26px no-repeat}
-@keyframes frm{from{opacity:0;inset:120px calc(var(--pad) + 40px) 70px}}
-header .mono:first-of-type{color:var(--blue)}
-.vm{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.03);margin-left:auto}
-.vm button{font:500 10px "Roboto Mono",ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);background:none;border:0;border-radius:999px;padding:7px 12px;cursor:pointer;transition:all .3s cubic-bezier(.3,1.4,.5,1)}
-.vm button.on{background:rgba(111,155,255,.2);color:var(--paper);box-shadow:0 0 18px var(--glow)}
-.album[data-m="s"]{columns:6}.album[data-m="l"]{columns:2}
-.pv[data-m="s"]{grid-template-columns:repeat(8,1fr)}.pv[data-m="l"]{grid-template-columns:repeat(4,1fr)}
-@media (max-width:900px){.album[data-m="s"]{columns:3}.album[data-m="l"]{columns:1}.pv[data-m="s"],.pv[data-m="l"]{display:flex}.pv[data-m="l"] figure{flex-basis:70vw}}
-.dl{position:absolute;right:8px;top:8px;width:32px;height:32px;border-radius:50%;background:rgba(7,8,12,.62);backdrop-filter:blur(8px);border:1px solid var(--line);align-items:center;justify-content:center;color:var(--paper);text-decoration:none;font-size:15px;opacity:0;transition:opacity .25s;z-index:3}
-body.brada figure:hover .dl{opacity:1}
-@media (hover:none){body.brada .dl{opacity:1}}
-.vid .vdl{position:absolute;right:10px;top:10px;height:34px;padding:0 14px;background:rgba(7,8,12,.62);backdrop-filter:blur(8px)}
-.sh .btn,.fh .btn{height:34px;padding:0 14px;font-size:10px}
-/* SKIN 2: less blue, no corner marks, calmer clip cards */
-:root{--blue:#d5dbea;--glow:rgba(213,219,234,.10);--accent:#e8eaf0}
-body{background:radial-gradient(1100px 640px at 88% -8%,rgba(150,165,205,.07),transparent 62%),radial-gradient(800px 560px at -8% 38%,rgba(150,165,205,.032),transparent 62%),var(--ink)!important}
-.hero::before,header::before{display:none!important}
-.hero .sub,header .mono:first-of-type{color:var(--dim)!important}
-.pill b{color:var(--paper)!important}
-.tgs b{text-shadow:none!important}
-.tabs button.on,.chip.on,.art .bar2 button[data-share],.flt button.on,.vm button.on{background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.34)!important;box-shadow:none!important;color:var(--paper)!important}
-.tabs button:hover,.chip:hover,.bar .rvl:hover,.vcard .ap:hover,.btn:hover,.flt button:hover{border-color:rgba(255,255,255,.42)!important;box-shadow:none!important}
-.bar .dlb,.btn.fill{background:var(--paper)!important;border-color:var(--paper)!important;color:#07080c!important;box-shadow:none!important}
-.tgh::before,.sh::before{background:linear-gradient(90deg,rgba(255,255,255,.6),var(--line) 45%,transparent)!important}
-.vcard.okd::before{background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,.2))!important}
-.vcard form .tc,.art .at,.art .as{color:var(--paper)}
-/* the big grey block around the clips goes: only a hairline above each group */
-.art{background:none!important;box-shadow:none!important;backdrop-filter:none!important;border-radius:0!important;border-top:1px solid var(--line)!important}
+.art{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important}
 .art::before{display:none!important}
 .art .body{border-top:0!important;padding:6px 0 22px!important}
-/* clip cards: the picture is the card, no grey panel; name and size sit quietly under it */
-.vcard{background:none!important;box-shadow:none!important;backdrop-filter:none!important;border-radius:12px!important;overflow:visible!important;border:0!important}
-.vcard::before{display:none!important}
-.vth{border-radius:12px!important;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.09),0 16px 36px rgba(0,0,0,.42);transition:box-shadow .4s ease}
-.vcard:hover .vth{box-shadow:0 0 0 1px rgba(255,255,255,.26),0 24px 54px rgba(0,0,0,.58)}
-.vcard .m2{padding:12px 2px 2px!important}
-.vcard .m2 .t{font:500 12px "Roboto Mono",ui-monospace,monospace;letter-spacing:.06em;color:var(--paper)}
-.vcard .m2 .s{color:var(--dim)}
-.vcard .m2 a{color:var(--paper);opacity:.7;margin-left:auto;transition:opacity .2s}
-.vcard .m2 a:hover{opacity:1}
-.vgrid[data-m="list"] .vcard{background:none!important}
-.vgrid[data-m="list"] .vth{border-radius:10px!important}
-/* the Brada panel stays glass but neutral */
-.internal{box-shadow:none!important}
-/* show page: video blocks and chips without blue */
-.vid{border-radius:12px;box-shadow:0 0 0 1px rgba(255,255,255,.09),0 16px 36px rgba(0,0,0,.42)}
+.fg.flat>summary{display:none!important}
+.fg.flat{border:0!important;margin:0!important}
+.vgrid{gap:12px!important}
+.vcard{background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;position:relative;overflow:visible!important;transition:transform .55s cubic-bezier(.3,1.5,.5,1)}
+@media (hover:hover){.vcard:hover{transform:translateY(-4px)}}
+.vth{border-radius:0!important;box-shadow:none!important;outline:1px solid var(--line);outline-offset:-1px;aspect-ratio:var(--ar,16/9);overflow:hidden}
+.vth video.pv{transition:opacity .6s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.vcard:hover .vth video.pv{transform:scale(1.05)}
+.vth::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(8,8,10,.8) 0%,rgba(8,8,10,.22) 34%,transparent 56%);z-index:1}
+.vth .bd{z-index:2}.vth .bd i{border-radius:0!important;background:rgba(8,8,10,.6)!important;border:1px solid rgba(235,231,224,.3)!important;color:#ebe7e0!important;backdrop-filter:blur(6px)}
+.vth .pl{opacity:0;transform:scale(.7);transition:opacity .35s ease,transform .5s cubic-bezier(.3,1.6,.5,1);background:rgba(8,8,10,.35);border:1px solid rgba(235,231,224,.6);color:#ebe7e0;z-index:2}
+.vcard:hover .vth .pl,.vth.playing .pl{opacity:1;transform:scale(1)}
+@media (hover:none){.vth .pl{opacity:1;transform:none}}
+.vcard .m2{position:absolute!important;left:0;right:0;bottom:0;z-index:2;padding:0 14px 12px!important;pointer-events:none;display:flex;align-items:flex-end;gap:10px;color:#ebe7e0}
+.vcard .m2 .t{flex:1;min-width:0;font:500 13px "Helvetica Neue",var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ebe7e0}
+.vcard .m2 .s{font:10px "Roboto Mono",ui-monospace,monospace;letter-spacing:.12em;color:rgba(235,231,224,.65)}
+.vcard .m2 a,.vcard .m2 button{pointer-events:auto;opacity:0;transform:translateY(4px);transition:opacity .3s,transform .4s cubic-bezier(.3,1.5,.5,1);border:1px solid rgba(235,231,224,.45)!important;background:rgba(8,8,10,.5)!important;color:#ebe7e0!important;border-radius:0!important;padding:6px 12px;font-size:9px!important;backdrop-filter:blur(6px)}
+.vcard:hover .m2 a,.vcard:hover .m2 button,.vcard:focus-within .m2 a{opacity:1;transform:none}
+@media (hover:none){.vcard .m2 a,.vcard .m2 button{opacity:1;transform:none}}
+.vth .okb,.vth .cb{z-index:3}
+/* the lines draw themselves */
+.tgh{border-top:0!important;position:relative}
+.tgh::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,var(--paper),var(--line) 45%,transparent);transform-origin:left;animation:drw 1.1s .15s cubic-bezier(.2,.7,.2,1) backwards}
+@keyframes drw{from{transform:scaleX(0)}}
+/* view mode of the clips */
+.vm{display:inline-flex;gap:0;border:1px solid var(--line);margin-left:auto;margin-right:10px}
+.vm button{font:500 10px "Roboto Mono",ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);background:none;border:0;padding:8px 13px;cursor:pointer;transition:background .25s,color .25s}
+.vm button.on{background:var(--paper);color:var(--ink)}
+.vgrid[data-m="s"]{--w:210px!important}
+.vgrid[data-m="l"]{--w:560px!important}
+.vgrid[data-m="list"]{display:flex!important;flex-direction:column;gap:8px}
+.vgrid[data-m="list"] .vcard{display:grid;grid-template-columns:220px minmax(0,1fr);align-items:center}
+.vgrid[data-m="list"] .vcard .m2{position:static!important;padding:0 14px!important;pointer-events:auto;color:var(--paper)}
+.vgrid[data-m="list"] .vcard .m2 .t{color:var(--paper)}.vgrid[data-m="list"] .vcard .m2 .s{color:var(--dim)}
+.vgrid[data-m="list"] .vcard .m2 a{opacity:1;transform:none;border-color:var(--line)!important;color:var(--paper)!important;background:none!important}
+.vgrid[data-m="list"] .vth::after{display:none}
+.vgrid[data-m="list"] .vcard:hover{transform:translateX(5px)}
+
+/* album extras: square buttons and panels, the site's own tones */
+.btn,.pill,.flt button,.tabs button,.chip,.bar .dlb,.bar .rvl{border-radius:0!important}
+.btn.fill,.bar .dlb{box-shadow:none!important}
+.internal{border-radius:0!important;background:rgba(235,231,224,.03)!important;box-shadow:none!important}
+.zp,.zr{border-radius:0!important}.zp{background:var(--ink2)!important}
+figure,.vid{border-radius:0!important}
+.vid{outline:1px solid var(--line);outline-offset:-1px}
+header .hv{filter:none!important;transform:translateZ(0)!important;backface-visibility:hidden;animation:none!important}
+header.hasvid::before{content:"";position:absolute;inset:0;z-index:1;background:rgba(8,8,10,.4);pointer-events:none}
+.zs{position:fixed;inset:0;z-index:60;background:rgba(5,6,9,.78);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px}
+.zp{width:min(560px,100%);max-height:84vh;overflow:auto;background:linear-gradient(180deg,#12151d,#0b0d13);border:1px solid var(--line);border-radius:14px;padding:22px}
+.zp h3{font-weight:400;font-size:20px;margin-bottom:8px}.zp p{font:11px/1.6 var(--mono);letter-spacing:.06em;color:var(--dim);margin-bottom:16px}
+.zl{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.zr{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;color:var(--paper);text-decoration:none;transition:border-color .25s,transform .35s cubic-bezier(.3,1.4,.5,1)}
+a.zr:hover{border-color:rgba(255,255,255,.4);transform:translateX(4px)}
+.zr span{font-size:13px}.zr em{display:block;font:10px var(--mono);letter-spacing:.1em;color:var(--dim);font-style:normal;margin-top:4px}.zr small{font:11px var(--mono);color:var(--dim);white-space:nowrap}
+.za{display:flex;gap:8px;flex-wrap:wrap}
+
+/* SCROLLFX */
+.hero-in,header>.in{will-change:transform,opacity}
+.sfx{opacity:0;transform:translate3d(0,46px,0);filter:blur(8px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1),filter .9s ease;transition-delay:var(--d,0s)}
+.sfx.in{opacity:1;transform:none;filter:none}
+.sfx.l{transform:translate3d(-60px,0,0)}.sfx.in.l{transform:none}
+.vgrid .vcard.sfx,.vgrid figure.sfx{transition-delay:calc(var(--k,0)*70ms)}
+@media (prefers-reduced-motion:reduce){.sfx{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}}
+
+/* light and dark: follows the system, the button overrides and is remembered */
+:root[data-theme="light"]{--ink:#f4f1ea;--ink2:#e9e5dc;--paper:#16140f;--dim:#6b665c;--faint:#d6d1c5;--line:rgba(22,20,15,.2);color-scheme:light}
+:root[data-theme="light"] .bar{background:rgba(244,241,234,.8)}
+:root[data-theme="light"] header::after{background:linear-gradient(to top,var(--ink) 4%,transparent 72%)}
+:root[data-theme="light"] header .grain{opacity:.25}
+:root[data-theme="light"] .btn.fill,:root[data-theme="light"] .bar .dlb{color:#f4f1ea!important}
+:root[data-theme="light"] header.hasvid::before{background:rgba(244,241,234,.35)}
+:root[data-theme="light"] .zs{background:rgba(244,241,234,.8)}
+#thm{width:40px;height:40px;border:1px solid var(--line);background:none;color:var(--paper);cursor:pointer;font:500 13px var(--mono);transition:background .3s,color .3s}
+#thm:hover{background:var(--paper);color:var(--ink)}
 </style>
 </head>
 <body>
 <div class="bar">
   <div class="lock"><span>Stevy Vergouwen</span><em>×</em><img id="logo" src="/show/brada.png" alt="Brada Media" hidden></div>
   <span class="sp"></span>
+  <button id="thm" type="button" aria-label="Light or dark">◐</button>
   <a class="btn fill brada-only" id="dbx" href="#" target="_blank" rel="noopener">Open in Dropbox ↗</a>
 </div>
 <div id="app"><div class="msg"><span class="mono">Loading…</span></div></div>
@@ -213,7 +222,7 @@ function render(m) {
   if (m.client_logo !== false) { const lg = $("#logo"); lg.hidden = false; }   // jobs done for Brada Media carry their logo next to the name
   if (brada && m.dropbox) $("#dbx").href = m.dropbox;
   const H = m.highlights || [], P = m.previews || [], HI = m.high || [], LO = m.low || [], V = m.videos || [];
-  const photos = H.length + P.length + HI.length + LO.length;
+  const photos = H.length + P.length + HI.length + LO.length; window.__all = [...H, ...P, ...HI, ...LO, ...V];
   const bits = [m.location, ].filter(Boolean);
   const pills = [];
   if (H.length) pills.push(`<span class="pill"><b>${nf(H.length)}</b> highlights</span>`);
@@ -224,9 +233,9 @@ function render(m) {
   const clientLink = `${location.origin}${location.pathname}?c=${slug}`;
   // downloads (Brada view only): a folder as one zip made by Dropbox while it streams, or one file at a time
   const subOf = list => { const parts = ((list[0] && list[0].p) || "").split("/"); const i = parts.findIndex(x => /^(highres|lowres|previews?|highlights)$/i.test(x)); return i > 0 ? parts.slice(0, i + 1).join("/") : parts.slice(0, -1).join("/"); };
-  const zipBtn = (list, label) => m.zip && list.length ? `<a class="btn brada-only" href="${base}/zip?sub=${enc(subOf(list))}&k=${enc(K)}" download>${label}</a>` : "";
+  const zipBtn = (list, label) => m.zip && list.length ? `<a class="btn brada-only" data-zsub="${esc(subOf(list))}" data-zt="${esc(label)}" href="${base}/zip?sub=${enc(subOf(list))}&k=${enc(K)}" download>${label}</a>` : "";
   let h = `<header><div class="slides" id="slides"></div><div class="grain"></div><div class="mono">${esc(fmtDate(m.date))}</div><h1>${esc(m.title)}</h1><div class="meta">${bits.map(b => `<span class="mono">${esc(b)}</span>`).join("")}<span class="mono">By Stevy Vergouwen</span></div>${m.note ? `<p style="max-width:58ch;margin-top:16px;color:var(--paper);opacity:.88;line-height:1.6">${esc(m.note)}</p>` : ""}<div class="stats">${pills.join("")}</div></header>`;
-  h += `<div class="internal"><div class="who2"><b>Brada Media · internal view</b><span>Not for the client</span></div><div class="cl"><span class="mono">Client link</span><code id="cl">${esc(clientLink)}</code><a class="btn" href="#" id="cp">Copy client link</a>${m.zip ? `<a class="btn" href="${base}/zip?k=${enc(K)}" download>Download everything (zip)</a>` : ""}</div></div>`;
+  h += `<div class="internal"><div class="who2"><b>Brada Media · internal view</b><span>Not for the client</span></div><div class="cl"><span class="mono">Client link</span><code id="cl">${esc(clientLink)}</code><a class="btn" href="#" id="cp">Copy client link</a>${m.zip ? `<a class="btn" data-zsub="" data-zt="Download everything" href="${base}/zip?k=${enc(K)}" download>Download everything (zip)</a>` : ""}</div></div>`;
   if (H.length) h += `<section><div class="sh"><h2>Highlights</h2><span class="mono">selected by Stevy</span>${zipBtn(H, "Download folder")}</div><div class="hl" id="hl"></div></section>`;
   if (P.length) h += `<section><div class="sh"><h2>Previews</h2><span class="mono">swipe</span>${zipBtn(P, "Download folder")}</div><div class="pv" id="pv"></div></section>`;
   if (V.length) h += `<section><div class="sh"><h2>Videos</h2><span class="mono">${nf(V.length)} ${V.length === 1 ? "clip" : "clips"}</span></div><div class="vids" id="vids"></div></section>`;
@@ -263,7 +272,7 @@ function render(m) {
     if (!reduce && matchMedia("(pointer: fine)").matches) $("header").addEventListener("pointermove", e => { const r = e.currentTarget.getBoundingClientRect(); box.style.transform = `translate(${((e.clientX - r.left) / r.width - .5) * -22}px, ${((e.clientY - r.top) / r.height - .5) * -14}px)`; });
   } else if (V.length && !reduce) {
     const list = V.filter(v => v.s && v.s < 400e6).sort((a, b) => a.s - b.s).slice(0, 4);
-    if (list.length) { const hs = [0, 1].map(() => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "auto"; $("header").insertBefore(v, $(".grain")); return v; }); let n = 0, c = 0;
+    if (list.length) { const hs = [0, 1].map(() => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "metadata"; v.disableRemotePlayback = true; $("header").insertBefore(v, $(".grain")); return v; }); let n = 0, c = 0;
       const next = () => { const v = hs[c], o = hs[1 - c], clip = list[n % list.length]; n++; v.onloadeddata = () => { v.currentTime = 0.5; v.play().catch(() => {}); v.classList.remove("on"); void v.offsetWidth; v.classList.add("on"); o.classList.remove("on"); c = 1 - c; if (list.length > 1) setTimeout(next, 8500); }; v.onerror = () => { if (n < list.length * 2) next(); }; v.src = `${base}/stream?p=${enc(clip.p)}`; };
       next(); }
   }
@@ -297,6 +306,69 @@ else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => 
     mark(bar); const flt = document.querySelector(".flt"); if (flt) { flt.style.alignItems = "center"; flt.appendChild(bar); } else { const sh = [...document.querySelectorAll(".sh")].pop(); if (sh) sh.appendChild(bar); }
   };
   new MutationObserver(() => build()).observe(document.getElementById("app") || document.body, { childList: true, subtree: true }); build();
+})();
+</script>
+<script>
+/* big deliveries: one zip is limited to 20 GB and 10,000 files by Dropbox, so a folder that is too big is offered in parts, one zip per sub folder, each part under the limit */
+(() => {
+  const LIM = 19e9, MAXF = 9500, $ = s => document.querySelector(s);
+  const fmt = b => b >= 1e9 ? (b / 1e9).toFixed(1) + " GB" : Math.max(1, Math.round(b / 1e6)) + " MB";
+  const zipUrl = sub => `${base}/zip?sub=${enc(sub)}&k=${enc(K)}`;
+  const inside = (all, pre) => all.filter(x => !pre || x.p === pre || x.p.startsWith(pre + "/"));
+  const total = a => ({ size: a.reduce((s, x) => s + (x.s || 0), 0), n: a.length });
+  function plan(pre, all, depth = 0) {
+    const mine = inside(all, pre), t = total(mine);
+    if (mine.some(x => (x.s || 0) > 3.9e9)) return [{ sub: pre, ...t, noZip: true, files: mine.slice().sort((p, q) => (q.s || 0) - (p.s || 0)) }];   // Dropbox does not zip a file over 4 GB: the files go one by one
+    if (t.size <= LIM && t.n <= MAXF) return [{ sub: pre, ...t }];
+    const kids = {}; mine.forEach(x => { const rest = x.p.slice(pre.length + 1), seg = rest.split("/"); if (seg.length > 1) (kids[seg[0]] = kids[seg[0]] || []).push(x); });
+    const out = []; Object.keys(kids).sort().forEach(k => { out.push(...plan(pre + "/" + k, all, depth + 1)); });
+    const loose = mine.filter(x => x.p.slice(pre.length + 1).split("/").length === 1);
+    if (loose.length) out.push({ sub: pre, ...total(loose), loose: loose });
+    return out.map(o => (o.size > LIM || o.n > MAXF) && !o.loose ? { ...o, big: true } : o);
+  }
+  function sheet(parts, title) {
+    document.querySelector(".zs") && document.querySelector(".zs").remove();
+    const d = document.createElement("div"); d.className = "zs";
+    const fileRows = p => p.files.slice(0, 40).map(x => `<a class="zr" data-z="${esc(x.p)}" href="${base}/file?p=${enc(x.p)}&k=${enc(K)}" download><span>${esc(x.n)}<em>${(x.s || 0) > 3.9e9 ? "bigger than 4 GB, direct download" : "file"}</em></span><small>${fmt(x.s || 0)}</small></a>`).join("") + (p.files.length > 40 ? `<div class="zr"><span>… and ${nf(p.files.length - 40)} more files<em>Open the folder in Dropbox for the rest</em></span><small></small></div>` : "");
+    const rows = parts.map((p, i) => p.noZip ? `<div class="zr"><span>${esc((p.sub || "Album").split("/").filter(Boolean).slice(-1)[0] || "Album")}<em>${nf(p.n)} files · ${fmt(p.size)} · holds a file over 4 GB, so no zip. The biggest files first:</em></span><small>—</small></div>` + fileRows(p) : p.loose || p.big
+      ? `<div class="zr"><span>${esc((p.sub || "Album").split("/").filter(Boolean).slice(-1)[0] || "Album")}<em>${nf(p.n)} files · ${fmt(p.size)} · too big for one zip, download the files one by one</em></span><small>—</small></div>`
+      : `<a class="zr" data-z="${esc(p.sub)}" href="${zipUrl(p.sub)}" download><span>${esc((p.sub || "Album").split("/").filter(Boolean).slice(-2).join(" / ") || "Album")}<em>${nf(p.n)} files</em></span><small>${fmt(p.size)}</small></a>`).join("");
+    d.innerHTML = `<div class="zp"><h3>${esc(title)}</h3><p>This is too big for one zip (Dropbox allows 20 GB and 10,000 files). It comes in parts that fit together when unzipped. A file over 4 GB cannot be in a zip, those download directly.</p><div class="zl">${rows}</div><div class="za"><button class="btn fill" id="zall">Download all parts</button><button class="btn" id="zx">Close</button></div></div>`;
+    document.body.appendChild(d);
+    d.onclick = e => { if (e.target === d || e.target.id === "zx") d.remove(); };
+    d.querySelector("#zall").onclick = () => { const as = [...d.querySelectorAll("a[data-z]")]; as.forEach((a, i) => setTimeout(() => a.click(), i * 1800)); d.querySelector("#zall").textContent = "Starting " + as.length + " downloads"; };
+  }
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a[data-zsub]"); if (!a) return; const all = window.__all || []; if (!all.length) return;
+    const pre = a.dataset.zsub, parts = plan(pre, all); if (parts.length === 1 && !parts[0].loose) return;   // one zip is fine: the link works as it is
+    e.preventDefault(); sheet(parts, a.dataset.zt || "Download");
+  });
+})();
+</script>
+<script>
+/* SCROLLFX: parallax banner, headings slide in, tiles rise at their own speed */
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let tick = false;
+  const upd = () => { tick = false; const h = document.querySelector("header"); if (!h) return; const y = scrollY, H = h.offsetHeight || 1, k = Math.min(1, y / H);
+    if (y < H * 1.3) { h.querySelectorAll(".sl,.hv").forEach(e => { e.style.translate = "0 " + (y * .3).toFixed(1) + "px"; }); [...h.children].filter(c => !/slides|hv|grain/.test(c.className)).forEach(c => { c.style.translate = "0 " + (-y * .14).toFixed(1) + "px"; c.style.opacity = String(Math.max(0, 1 - k * 1.4)); }); }
+    document.querySelectorAll("figure.in, .vid.in, .vcard.in").forEach(c => { const r = c.getBoundingClientRect(); if (r.bottom < -200 || r.top > innerHeight + 200) return; const m = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; c.style.translate = "0 " + (m * (+c.dataset.sp || 0) * -30).toFixed(1) + "px"; }); };
+  addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px", threshold: .05 });
+  const mark = () => {
+    document.querySelectorAll(".sh, .tgh, .fh").forEach(e => { if (e.__sfx) return; e.__sfx = 1; e.classList.add("sfx", "l"); io.observe(e); });
+    document.querySelectorAll("figure, .vid, .vcard").forEach((c, i) => { if (c.__sfx) return; c.__sfx = 1; c.classList.add("sfx"); c.style.setProperty("--k", i % 6); c.dataset.sp = String([.4, 1, .7][i % 3]); io.observe(c); });
+  };
+  new MutationObserver(() => { clearTimeout(mark.t); mark.t = setTimeout(mark, 120); }).observe(document.getElementById("app"), { childList: true, subtree: true });
+  mark(); upd();
+})();
+</script>
+<script>
+(() => { const r = document.documentElement, K = "sv-theme"; let t = null; try { t = localStorage.getItem(K); } catch (e) {}
+  const sys = () => matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  const set = v => { r.dataset.theme = v; };
+  set(t || sys()); matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => { if (!t) set(sys()); });
+  document.getElementById("thm").onclick = () => { t = r.dataset.theme === "light" ? "dark" : "light"; try { localStorage.setItem(K, t); } catch (e) {} set(t); };
 })();
 </script>
 </body>

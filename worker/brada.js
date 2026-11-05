@@ -81,6 +81,8 @@ async function manifest(env, slug, rec) {
     } else if (isVideo(e.name)) out.videos.push(it);
   }
   for (const k of Object.keys(out)) out[k].sort((a, b) => a.p.localeCompare(b.p, "en", { numeric: true }));
+  // the highlights Stevy picked in the app (always the LowRes files): by file name, nothing is written to the Dropbox
+  if (Array.isArray(rec.hl) && rec.hl.length) { const want = new Set(rec.hl.map(x => String(x).toLowerCase())), pool = out.low.length ? out.low : out.high, pick = pool.filter(it => want.has(String(it.n).toLowerCase())); if (pick.length) out.highlights = pick; }
   await env.IG.put(ck, JSON.stringify(out), { expirationTtl: 120 });
   return out;
 }
@@ -131,7 +133,7 @@ export async function handleBrada(request, env, url, origin, notify, mailer) {
     if (!SLUG.test(slug) || !KEY.test(key) || !(LINK.test(link) || (bpath && !bpath.includes("..")))) return json(400, { ok: false, error: "slug, key and a link or a folder path" }, origin);
     if (!LINK.test(link) && !bOK(env)) return json(409, { ok: false, error: "brada-dropbox-not-set-up" }, origin);
     const people = (Array.isArray(b.people) ? b.people : []).slice(0, 30).map(x => ({ t: String(x.t || ""), n: String(x.n || "").slice(0, 60) })).filter(x => /^[a-z0-9]{8,24}$/.test(x.t) && x.n);
-    const rec = { link: LINK.test(link) ? link.replace(/&dl=\d/, "").slice(0, 400) : "", bpath: LINK.test(link) ? "" : bpath, key, people, title: String(b.title || "").slice(0, 120), client: String(b.client || "").slice(0, 80), date: String(b.date || "").slice(0, 10), location: String(b.location || "").slice(0, 160), note: String(b.note || "").slice(0, 300), at: Date.now() };
+    const rec = { hl: (Array.isArray(b.hl) ? b.hl : []).slice(0, 80).map(x => String(x).slice(0, 160)), link: LINK.test(link) ? link.replace(/&dl=\d/, "").slice(0, 400) : "", bpath: LINK.test(link) ? "" : bpath, key, people, title: String(b.title || "").slice(0, 120), client: String(b.client || "").slice(0, 80), date: String(b.date || "").slice(0, 10), location: String(b.location || "").slice(0, 160), note: String(b.note || "").slice(0, 300), at: Date.now() };
     await env.IG.put("brada:" + slug, JSON.stringify(rec));
     await env.IG.delete("bradamf:" + slug); await env.IG.delete("bradap:" + slug);
     return json(200, { ok: true }, origin);

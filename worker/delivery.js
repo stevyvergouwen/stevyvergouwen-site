@@ -1,6 +1,7 @@
 /* Delivery pages: /delivery/<slug> shows a job's finished files straight from Dropbox (read-only), with downloads and feedback.
    Needs three secrets from a read-only Dropbox app: DBX_APP_KEY, DBX_APP_SECRET, DBX_REFRESH. Records live in the same KV (IG) under "deliv:<slug>".
    Registration reuses the existing shared key (PRICE_CODE) in the x-key header, like /feedback-queue. Setup: worker/README.md (Delivery pages). */
+const GUEST_MAX = 25;
 const SLUG = /^[a-z0-9]{10,40}$/;
 export const json = (status, body, origin, extra = {}) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer", ...(origin ? { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "Content-Type, x-pass, x-key, x-tok", "Vary": "Origin" } : {}), ...extra } });
 /** One atomic counter per key: a Durable Object when it is bound (parallel requests cannot slip past), plain KV otherwise. True = over the limit. */
@@ -31,7 +32,8 @@ async function rpc(env, endpoint, body) {
   return r.json();
 }
 async function listAll(env, path) {
-  let res = await rpc(env, "files/list_folder", { path, recursive: true, limit: 2000 }); const out = [...res.entries];
+  let res; try { res = await rpc(env, "files/list_folder", { path, recursive: true, limit: 2000 }); } catch (e) { if (/list_folder 409/.test(String(e && (e.message || e)))) return []; throw e; }   // a folder that does not exist yet is an empty delivery: the page says "coming soon"
+  const out = [...res.entries];
   while (res.has_more) { res = await rpc(env, "files/list_folder/continue", { cursor: res.cursor }); out.push(...res.entries); }
   return out.filter(e => e[".tag"] === "file");
 }
@@ -43,17 +45,19 @@ const base = n => n.replace(/\.[^.]+$/, "").toLowerCase();
 async function manifest(env, rec, scope = "") {
   const files = (await listAll(env, rec.path)).filter(f => !scope || f.path_lower.startsWith((rec.path + "/" + scope).toLowerCase() + "/")); const root = rec.path.toLowerCase().length;
   const photos = new Map(), videos = [], audio = [], sidecars = new Map();
+  const rootName = (() => { const l = String(rec.path || "").split("/").filter(Boolean).pop() || ""; return /^\d{4}\.\d{2}/.test(l) || /^(clips?|highres|lowres|previews?|album)$/i.test(l) ? "" : l; })();   // a delivery folder with its own name (VHS) names the clips that sit directly in it
   const wmExists = files.some(f => f.path_lower.includes("/preview-wm/") && isPhotoName(f.name));   // pre-made watermarked copies: when they exist, originals are never shown
   for (const f of files) {
     const rel = f.path_lower.slice(root + 1); const parts = rel.split("/"); const name = f.name;
     const inWm = parts.includes("preview-wm");
-    if (hidden("/" + rel, true)) continue;
+    if (hidden("/" + rel, true, rec.raw === true)) continue;
     if (inWm && !(rec.nodl || locked(rec))) continue;   // the watermarked copies only show up while photos are locked
     if (isPhoto(name)) {
       const tier = inWm ? "wm" : (rec.nodl || locked(rec)) && wmExists ? "" : rec.select ? "preview" : parts.some(p => p === "highres") ? "high" : parts.some(p => p === "lowres" || p === "lowres logo") ? "low" : parts.some(p => p === "previews" || p === "highlights") ? "preview" : "";
       if (!tier) continue;
       const key = base(name); const p = photos.get(key) || { id: key, name: name.replace(/\.[^.]+$/, "") };
-      if (tier === "wm") p.wm = f.path_display; else if (tier === "high") p.high = f.path_display; else if (tier === "low" && !/logo/.test(rel)) p.low = f.path_display; else if (tier === "preview") p.preview = f.path_display;
+      if (p.group === undefined) { const ti = parts.findIndex(x => ["highres", "lowres", "lowres logo", "previews", "highlights", "preview-wm"].includes(x)); p.group = ti > 0 ? f.path_display.slice(rec.path.length + 1).split("/").slice(0, ti).filter(x => !/^0\d_(photo|video)$/i.test(x)).join(" / ") : ""; }
+      if (tier === "wm") p.wm = f.path_display; else if (tier === "high") { p.high = f.path_display; p.hs = f.size; } else if (tier === "low" && !/logo/.test(rel)) { p.low = f.path_display; p.ls = f.size; } else if (tier === "preview") { p.preview = f.path_display; p.ps = f.size; }
       photos.set(key, p);
     } else if (/\.peaks\.json$/i.test(name) && parts.some(p => p === "audio")) {
       sidecars.set(base(name.replace(/\.peaks\.json$/i, "")), { ...(sidecars.get(base(name.replace(/\.peaks\.json$/i, ""))) || {}), peaks: f.path_display });
@@ -61,8 +65,8 @@ async function manifest(env, rec, scope = "") {
       sidecars.set(base(name.replace(/\.preview\.m4a$/i, "")), { ...(sidecars.get(base(name.replace(/\.preview\.m4a$/i, ""))) || {}), stream: f.path_display });
     } else if (isAudio(name) && parts.some(p => p === "audio") && !parts.some(p => ["stacks", "raw video", "raw footage", "raw audio"].includes(p))) {
       audio.push({ id: f.id, name, path: f.path_display, size: f.size, group: f.path_display.slice(rec.path.length + 1).split("/").slice(0, -1).join(" / ") });
-    } else if (isVideo(name) && !parts.some(p => ["stacks", "audio", "raw video", "raw footage"].includes(p))) {
-      videos.push({ id: f.id, name, path: f.path_display, size: f.size, group: f.path_display.slice(rec.path.length + 1).split("/").slice(0, -1).filter(p => !/^\d+x\d+$/i.test(p)).join(" / ") });
+    } else if (isVideo(name) && !parts.some(p => ["stacks", "audio", ...(rec.raw === true ? [] : ["raw video", "raw footage"])].includes(p))) {
+      videos.push({ id: f.id, name, path: f.path_display, size: f.size, group: f.path_display.slice(rec.path.length + 1).split("/").slice(0, -1).filter(p => !/^\d+x\d+$/i.test(p)).join(" / ") || rootName });
     }
   }
   for (const a of audio) {   // a waveform and a light copy to play, made by the Projecten app next to the master
@@ -70,8 +74,9 @@ async function manifest(env, rec, scope = "") {
     if (sc.stream) a.stream = sc.stream;
     if (sc.peaks) { try { const ck = "pk:" + await sha(sc.peaks); let pk = await env.IG.get(ck, "json"); if (!pk) { const j = await rpc(env, "files/get_temporary_link", { path: sc.peaks }); const r = await fetch(j.link); const arr = await r.json(); pk = (Array.isArray(arr) ? arr : arr.peaks || []).slice(0, 800).map(x => Math.max(0, Math.min(100, Math.round(Number(x) || 0)))); await env.IG.put(ck, JSON.stringify(pk), { expirationTtl: 86400 }); } a.peaks = pk; } catch { /* no waveform */ } }
   }
-  const lockedNow = rec.nodl || locked(rec), list = [...photos.values()].filter(p => p.wm || (!(lockedNow && wmExists) && (p.high || p.low || p.preview))).map(p => ({ id: p.id, name: p.name, thumb: lockedNow && p.wm ? p.wm : (p.low || p.preview || p.high), high: lockedNow && wmExists ? null : (p.high || null), low: lockedNow && wmExists ? null : (p.low || null) })).sort((a, b) => a.name.localeCompare(b.name));
-  return { scope: scope || "", select: rec.select || null, layout: rec.layout || "masonry", title: rec.title, client: rec.client, date: rec.date, note: rec.note || "", location: String(rec.location || "").slice(0, 160), lineup: Array.isArray(rec.lineup) ? rec.lineup : [], dropbox: rec.dropbox || "", end: rec.end || "", final: !!rec.final, wmserver: wmExists && (rec.nodl || locked(rec)), nodl: !!rec.nodl, comments: !!rec.comments, share: !!rec.share, watermark: !!rec.watermark || !!rec.select, locked: (!!rec.watermark && !rec.released) || !!rec.select, wm: String(rec.wm || "STEVYVERGOUWEN.COM").slice(0, 60), root: rec.path, photos: list, audio: audio.sort((a, b) => a.name.localeCompare(b.name)), videos: videos.sort((a, b) => (a.group + a.name).localeCompare(b.group + b.name)) };
+  const grpList = Array.isArray(rec.groups) ? rec.groups : [], grp = g => { const i = grpList.findIndex(x => String(x.k).toLowerCase() === String(g).toLowerCase()); return i < 0 ? 999 : i; };   // the days/cities of a weekend, in the order the app gave
+  const lockedNow = rec.nodl || locked(rec), list = [...photos.values()].filter(p => p.wm || (!(lockedNow && wmExists) && (p.high || p.low || p.preview))).map(p => ({ id: p.id, name: p.name, thumb: lockedNow && p.wm ? p.wm : (p.low || p.preview || p.high), high: lockedNow && wmExists ? null : (p.high || null), low: lockedNow && wmExists ? null : (p.low || null), hs: p.hs || 0, ls: p.ls || 0, ps: p.ps || 0, group: p.group || "" })).sort((a, b) => { const ga = grp(a.group), gb = grp(b.group); return ga !== gb ? ga - gb : a.name.localeCompare(b.name); });
+  return { hl: rec.hl || [], scope: scope || "", together: rec.together || null, select: rec.select || null, layout: rec.layout || "masonry", title: rec.title, client: rec.client, date: rec.date, note: rec.note || "", location: String(rec.location || "").slice(0, 160), lineup: Array.isArray(rec.lineup) ? rec.lineup : [], dropbox: rec.dropbox || "", end: rec.end || "", final: !!rec.final, wmserver: wmExists && (rec.nodl || locked(rec)), nodl: !!rec.nodl, comments: !!rec.comments, share: !!rec.share, watermark: (!!rec.watermark && !rec.event) || !!rec.select, locked: (!!rec.watermark && !rec.released) || !!rec.select, wm: String(rec.wm || "STEVYVERGOUWEN.COM").slice(0, 60), root: rec.path, hero: rec.hero || null, groups: grpList, photos: list, previews: (lockedNow || rec.select) ? [] : [...photos.values()].filter(p => p.preview).map(p => ({ id: p.id, name: p.name, thumb: p.preview, high: null, low: null, preview: p.preview, ps: p.ps || 0 })).sort((a, b) => a.name.localeCompare(b.name)), audio: audio.sort((a, b) => a.name.localeCompare(b.name)), videos: videos.sort((a, b) => (a.group + a.name).localeCompare(b.group + b.name)) };
 }
 /** What a page holds, in numbers: for the mail that tells people what they got. */
 export async function deliveryStats(env, rec, scope = "") {
@@ -81,7 +86,12 @@ export async function deliveryStats(env, rec, scope = "") {
     const r = /(\d{3,5})x(\d{3,5})/i.exec(v.path || ""); if (r) { const w = +r[1], h2 = +r[2], d = gcd(w, h2); fmts.add(`${w / d}:${h2 / d}`); }
   }
   const bytes = m.videos.reduce((s, v) => s + (v.size || 0), 0) + m.audio.reduce((s, v) => s + (v.size || 0), 0);
-  return { clips: m.videos.length, photos: m.photos.length, audio: m.audio.length, sets: sets.size, formats: [...fmts], gb: bytes ? (bytes / 1e9 >= 10 ? Math.round(bytes / 1e9) : Math.round(bytes / 1e8) / 10) : 0 };
+  const keys = new Set();   // the same clip in 4x5, 4x3, 9x16 and 16x9, HD or 4K, is one video
+  for (const v of m.videos) {
+    const g = String(v.group || "").split(" / ").filter(Boolean), ci = g.findIndex(x => /^clips$/i.test(x)), art = ci > 0 ? g[ci - 1] : "";
+    keys.add(art.toLowerCase() + "|" + String(v.name || v.path || "").split("/").pop().replace(/\.(mp4|mov)$/i, "").replace(/-(\d{1,2}x\d{1,2}|square|story|reel|wide)-(hd|4k|uhd|fhd)/i, "").toLowerCase());
+  }
+  return { clips: keys.size, photos: m.photos.length, audio: m.audio.length, sets: sets.size, formats: [...fmts], gb: bytes ? (bytes / 1e9 >= 10 ? Math.round(bytes / 1e9) : Math.round(bytes / 1e8) / 10) : 0 };
 }
 const rnd = n => { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(x => "abcdefghjkmnpqrstuvwxyz23456789"[x % 31]).join(""); };
 const hmac = async (secret, msg) => { const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]); return [...new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(msg)))].map(b => b.toString(16).padStart(2, "0")).join(""); };
@@ -89,9 +99,14 @@ const sha = async t => [...new Uint8Array(await crypto.subtle.digest("SHA-256", 
 /** A path from the outside is only ever a plain path: no "..", no backslashes, no control characters. */
 const cleanPath = p => typeof p === "string" && p.startsWith("/") && !/[\\\x00-\x1f]/.test(p) && !p.split("/").some(s => s === ".." || s === ".") && p.length < 600;
 const HIDDEN = ["uploads", "raw video", "raw footage", "raw audio", "stacks", "preview-wm"];
-const hidden = (p, wmOk = false) => String(p || "").toLowerCase().split("/").some(s => HIDDEN.includes(s) && !(wmOk && s === "preview-wm"));
+const hidden = (p, wmOk = false, rawOk = false) => String(p || "").toLowerCase().split("/").some(s => HIDDEN.includes(s) && !(wmOk && s === "preview-wm") && !(rawOk && (s === "raw footage" || s === "raw video")));   // rawOk: a delivery of raw footage shows its RAW FOOTAGE folder
 const isPhotoName = n => /\.(jpe?g|png|webp|heic|tiff?)$/i.test(n);
-const locked = rec => (!!rec.watermark && !rec.released);
+/** The open access requests in one small list under one key: the app can ask for it every minute for the price of a single read, no listing. */
+const IDX = "delivreq-index";
+const idxLees = async env => { try { return (JSON.parse(await env.IG.get(IDX) || "[]") || []).filter(x => Date.now() - x.at < 30 * 86400000); } catch { return []; } };
+const idxZet = async (env, slug, email, name) => { const l = (await idxLees(env)).filter(x => !(x.slug === slug && x.email === email)); l.push({ slug, email, name: name || "", at: Date.now() }); await env.IG.put(IDX, JSON.stringify(l.slice(-60))); };
+const idxWeg = async (env, slug, email) => { const l = await idxLees(env), n = l.filter(x => !(x.slug === slug && x.email === email)); if (n.length !== l.length) await env.IG.put(IDX, JSON.stringify(n)); };
+const locked = rec => (!!rec.watermark && !rec.released && !rec.event);   // an event delivery is never watermarked, only presskits, portraits and selections
 /** At most `max` per `win` seconds for one key (an email, a link), answers true when over the limit. */
 export async function capKey(env, key, max, win) { return hit(env, "cap:" + await sha(key), max, win); }
 /** A link from a mail asks "are you sure?" first: mail scanners open links, and an opened link must never change anything. */
@@ -105,6 +120,8 @@ const linkMail = (designed, mailVisitor, to, name, title, link, lead) => designe
   : mailVisitor && mailVisitor(to, "Your link: " + title, `Hi${name ? " " + name.split(" ")[0] : ""},\n\n${lead} Here is your personal link to ${title}:\n${link}\n\nOpen it as often as you like. Please do not forward it.\n\nStevy Vergouwen`);
 /** Who did what, per day and person: for the Projecten app. Never blocks a request. */
 const dayKey = () => new Date().toISOString().slice(0, 10);
+const ANON = { email: "", name: "Someone with the link", scope: "" };
+const anonTok = request => "anon:" + (request.headers.get("CF-Connecting-IP") || "") + "|" + (request.headers.get("User-Agent") || "").slice(0, 60);   // only ever hashed: a visitor without a name still counts as one person per day
 async function logAct(env, slug, who, tok, request, kind, name = "") {
   try {
     const key = `delivact:${slug}:${dayKey()}:${(await sha(tok)).slice(0, 16)}`;
@@ -146,11 +163,36 @@ const inside = (rec, p, scope = "", wmOk = false) => cleanPath(p) && !hidden(p.s
 
 export async function handleDelivery(request, env, url, origin, notify, mailVisitor, designed) {
   const path = url.pathname;
+  // the link preview (WhatsApp, iMessage, Slack): what is in the delivery and one photo of it. Public on purpose, and only for open deliveries: a locked, watermarked or selection delivery shows nothing of its content.
+  const og = path.match(/^\/delivery-og(-image)?\/([a-z0-9]+?)(?:\.jpg)?$/);
+  if (og && request.method === "GET") {
+    const slug = og[2]; let rec = null; try { rec = JSON.parse(await env.IG.get("deliv:" + slug) || "null"); } catch { rec = null; }
+    const open = !!rec && !rec.select && !(rec.watermark && !rec.released && !rec.event);
+    const self = "https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev";
+    if (!og[1]) {
+      if (!open) return json(200, { title: "Your delivery | Stevy Vergouwen", description: "A delivery from Stevy Vergouwen. Open the page to view it.", image: "https://stevyvergouwen.com/og.jpg" }, origin);
+      let st = null; try { st = await deliveryStats(env, rec); } catch { st = null; }
+      const foto = st ? st.photos : 0, clips = st ? st.clips : 0;
+      const wat = foto && clips ? "Photos and videos" : clips ? "Videos" : "Photos", soort = foto && clips ? "Photography and video" : clips ? "Video" : "Photography";
+      const tel = [foto ? foto + (foto === 1 ? " photo" : " photos") : "", clips ? clips + (clips === 1 ? " video" : " videos") : ""].filter(Boolean).join(" and ");
+      return json(200, { title: `${rec.title} · ${soort} | Stevy Vergouwen`, description: `${wat} from ${rec.title} are ready${tel ? ": " + tel : ""}. Open the page to view and download.`, image: foto ? `${self}/delivery-og-image/${slug}.jpg` : "https://stevyvergouwen.com/og.jpg" }, origin);
+    }
+    if (!open) return Response.redirect("https://stevyvergouwen.com/og.jpg", 302);
+    try {
+      const m = await manifest(env, rec), ph = (m.photos || []).find(x => rec.hero && x.name === rec.hero.n) || (m.photos || [])[0];
+      if (!ph || !ph.thumb) return Response.redirect("https://stevyvergouwen.com/og.jpg", 302);
+      const r = await fetch("https://content.dropboxapi.com/2/files/get_thumbnail_v2", { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ resource: { ".tag": "path", path: ph.thumb }, format: "jpeg", size: "w1024h768", mode: "bestfit" }) } });
+      if (!r.ok) return Response.redirect("https://stevyvergouwen.com/og.jpg", 302);
+      return new Response(r.body, { headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=3600" } });
+    } catch { return Response.redirect("https://stevyvergouwen.com/og.jpg", 302); }
+  }
   if (path === "/delivery-register" && request.method === "POST") {      // from the Projecten app: slug -> Dropbox folder
     if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
     let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
     const slug = String(b.slug || ""); if (!SLUG.test(slug) || !cleanPath(String(b.path || "")) || String(b.path).split("/").filter(Boolean).length < 2) return json(400, { ok: false, error: "slug or path" }, origin);
-    const rec = { share: b.share !== false, select: Number(b.select) > 0 ? { limit: Math.min(2000, Math.round(Number(b.select))), extra: Number(b.extra) > 0 ? Math.round(Math.min(5000, Number(b.extra)) * 100) / 100 : 0 } : null, scopes: (b.scopes && typeof b.scopes === "object") ? Object.fromEntries(Object.entries(b.scopes).slice(0, 80).map(([k, v]) => [String(k).toLowerCase(), String(v).slice(0, 200)])) : {}, days: Math.max(7, Math.min(3650, Math.round(Number(b.days) || 365))), layout: ["masonry", "grid", "large"].includes(b.layout) ? b.layout : "masonry", mode: ["open", "code", "email"].includes(b.mode) ? b.mode : "email", allow: (Array.isArray(b.allow) ? b.allow : []).map(x => String(x).toLowerCase().trim()).filter(Boolean).slice(0, 60), path: String(b.path).replace(/\/+$/, ""), title: String(b.title || "").slice(0, 120), location: String(b.location || "").slice(0, 160), final: SLUG.test(String(b.final || "")) ? String(b.final) : "", end: /^\d{1,2}[:.]\d{2}$/.test(String(b.end || "")) ? String(b.end).replace(".", ":") : "", dropbox: /^https:\/\/(www\.)?dropbox\.com\//.test(String(b.dropbox || "")) ? String(b.dropbox).slice(0, 300) : "", lineup: (Array.isArray(b.lineup) ? b.lineup : []).slice(0, 60).map(x => ({ t: String(x.t || "").slice(0, 12), n: String(x.n || "").replace(/\bb2b\b/gi, "B2B").slice(0, 80) })).filter(x => x.n), client: String(b.client || "").slice(0, 80), date: String(b.date || "").slice(0, 10), note: String(b.note || "").slice(0, 600), pass: String(b.pass || "").slice(0, 60), exp: Number(b.exp) || 0 };
+    const rec = { event: b.event === true, raw: b.raw === true, share: b.share !== false, select: Number(b.select) > 0 ? { limit: Math.min(2000, Math.round(Number(b.select))), extra: Number(b.extra) > 0 ? Math.round(Math.min(5000, Number(b.extra)) * 100) / 100 : 0 } : null, scopes: (b.scopes && typeof b.scopes === "object") ? Object.fromEntries(Object.entries(b.scopes).slice(0, 80).map(([k, v]) => [String(k).toLowerCase(), String(v).slice(0, 200)])) : {}, days: Math.max(7, Math.min(3650, Math.round(Number(b.days) || 365))), layout: ["masonry", "grid", "large"].includes(b.layout) ? b.layout : "masonry", mode: ["open", "code", "email"].includes(b.mode) ? b.mode : "email", allow: (Array.isArray(b.allow) ? b.allow : []).map(x => String(x).toLowerCase().trim()).filter(Boolean).slice(0, 60), path: String(b.path).replace(/\/+$/, ""), title: String(b.title || "").slice(0, 120), location: String(b.location || "").slice(0, 160), final: SLUG.test(String(b.final || "")) ? String(b.final) : "", end: /^\d{1,2}[:.]\d{2}$/.test(String(b.end || "")) ? String(b.end).replace(".", ":") : "", dropbox: /^https:\/\/(www\.)?dropbox\.com\//.test(String(b.dropbox || "")) ? String(b.dropbox).slice(0, 300) : "", lineup: (Array.isArray(b.lineup) ? b.lineup : []).slice(0, 60).map(x => ({ t: String(x.t || "").slice(0, 12), n: String(x.n || "").replace(/\bb2b\b/gi, "B2B").slice(0, 80) })).filter(x => x.n), client: String(b.client || "").slice(0, 80), date: String(b.date || "").slice(0, 10), note: String(b.note || "").slice(0, 600), pass: String(b.pass || "").slice(0, 60), exp: Number(b.exp) || 0, groups: (Array.isArray(b.groups) ? b.groups : []).slice(0, 30).map(x => ({ k: String(x.k || "").slice(0, 120), l: String(x.l || "").slice(0, 120) })).filter(x => x.k) };
+    if (b.hero && typeof b.hero.n === "string" && b.hero.n.length < 200) { const c01 = v => Math.min(1, Math.max(0, Number(v) || 0.5)); rec.hero = { n: b.hero.n, x: c01(b.hero.x), y: c01(b.hero.y) }; }   // the banner photo and where its faces are: the app finds them
+    if (b.together && typeof b.together === "object") { const n = v => Math.max(0, Math.min(100000, Math.round(Number(v) || 0))); rec.together = { shoots: n(b.together.shoots), total: n(b.together.total), photos: n(b.together.photos), since: /^\d{4}-\d{2}-\d{2}$/.test(String(b.together.since || "")) ? b.together.since : "" }; }   // earlier shoots with this client: a count-up on the page
     await env.IG.put("deliv:" + slug, JSON.stringify(rec));
     return json(200, { ok: true }, origin);
   }
@@ -163,12 +205,18 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
     return json(200, { reviews: out.slice(0, 50) }, origin, { "Cache-Control": "public, max-age=600" });
   }
+  if (path === "/delivery-flags-read" && request.method === "GET") {      // from the app: just the switches of one delivery, one cheap read
+    if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
+    const slug = url.searchParams.get("slug") || ""; if (!SLUG.test(slug)) return json(400, { ok: false }, origin);
+    let rec; try { rec = JSON.parse(await env.IG.get("deliv:" + slug) || "null"); } catch { rec = null; } if (!rec) return json(404, { ok: false }, origin);
+    return json(200, { ok: true, flags: { watermark: !!rec.watermark, released: !!rec.released, nodl: !!rec.nodl, mode: rec.mode || "email" } }, origin);
+  }
   if (path === "/delivery-status" && request.method === "GET") {         // for the Projecten app: what happened on this delivery
     if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
     const slug = url.searchParams.get("slug") || ""; if (!SLUG.test(slug)) return json(400, { ok: false }, origin);
-    const grab = async prefix => { const out = []; let cursor; do { const l = await env.IG.list({ prefix, cursor }); cursor = l.list_complete ? undefined : l.cursor; for (const k of l.keys) { try { const v = JSON.parse(await env.IG.get(k.name) || "null"); if (v) out.push({ id: k.name.slice(prefix.length), ...v }); } catch { /* ignore */ } } } while (cursor); return out; };
+    const grab = async prefix => { const out = []; let cursor; try { do { const l = await env.IG.list({ prefix, cursor }); cursor = l.list_complete ? undefined : l.cursor; for (const k of l.keys) { try { const v = JSON.parse(await env.IG.get(k.name) || "null"); if (v) out.push({ id: k.name.slice(prefix.length), ...v }); } catch { /* ignore */ } } } while (cursor); } catch { /* the daily list limit: show what there is */ } return out; };
     const toks = (await grab("delivtok:")).filter(t => t.slug === slug);
-    return json(200, { ok: true, requests: await grab("delivreq:" + slug + ":"), people: toks.map(t => ({ email: t.email, name: t.name, scope: t.scope || "", at: t.at })), flags: { nodl: !!(JSON.parse(await env.IG.get("deliv:" + slug) || "{}").nodl), comments: !!(JSON.parse(await env.IG.get("deliv:" + slug) || "{}").comments), watermark: !!(JSON.parse(await env.IG.get("deliv:" + slug) || "{}").watermark), released: !!(JSON.parse(await env.IG.get("deliv:" + slug) || "{}").released), share: JSON.parse(await env.IG.get("deliv:" + slug) || "{}").share !== false }, activity: await grab("delivact:" + slug + ":"), log: (await grab("delivlog:" + slug + ":")).slice(-60), feedback: await grab("delivf:" + slug + ":"), reviews: await grab("delivrev:" + slug + ":"), uploads: await grab("upldone:" + slug + ":"), selections: await grab("delivsel:" + slug + ":"), allow: (JSON.parse(await env.IG.get("deliv:" + slug) || "{}").allow) || [], scopes: (JSON.parse(await env.IG.get("deliv:" + slug) || "{}").scopes) || {} }, origin);
+    return json(200, { ok: true, requests: await grab("delivreq:" + slug + ":"), people: toks.map(t => ({ email: t.email, name: t.name, scope: t.scope || "", at: t.at })), flags: { nodl: !!(JSON.parse(await env.IG.get("deliv:" + slug) || "{}").nodl), comments: !!(JSON.parse(await env.IG.get("deliv:" + slug) || "{}").comments), watermark: !!(JSON.parse(await env.IG.get("deliv:" + slug) || "{}").watermark), released: !!(JSON.parse(await env.IG.get("deliv:" + slug) || "{}").released), share: JSON.parse(await env.IG.get("deliv:" + slug) || "{}").share !== false, mode: JSON.parse(await env.IG.get("deliv:" + slug) || "{}").mode || "email", pass: JSON.parse(await env.IG.get("deliv:" + slug) || "{}").pass || "", guests: JSON.parse(await env.IG.get("deliv:" + slug) || "{}").guests !== false }, guestLinks: ((JSON.parse(await env.IG.get("deliv:" + slug) || "{}").guests_list) || []).map(g => ({ h: g.h, label: g.label, at: g.at, by: g.by })), activity: await grab("delivact:" + slug + ":"), log: (await grab("delivlog:" + slug + ":")).slice(-60), feedback: await grab("delivf:" + slug + ":"), reviews: await grab("delivrev:" + slug + ":"), uploads: await grab("upldone:" + slug + ":"), selections: await grab("delivsel:" + slug + ":"), allow: (JSON.parse(await env.IG.get("deliv:" + slug) || "{}").allow) || [], scopes: (JSON.parse(await env.IG.get("deliv:" + slug) || "{}").scopes) || {} }, origin);
   }
   if (path === "/delivery-link" && request.method === "POST") {         // a personal link for one person, to send by WhatsApp or anything else
     if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
@@ -196,8 +244,13 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     const slug = String(b.slug || ""); let rec; try { rec = JSON.parse(await env.IG.get("deliv:" + slug) || "null"); } catch { rec = null; }
     if (!SLUG.test(slug) || !rec) return json(400, { ok: false }, origin);
     for (const k of ["watermark", "released", "share", "comments", "nodl"]) if (typeof b[k] === "boolean") rec[k] = b[k];
+    if (Array.isArray(b.hl)) rec.hl = b.hl.slice(0, 80).map(x => String(x).slice(0, 160));
+    if (["open", "code", "email"].includes(b.mode)) rec.mode = b.mode;   // open for anyone with the link, one shared code, or a code per email address
+    if (typeof b.pass === "string") rec.pass = b.pass.trim().slice(0, 40);
+    if (typeof b.guests === "boolean") rec.guests = b.guests;
     if (typeof b.wm === "string") rec.wm = b.wm.slice(0, 60);
     if (typeof b.final === "string") rec.final = SLUG.test(b.final) ? b.final : "";
+    if (b.hero && typeof b.hero.n === "string" && b.hero.n.length < 200) { const c01 = v => Math.min(1, Math.max(0, Number(v) || 0.5)); rec.hero = { n: b.hero.n, x: c01(b.hero.x), y: c01(b.hero.y) }; }   // the opening photo can be picked again once the photos are in
     await env.IG.put("deliv:" + slug, JSON.stringify(rec));
     return json(200, { ok: true, watermark: !!rec.watermark, released: !!rec.released }, origin);
   }
@@ -210,6 +263,14 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     } while (cursor);
     return json(200, { ok: true, viewers: out }, origin);
   }
+  if (path === "/delivery-guest-revoke" && request.method === "POST") {      // from the app: take one guest link back
+    if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
+    let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
+    const slug = String(b.slug || ""), h = String(b.h || ""); let rec; try { rec = JSON.parse(await env.IG.get("deliv:" + slug) || "null"); } catch { rec = null; }
+    if (!SLUG.test(slug) || !rec || !/^[a-f0-9]{64}$/.test(h)) return json(400, { ok: false }, origin);
+    rec.guests_list = (rec.guests_list || []).filter(g => g.h !== h); await env.IG.put("deliv:" + slug, JSON.stringify(rec)); await env.IG.delete("delivtok:" + h);
+    return json(200, { ok: true }, origin);
+  }
   if (path === "/delivery-revoke" && request.method === "POST") {      // take away one person's access (all their links for this delivery)
     if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
     let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
@@ -220,17 +281,21 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     } while (cursor);
     return json(200, { ok: true, revoked: n }, origin);
   }
+  if (path === "/delivery-pending" && request.method === "GET") {       // for the app, every minute: who is waiting for access
+    if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
+    return json(200, { ok: true, requests: await idxLees(env) }, origin);
+  }
   if (path === "/delivery-approve" && request.method === "POST") {      // approve an access request from the app
     if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
     let b; try { b = await request.json(); } catch { return json(400, { ok: false }, origin); }
     const slug = String(b.slug || ""), email = String(b.email || "").toLowerCase().trim(); let rec; try { rec = JSON.parse(await env.IG.get("deliv:" + slug) || "null"); } catch { rec = null; }
     if (!SLUG.test(slug) || !okMail(email) || !rec) return json(400, { ok: false }, origin);
     const reqd = JSON.parse(await env.IG.get("delivreq:" + slug + ":" + email) || "null") || { email, name: "" };
-    const t = await giveToken(env, slug, email, reqd.name, scopeOf(rec, email), rec.days || 365); await env.IG.delete("delivreq:" + slug + ":" + email);
+    const t = await giveToken(env, slug, email, reqd.name, scopeOf(rec, email), rec.days || 365); await env.IG.delete("delivreq:" + slug + ":" + email); await idxWeg(env, slug, email);
     await linkMail(designed, mailVisitor, email, reqd.name, rec.title, `https://stevyvergouwen.com/d/?c=${slug}&t=${t}`, "Here you go.");
     return json(200, { ok: true }, origin);
   }
-  const m = path.match(/^\/delivery\/([a-z0-9]+)(?:\/(thumb|file|zip|feedback|request|approve|review|approve-review|selection|final|share|live|code-request|code-verify|device-code|device-verify|artist-request|artist-verify|revoke-link))?$/);
+  const m = path.match(/^\/delivery\/([a-z0-9]+)(?:\/(thumb|file|zip|feedback|request|approve|review|approve-review|selection|final|share|live|code-request|code-verify|device-code|device-verify|guest|artist-request|artist-verify|revoke-link))?$/);
   if (!m) return null;
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin, "Vary": "Origin", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, x-pass, x-key, x-tok", "Access-Control-Max-Age": "86400" } });
   const [, slug, action] = m;
@@ -246,6 +311,11 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     const ip = request.headers.get("CF-Connecting-IP") || "x";
     if (await capKey(env, `otp:${slug}:${email}:${ip}`, 4, 3600) || await capKey(env, `otpm:${slug}:${email}`, 20, 3600)) return json(200, { ok: true }, origin);   // an inbox is never flooded; one address cannot lock another out
     if (allowed(rec, email)) { const code = newCode(); await otpAdd(env, "delivotp:" + slug + ":" + email, code); await codeMail(designed, mailVisitor, email, code, rec.title); }
+    else if (!(await capKey(env, "req:" + slug + ":" + email, 3, 3600))) {   // someone asked for a code but is not on the list: Stevy is told, with a link to let them in
+      await env.IG.put("delivreq:" + slug + ":" + email, JSON.stringify({ email, name: "", at: Date.now() }), { expirationTtl: 30 * 86400 }); await idxZet(env, slug, email, "");
+      const sig = await hmac(hkey(env), "approve:" + slug + ":" + email);
+      if (notify) await notify({ subject: `Access request: ${rec.title}`, heading: "Someone wants access", intro: `${email} asked for a code for ${rec.title}${rec.client ? " (" + rec.client + ")" : ""} but is not on the list.`, rows: [["Email", email], ["Approve", `https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev/delivery/${slug}/approve?e=${encodeURIComponent(email)}&sig=${sig}`]] });
+    }
     return json(200, { ok: true }, origin);                           // the same answer for everyone: no hints about who has access
   }
   if (action === "code-verify" && request.method === "POST") {
@@ -266,7 +336,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (!okMail(email)) return json(400, { ok: false, error: "email" }, origin);
     if (await capKey(env, "req:" + slug + ":" + email, 3, 3600)) return json(200, { ok: true }, origin);
     if (allowed(rec, email)) { const t = await giveToken(env, slug, email, name, scopeOf(rec, email), rec.days || 365); await linkMail(designed, mailVisitor, email, name, rec.title, `${site}&t=${t}`, "Good news: you are on the list."); return json(200, { ok: true }, origin); }
-    await env.IG.put("delivreq:" + slug + ":" + email, JSON.stringify({ email, name, at: Date.now() }), { expirationTtl: 30 * 86400 });
+    await env.IG.put("delivreq:" + slug + ":" + email, JSON.stringify({ email, name, at: Date.now() }), { expirationTtl: 30 * 86400 }); await idxZet(env, slug, email, name);
     const sig = await hmac(hkey(env), "approve:" + slug + ":" + email);
     if (notify) await notify({ subject: `Access request: ${rec.title}`, heading: "Someone wants access", intro: `${name || email} (${email}) asked for ${rec.title}${rec.client ? " (" + rec.client + ")" : ""}`, rows: [["Email", email], ["Name", name || "-"], ["Approve", `https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev/delivery/${slug}/approve?e=${encodeURIComponent(email)}&sig=${sig}`]] });
     return json(200, { ok: true }, origin);
@@ -276,7 +346,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (!okMail(email) || !same(sig, await hmac(hkey(env), "approve:" + slug + ":" + email))) return new Response("Invalid link", { status: 403 });
     if (request.method === "GET") return confirmPage("Give " + email.replace(/[<>&"]/g, "") + " access?", "Approve", origin);
     const reqd = JSON.parse(await env.IG.get("delivreq:" + slug + ":" + email) || "null") || { email, name: "" };
-    const t = await giveToken(env, slug, email, reqd.name, scopeOf(rec, email), rec.days || 365); await env.IG.delete("delivreq:" + slug + ":" + email);
+    const t = await giveToken(env, slug, email, reqd.name, scopeOf(rec, email), rec.days || 365); await env.IG.delete("delivreq:" + slug + ":" + email); await idxWeg(env, slug, email);
     await linkMail(designed, mailVisitor, email, reqd.name, rec.title, `${site}&t=${t}`, "Stevy approved your request.");
     return new Response(`Approved. ${email} has been sent a personal link.`, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
   }
@@ -301,10 +371,23 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
   let who = null;
   if (tok) { try { const t = JSON.parse(await env.IG.get("delivtok:" + await sha(tok)) || "null"); if (t && t.slug === slug) who = t; } catch { /* ignore */ } }
   if (who && who.exp && who.exp < Date.now()) who = null;                // a link has its own end date (checked before it can be renewed)
-  if (who && who.seenDay !== new Date().toISOString().slice(0, 10)) { try { const span = (who.link || who.scope ? 60 : (rec.days || 365)) * 86400000, born = who.born || who.at || Date.now(); who.seenDay = new Date().toISOString().slice(0, 10); who.born = born; who.exp = Math.min(Date.now() + span, born + 730 * 86400000); await env.IG.put("delivtok:" + await sha(tok), JSON.stringify(who), { expirationTtl: Math.max(60, Math.round((who.exp - Date.now()) / 1000)) }); } catch { /* ignore */ } }   // coming back keeps the link alive: it only ends after a quiet spell (or a year)
+  if (who && !who.guest && who.seenDay !== new Date().toISOString().slice(0, 10)) { try { const span = (who.link || who.scope ? 60 : (rec.days || 365)) * 86400000, born = who.born || who.at || Date.now(); who.seenDay = new Date().toISOString().slice(0, 10); who.born = born; who.exp = Math.min(Date.now() + span, born + 730 * 86400000); await env.IG.put("delivtok:" + await sha(tok), JSON.stringify(who), { expirationTtl: Math.max(60, Math.round((who.exp - Date.now()) / 1000)) }); } catch { /* ignore */ } }   // coming back keeps the link alive: it only ends after a quiet spell (or a year)
   const mode = rec.mode || (rec.pass ? "code" : "email");
   const dev = /^[a-z0-9]{10,40}$/.test(url.searchParams.get("d") || "") ? url.searchParams.get("d") : "";
   const mask = e => e.replace(/^(.).*(@.*)$/, "$1***$2");
+  if (action === "guest" && request.method === "POST") {   // the client makes a link for a friend herself: no code, 30 days, at most 25, and Stevy can take each one back
+    if (!who || who.guest || who.scope || rec.guests === false || mode === "open" || (okMail(who.email || "") && String(who.email).toLowerCase() !== "info@stevyvergouwen.com" && !(dev && (who.devs || []).includes(dev)))) return json(403, { error: "not allowed" }, origin);   // only someone who is in on this device
+    if (await tooMany(env, request, "guest", 40, 3600)) return json(429, { error: "slow down" }, origin);
+    let b; try { b = JSON.parse((await request.text()).slice(0, 500)); } catch { return json(400, { ok: false }, origin); }
+    const list = rec.guests_list || [], label = String(b.label || "").replace(/[<>]/g, "").trim().slice(0, 40) || "Guest " + (list.length + 1);
+    if (b.list) return json(200, { ok: true, max: GUEST_MAX, guests: list.map(g => ({ label: g.label, at: g.at, link: `https://stevyvergouwen.com/d/?c=${slug}&t=${g.t}` })) }, origin);
+    if (list.length >= GUEST_MAX) return json(409, { error: "limit", max: GUEST_MAX }, origin);
+    const t = rnd(24), exp = Date.now() + 30 * 86400000, h = await sha(t);
+    await env.IG.put("delivtok:" + h, JSON.stringify({ slug, email: "", name: "Guest: " + label, scope: "", at: Date.now(), exp, devs: [], guest: true, by: who.name || who.email || "" }), { expirationTtl: 30 * 86400 });
+    list.push({ h, t, label, at: new Date().toISOString().slice(0, 16), by: who.name || who.email || "" }); rec.guests_list = list; await env.IG.put("deliv:" + slug, JSON.stringify(rec));
+    if (notify && !(await capKey(env, "gnote:" + slug, 10, 86400))) { try { await notify({ subject: `Guest link made: ${rec.title}`, heading: "A guest link was made", intro: `${who.name || who.email} made a guest link for "${label}" on ${rec.title}.`, rows: [["For", label], ["Made by", who.name || who.email || "-"], ["Guest links", list.length + " of " + GUEST_MAX], ["Expires", "30 days"]] }); } catch { /* ignore */ } }
+    return json(200, { ok: true, max: GUEST_MAX, link: `https://stevyvergouwen.com/d/?c=${slug}&t=${t}`, guests: list.map(g => ({ label: g.label, at: g.at, link: `https://stevyvergouwen.com/d/?c=${slug}&t=${g.t}` })) }, origin);
+  }
   if (who && who.link && !who.email && (action === "artist-request" || action === "artist-verify") && request.method === "POST") {   // automatic: the artist fills in their email, a code proves it is theirs, the link is theirs from then on
     const ak = "artotp:" + await sha(tok); let b; try { b = JSON.parse((await request.text()).slice(0, 1000)); } catch { return json(400, { ok: false }, origin); }
     const ip = request.headers.get("CF-Connecting-IP") || "x";
@@ -348,7 +431,7 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     if (devs.length >= 4 && notify) await notify({ subject: `Link on ${devs.length} devices: ${rec.title}`, heading: "A link is used on many devices", intro: `${who.name || who.email} opened ${rec.title} on ${devs.length} different devices.`, rows: [["Email", who.email || "-"], ["Folder", who.scope || "everything"]] });
     return json(200, { ok: true }, origin);
   }
-  if (who && mode !== "open" && okMail(who.email || "")) {
+  if (who && mode !== "open" && okMail(who.email || "") && String(who.email).toLowerCase() !== "info@stevyvergouwen.com") {   // Stevy's own preview link never asks for a code: the link is made by the app with the admin key
     if (!(who.devs || []).length && dev && !who.needCode) { who.devs = [dev]; try { await env.IG.put("delivtok:" + await sha(tok), JSON.stringify(who), { expirationTtl: Math.max(60, Math.round(((who.exp || Date.now() + 365 * 86400000) - Date.now()) / 1000)) }); } catch { /* ignore */ } }   // the first device to open a fresh link is the recipient's
     else if (!dev || !(who.devs || []).includes(dev)) return json(401, { error: "device", mail: mask(who.email), title: rec.title }, origin);
   }
@@ -367,11 +450,12 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
     } catch { /* never block a download on the watch */ }
   }
   try {
-    if (!action) { if (who) await logAct(env, slug, who, tok, request, "visit"); return json(200, await manifest(env, rec, who && who.scope), origin, { "Cache-Control": "private, max-age=60" }); }
+    if (!action) { await logAct(env, slug, who || ANON, tok || anonTok(request), request, "visit"); const mm = await manifest(env, rec, who && who.scope); mm.guestOk = !!(who && !who.guest && !who.scope && rec.guests !== false && mode !== "open" && !rec.select); mm.guestMax = GUEST_MAX;
+      if (who && who.guest) { mm.guest = true; mm.guestOk = false; mm.comments = false; mm.dropbox = ""; mm.photos = mm.photos.map(p => ({ ...p, high: null, hs: 0 })).filter(p => p.low); mm.videos = []; mm.audio = []; } return json(200, mm, origin, { "Cache-Control": "private, max-age=60" }); }
     const p = url.searchParams.get("p") || "";
     if (action === "thumb") {
       if (!inside(rec, p, who && who.scope, true)) return json(403, { error: "path" }, origin);
-      const isWmCopy = p.toLowerCase().includes("/preview-wm/"), sizes = (((rec.watermark && !rec.released) || rec.select || rec.nodl) && !isWmCopy) ? ["w256h256", "w640h480"] : ["w256h256", "w640h480", "w1024h768", "w2048h1536"]; const size = sizes.includes(url.searchParams.get("s")) ? url.searchParams.get("s") : "w640h480";
+      const isWmCopy = p.toLowerCase().includes("/preview-wm/"), sizes = (((rec.watermark && !rec.released && !rec.event) || rec.select || rec.nodl) && !isWmCopy) ? ["w256h256", "w640h480"] : ["w256h256", "w640h480", "w1024h768", "w2048h1536"]; const size = sizes.includes(url.searchParams.get("s")) ? url.searchParams.get("s") : "w640h480";
       const r = await fetch("https://content.dropboxapi.com/2/files/get_thumbnail_v2", { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ resource: { ".tag": "path", path: p }, format: "jpeg", size, mode: "bestfit" }) } });
       if (!r.ok) return json(502, { error: "thumbnail" }, origin);
       return new Response(r.body, { headers: { "Content-Type": "image/jpeg", "Cache-Control": "private, max-age=86400", ...(origin ? { "Access-Control-Allow-Origin": origin } : {}) } });
@@ -417,21 +501,23 @@ export async function handleDelivery(request, env, url, origin, notify, mailVisi
       }
     }
     if ((action === "file" || action === "zip") && rec.select) return json(403, { error: "selection only" }, origin);
-    if ((action === "file" || action === "zip") && rec.watermark && !rec.released) return json(403, { error: "locked" }, origin);   // portraits and presskits: watermarked previews until Stevy releases the originals
+    if ((action === "file" || action === "zip") && rec.watermark && !rec.released && !rec.event) return json(403, { error: "locked" }, origin);   // portraits and presskits: watermarked previews until Stevy releases the originals
+    if (who && who.guest && (action === "file" || action === "zip") && await capKey(env, "gdl:" + await sha(tok) + ":" + action, action === "zip" ? 6 : 200, 86400)) return json(429, { error: "slow down" }, origin);   // a guest link has its own daily limit
     if (action === "file") {
       if (!inside(rec, p, who && who.scope)) return json(403, { error: "path" }, origin);
+      if (who && who.guest && /\/highres\//i.test(p)) return json(403, { error: "no originals" }, origin);
       if (rec.nodl && isPhotoName(p)) return json(403, { error: "no photo downloads" }, origin);   // photos are view-only when Stevy says so
-      if (who && url.searchParams.get("dl") === "1") await logAct(env, slug, who, tok, request, "file", p.split("/").pop());
+      if (url.searchParams.get("dl") === "1") await logAct(env, slug, who || ANON, tok || anonTok(request), request, "file", p.split("/").pop());
       const ck = "tl:" + await sha(p); let link = await env.IG.get(ck);   // Dropbox links last 4 hours: reuse one for 3, so a clip opens at once the second time
       if (!link) { const j = await rpc(env, "files/get_temporary_link", { path: p }); link = j.link; try { await env.IG.put(ck, link, { expirationTtl: 10800 }); } catch { /* ignore */ } }
       return new Response(null, { status: 302, headers: { Location: link, "Cache-Control": "private, max-age=600", "Referrer-Policy": "no-referrer" } });
     }
     if (action === "zip") {
       const sub = (url.searchParams.get("sub") || "").replace(/[^\p{L}\p{N} _\-|.&\/]/gu, "").split("/").filter(x => x && x !== "." && x !== "..").join("/");
-      if ((!sub && !(who && who.scope)) || hidden("/" + sub)) return json(403, { error: "path" }, origin);
-      if (who) await logAct(env, slug, who, tok, request, "zip", sub || who.scope || "all");
+      if ((!sub && !(who && who.scope)) || hidden("/" + sub) || (who && who.guest && (!sub || /highres/i.test(sub)))) return json(403, { error: "path" }, origin);
+      await logAct(env, slug, who || ANON, tok || anonTok(request), request, "zip", sub || (who && who.scope) || "all");
       const folder = sub ? rec.path + "/" + (who && who.scope ? who.scope + "/" : "") + sub : rec.path + (who && who.scope ? "/" + who.scope : "");
-      try { const inside0 = await listAll(env, folder); if (inside0.some(f => hidden("/" + f.path_lower.slice(rec.path.length + 1)))) return json(403, { error: "path" }, origin); if (rec.nodl && inside0.some(f => isPhotoName(f.name))) return json(403, { error: "no photo downloads" }, origin); } catch { return json(502, { error: "zip" }, origin); }   // never zip a folder that holds uploads, raw footage or stacks
+      try { const inside0 = await listAll(env, folder); if (inside0.some(f => hidden("/" + f.path_lower.slice(rec.path.length + 1)) || (who && who.guest && /\/highres\//i.test(f.path_lower)))) return json(403, { error: "path" }, origin); if (rec.nodl && inside0.some(f => isPhotoName(f.name))) return json(403, { error: "no photo downloads" }, origin); } catch { return json(502, { error: "zip" }, origin); }   // never zip a folder that holds uploads, raw footage or stacks
       const r = await fetch("https://content.dropboxapi.com/2/files/download_zip", { method: "POST", headers: { Authorization: "Bearer " + await dbxToken(env), "Dropbox-API-Arg": JSON.stringify({ path: folder }) } });
       if (!r.ok) return json(502, { error: "zip" }, origin);
       return new Response(r.body, { headers: { "X-Content-Type-Options": "nosniff", "Content-Type": "application/zip", "Content-Disposition": `attachment; filename="${(rec.title || "delivery").replace(/[^A-Za-z0-9 _-]/g, "")}.zip"` } });

@@ -102,6 +102,13 @@ async function visit(env, slug, rec, request, url, notify) {
   if (!who && melden) await env.IG.put("bradan:" + slug + ":" + dag, "1", { expirationTtl: 2 * 86400 });
   if (melden && notify) { try { await notify({ subject: `${who ? name : "Someone"} opened ${rec.title}`, heading: who ? `${name} opened the ${rec.what === "photos" ? "album" : "page"}` : `Someone opened the ${rec.what === "photos" ? "album" : "page"}`, intro: `${who ? name : "Someone with the plain link"} opened "${rec.title}"${rec.client ? " (" + rec.client + ")" : ""}${who ? " for the first time" : ""}.`, rows: [["Album", rec.title], ["Who", who ? name : "plain link" + (e.country ? " · " + e.country : "")], ["Visits", String(e.c)]] }); } catch { /* the page still opens */ } }
 }
+/** Downloads by Brada (the only role that can download): a daily record per album, for the app. */
+async function logDl(env, slug, kind, name, request) {
+  try { const key = `bradad:${slug}:${new Date().toISOString().slice(0, 10)}`; const a = JSON.parse(await env.IG.get(key) || "null") || { files: 0, zips: 0, names: [], countries: [], first: Date.now() };
+    const c = request.cf && request.cf.country; if (c && !a.countries.includes(c)) a.countries.push(c);
+    a.last = Date.now(); if (kind === "zip") a.zips++; else a.files++; if (name && a.names.length < 25) a.names.push((kind === "zip" ? "zip: " : "") + String(name).slice(0, 100));
+    await env.IG.put(key, JSON.stringify(a), { expirationTtl: 400 * 86400 }); } catch { /* never blocks a download */ }
+}
 export async function handleBrada(request, env, url, origin, notify, mailer) {
   const path = url.pathname;
   if (path === "/brada-mail" && request.method === "POST") {   // from the Projecten app (x-key): the album mail, in Brada's look. kind "client" = your album is ready, "brada" = delivered, with the internal view. preview/dry never reach the client.
@@ -142,7 +149,8 @@ export async function handleBrada(request, env, url, origin, notify, mailer) {
     if (!(await adminOk(env, request))) return json(401, { ok: false }, origin);
     const slug = url.searchParams.get("slug") || ""; if (!SLUG.test(slug)) return json(400, { ok: false }, origin);
     let v = {}; try { v = JSON.parse(await env.IG.get("bradav:" + slug) || "{}") || {}; } catch { v = {}; }
-    return json(200, { ok: true, visits: Object.entries(v).map(([k, e]) => ({ who: k === "anon" ? "" : e.n, anon: k === "anon", count: e.c, first: e.first, last: e.last, country: e.country || "" })) }, origin);
+    const downloads = []; try { const l = await env.IG.list({ prefix: "bradad:" + slug + ":" }); for (const k of l.keys) { const d = JSON.parse(await env.IG.get(k.name) || "null"); if (d) downloads.push({ day: k.name.slice(("bradad:" + slug + ":").length), ...d }); } } catch { /* none */ }
+    return json(200, { ok: true, downloads, visits: Object.entries(v).map(([k, e]) => ({ who: k === "anon" ? "" : e.n, anon: k === "anon", count: e.c, first: e.first, last: e.last, country: e.country || "" })) }, origin);
   }
   const m = path.match(/^\/brada\/([a-z0-9]{12,40})\/(manifest|img|stream|file|zip)$/);
   if (!m) return null;
@@ -162,6 +170,7 @@ export async function handleBrada(request, env, url, origin, notify, mailer) {
     if (r !== "brada") return json(403, { error: "no" }, origin);
     if (!rec.bpath) return json(404, { error: "zip only for albums found by folder" }, origin);
     const sub = url.searchParams.get("sub") || ""; if (sub && !(inside(sub) && sub.split("/").length <= 4)) return json(400, { error: "path" }, origin);
+    await logDl(env, m[1], "zip", sub || "everything", request);
     let res; try { res = await fetch("https://content.dropboxapi.com/2/files/download_zip", { method: "POST", headers: { ...(await bHead(env)), "Dropbox-API-Arg": JSON.stringify({ path: (await bFolder(env, m[1], rec)) + sub }) } }); } catch (e) { return json(502, { error: "dropbox" }, origin); }
     if (!res.ok) { const t = (await res.text().catch(() => "")).slice(0, 160); return json(res.status === 409 ? 413 : 502, { error: "zip", detail: t }, origin); }
     const nm = ((rec.title || "album") + (sub ? " - " + sub.split("/").filter(Boolean).slice(-1)[0] : "")).replace(/[\\/:*?"<>|]+/g, " ").trim() + ".zip";
@@ -197,6 +206,7 @@ export async function handleBrada(request, env, url, origin, notify, mailer) {
   const type = { mp4: "video/mp4", m4v: "video/mp4", mov: "video/quicktime", jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp" }[ext.toLowerCase()] || "application/octet-stream";
   const head = { "Content-Type": type, "Cache-Control": "private, max-age=3600", "Accept-Ranges": "bytes", "Access-Control-Allow-Origin": "*", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" };
   for (const k of ["Content-Length", "Content-Range"]) if (res.headers.get(k)) head[k] = res.headers.get(k);
+  if (m[2] === "file") await logDl(env, m[1], "file", name, request);
   if (m[2] === "file") head["Content-Disposition"] = `attachment; filename*=UTF-8''${encodeURIComponent(name)}`;
   return new Response(res.body, { status: res.status, headers: head });
 }

@@ -467,6 +467,13 @@ figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 .vcard .m2 .t,.vcard .m2 .s,.vcard .m2 a,.vcard .m2 button{line-height:1!important;margin:0!important;align-self:center}
 .vcard .m2 .s{display:inline-flex;align-items:center;height:28px;white-space:nowrap}
 .vcard .m2 a,.vcard .m2 button{height:28px;display:inline-flex!important;align-items:center;padding-top:0!important;padding-bottom:0!important}
+
+/* a playing clip: the time code sits top right, the title row and the player's own time display step aside */
+.vth .tcr{position:absolute;right:12px;top:12px;z-index:4;font:500 11px "Roboto Mono",ui-monospace,monospace;letter-spacing:.08em;color:#ebe7e0;background:rgba(8,8,10,.55);border:1px solid rgba(235,231,224,.3);padding:5px 11px;border-radius:999px;display:none;pointer-events:none}
+.vth.playing .tcr{display:block}
+.vcard:has(.vth.playing) .m2{opacity:0;pointer-events:none;transition:opacity .2s}
+.vth.playing .bd{display:none}
+.vth video.pv::-webkit-media-controls-current-time-display,.vth video.pv::-webkit-media-controls-time-remaining-display{display:none}
 </style>
 </head>
 <body>
@@ -591,6 +598,8 @@ function wireVideo() {
   document.querySelectorAll(".vid").forEach(el => {
     const v = M.videos[el.dataset.v], th = el.querySelector(".vth"), f = el.querySelector("form"), cl = el.querySelector(".cl"); let vid = th.querySelector("video.pv");
     io.observe(th);
+    const tcr = document.createElement("span"); tcr.className = "tcr"; th.appendChild(tcr); const fmt = t => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
+    vid.addEventListener("timeupdate", () => { if (th.classList.contains("playing")) tcr.textContent = fmt(vid.currentTime) + " / " + fmt(vid.duration); });
     const play = () => { if (th.classList.contains("playing")) return; th.classList.add("playing", "ready"); if (!vid.src) vid.src = stream(v.path); vid.muted = false; vid.controls = true; vid.currentTime = 0; vid.play().catch(() => {}); th.style.cursor = "default"; };
     th.addEventListener("click", play);
     if (matchMedia("(hover:hover)").matches) { th.addEventListener("mouseenter", () => { if (th.classList.contains("playing") || !th.classList.contains("ready")) return; vid.muted = true; vid.currentTime = 0.6; vid.play().catch(() => {}); }); th.addEventListener("mouseleave", () => { if (th.classList.contains("playing")) return; vid.pause(); vid.currentTime = 0.6; }); }
@@ -1232,7 +1241,8 @@ async function sendSel() {
 $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").onclick = () => send("changes");
 (async () => {
   if (!slug && !demo) { const a = albums(); app.innerHTML = `<div class="gate"><div style="width:min(460px,100%)"><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem;margin:10px 0 6px">${a.length ? "Your albums" : "Open your link"}</h1><p class="note" style="margin:0 auto">${a.length ? "Opened on this device. Tap to go back in." : "Use the link from your mail or message. Albums you open are listed here afterwards."}</p><div class="mine">${a.map(x => `<a href="/d/?c=${esc(x.slug)}"><b>${esc(x.title || "Delivery")}</b><span>${esc(x.client)}</span></a>`).join("")}</div></div></div>`; return; }
-  try { M = await load(kk()); render(); } catch (x) { if (!x.gate) console.error("delivery page:", x); x.gate ? gate(x.gate) : (app.innerHTML = `<div class="gate"><div><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem">${esc(x.msg || "Something went wrong.")}</h1></div></div>`); }
+  try { M = await load(kk()); if (M && Array.isArray(M.videos)) { const nat = new Intl.Collator("en", { numeric: true, sensitivity: "base" }); M.videos.sort((x, y) => nat.compare(String(x.group || ""), String(y.group || "")) || nat.compare(String(x.name || ""), String(y.name || ""))); }   // Clip 2 before Clip 11
+    render(); } catch (x) { if (!x.gate) console.error("delivery page:", x); x.gate ? gate(x.gate) : (app.innerHTML = `<div class="gate"><div><div class="eyebrow">Stevy Vergouwen</div><h1 style="font-size:2rem">${esc(x.msg || "Something went wrong.")}</h1></div></div>`); }
 })();
 })();
 </script>

@@ -664,7 +664,7 @@ function heroVideo() {
     const go = async () => {
       clearTimeout(timer); const v = vs[cur], other = vs[1 - cur];
       if (!v.__clip && !(await load(v, other.__me))) return;
-      const short = (v.duration || 0) <= 14; hero.classList.toggle("cuts", short);
+      const short = (v.duration || 0) <= 14; hero.classList.add("cuts");   // every video clip is a hard cut, no fade
       v.currentTime = short ? 0 : 0.5; v.play().catch(() => {}); v.classList.add("on"); hero.classList.add("hasvid"); other.classList.remove("on");
       cur = 1 - cur;
       const onScreen = v.__me; setTimeout(async () => { free(other); other.__me = null; if (list.length > 1) await load(other, onScreen); }, short ? 250 : 1800);   // the clip that went off frees its decoder, then the following one loads into it

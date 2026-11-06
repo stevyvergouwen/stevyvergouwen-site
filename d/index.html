@@ -442,6 +442,31 @@ figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 .sec .view{top:calc(var(--vt,116px) + 34px)!important}
 @media (max-width:760px){.tabs{top:calc(70px + env(safe-area-inset-top,0px))!important}.sec .view{top:calc(var(--vt,116px) + 16px)!important}}
 .vcard[data-fmt="4:3"] .vth video.pv,.vcard[data-fmt="VHS"] .vth video.pv{scale:1.34}   /* VHS: 4:3 sits inside a 16:9 file, the black side bars are zoomed away */
+
+/* PILLS: labels, small buttons and the view switch are round, like everywhere on the website; photos and clip cards stay square */
+.vth .bd i,.vcard .m2 a,.vcard .m2 button,.vgrid[data-m="list"] .vcard .m2 a,figure .tag,.tag,.zr,.zs .btn{border-radius:999px!important}
+.vth .bd i{padding:4px 11px!important}
+.vcard .m2 a,.vcard .m2 button{padding:7px 15px!important}
+.vm{border-radius:999px!important;padding:3px!important;gap:2px!important;overflow:hidden}
+.vm button{border-radius:999px!important;padding:7px 14px!important}
+.vm button.on{border-radius:999px!important}
+.btn,.pill,button.pill,.flt button,.tabs button,.chip,.bar .dlb,.bar .rvl,.bar .btn{border-radius:999px!important}
+.tabs .tg{border-radius:50%!important}
+
+/* LENS: the S / M / L / LIST switch is a glass pill with a sliding lens, like the Foto / Video switch on the website */
+.vm{position:relative;display:inline-flex;padding:5px!important;gap:0!important;border:1px solid rgba(232,230,225,.22)!important;background:rgba(8,8,10,.35)!important;border-radius:999px!important;overflow:visible!important}
+.vm button{position:relative;z-index:2;background:none!important;border:0!important;box-shadow:none!important;color:var(--paper)!important;padding:11px 20px!important;border-radius:999px!important;transition:color .35s}
+.vm button.on{background:none!important;color:var(--paper)!important}
+.vm .lens{position:absolute;z-index:1;left:0;top:5px;bottom:5px;width:0;border-radius:999px;pointer-events:none;background:rgba(232,230,225,.16);box-shadow:inset 0 0 0 1px rgba(232,230,225,.5),inset 0 8px 14px -8px rgba(255,255,255,.55);-webkit-backdrop-filter:blur(3px) brightness(1.3) saturate(1.5);backdrop-filter:blur(3px) brightness(1.3) saturate(1.5);transition:transform .55s cubic-bezier(.16,1,.3,1),width .55s cubic-bezier(.16,1,.3,1)}
+:root[data-theme="light"] .vm{background:rgba(244,241,236,.5)!important;border-color:rgba(20,20,20,.25)!important}
+:root[data-theme="light"] .vm .lens{background:rgba(20,20,20,.08);box-shadow:inset 0 0 0 1px rgba(20,20,20,.35),inset 0 8px 14px -8px rgba(255,255,255,.7)}
+@media (prefers-reduced-motion:reduce){.vm .lens{transition:none}}
+
+/* card footer: title, file size and the download button on one line, centred on each other */
+.vcard .m2{align-items:center!important;gap:12px!important}
+.vcard .m2 .t,.vcard .m2 .s,.vcard .m2 a,.vcard .m2 button{line-height:1!important;margin:0!important;align-self:center}
+.vcard .m2 .s{display:inline-flex;align-items:center;height:28px;white-space:nowrap}
+.vcard .m2 a,.vcard .m2 button{height:28px;display:inline-flex!important;align-items:center;padding-top:0!important;padding-bottom:0!important}
 </style>
 </head>
 <body>
@@ -1311,6 +1336,18 @@ $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").oncli
       const f = el.requestFullscreen || el.webkitRequestFullscreen; if (f) { const r = f.call(el); if (r && r.catch) r.catch(() => {}); } else if (v && v.webkitEnterFullscreen) v.webkitEnterFullscreen();
     }, 120);
   }, true);
+})();
+</script>
+<script>
+/* the lens follows the chosen button of every S / M / L / LIST switch */
+(() => {
+  const place = bar => { const l = bar.querySelector(".lens"), b = bar.querySelector("button.on"); if (!l || !b) return; l.style.width = b.offsetWidth + "px"; l.style.transform = "translateX(" + b.offsetLeft + "px)"; };
+  const wire = bar => { if (bar.__lens) { place(bar); return; } bar.__lens = 1; const l = document.createElement("i"); l.className = "lens"; bar.insertBefore(l, bar.firstChild); place(bar);
+    bar.addEventListener("click", () => requestAnimationFrame(() => place(bar))); new MutationObserver(() => place(bar)).observe(bar, { attributes: true, subtree: true, attributeFilter: ["class"] }); };
+  const scan = () => document.querySelectorAll(".vm").forEach(wire);
+  new MutationObserver(scan).observe(document.getElementById("app") || document.body, { childList: true, subtree: true }); scan();
+  addEventListener("resize", () => document.querySelectorAll(".vm").forEach(place));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => document.querySelectorAll(".vm").forEach(place));
 })();
 </script>
 </body>

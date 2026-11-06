@@ -436,6 +436,12 @@ figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 .hero .bg{opacity:.7!important}
 .hero::after{background:linear-gradient(to top,var(--ink) 4%,rgba(8,8,10,.5) 40%,transparent 78%)!important}
 .hero.cuts .hv{transition:none!important}
+
+/* the filters sit below the taller top bar, with air between */
+.tabs{top:calc(88px + env(safe-area-inset-top,0px))!important;padding-top:14px!important}
+.sec .view{top:calc(var(--vt,116px) + 34px)!important}
+@media (max-width:760px){.tabs{top:calc(70px + env(safe-area-inset-top,0px))!important}.sec .view{top:calc(var(--vt,116px) + 16px)!important}}
+.vcard[data-fmt="4:3"] .vth video.pv{scale:1.34}   /* VHS: 4:3 sits inside a 16:9 file, the black side bars are zoomed away */
 </style>
 </head>
 <body>
@@ -643,17 +649,27 @@ function heroVideo() {
       v.addEventListener("canplaythrough", () => res(true), { once: true }); v.addEventListener("canplay", () => setTimeout(() => res(true), 1500), { once: true }); v.src = src;
     });
     const free = v => { v.pause(); v.onended = null; const old = v.src; v.removeAttribute("src"); v.load(); v.__clip = null; if (old && old.startsWith("blob:")) { URL.revokeObjectURL(old); blobs.delete(old); } };
-    const load = async v => { for (let t = 0; t <= list.length; t++) { const clip = list[n++ % list.length]; if (await show(v, clip)) { v.__clip = clip; return clip; } } return null; };
+    // the first frame as a tiny grid of light and dark: two clips of the same artist that open on the same camera look the same, and a cut between them jumps
+    const sigOf = v => { try { const c = document.createElement("canvas"); c.width = 16; c.height = 9; const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(v, 0, 0, 16, 9); const d = x.getImageData(0, 0, 16, 9).data, o = []; for (let i = 0; i < d.length; i += 4) o.push(d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11); const m = o.reduce((p, q) => p + q, 0) / o.length; return o.map(l => l - m); } catch (e) { return null; } };
+    const apart = (p, q) => { if (!p || !q) return 99; let t = 0; for (let i = 0; i < p.length; i++) t += Math.abs(p[i] - q[i]); return t / p.length; };
+    const same = (a, b) => a && b && a.artist === b.artist && apart(a.sig, b.sig) < 14;
+    const load = async (v, from) => { let best = null;
+      for (let t = 0; t <= list.length; t++) { const clip = list[n++ % list.length]; if (!(await show(v, clip))) continue;
+        try { v.currentTime = 0; } catch (e) { /* streams */ }
+        const me = { artist: vinfo(clip).artist, sig: sigOf(v) };
+        if (!from || !same(me, from)) { v.__clip = clip; v.__me = me; return clip; }   // never to the same angle of the same artist; another artist may start on the same angle
+        if (!best || apart(me.sig, from.sig) > best.d) best = { clip, me, d: apart(me.sig, from.sig) }; }
+      if (best) { const c = best.clip; await show(v, c); v.__clip = c; v.__me = best.me; return c; } return null; };
     // like an edit: short clips play once and cut to the next one (it is already loaded and waiting); a long clip (a multicam set) shows a stretch of it and fades over
     const go = async () => {
       clearTimeout(timer); const v = vs[cur], other = vs[1 - cur];
-      if (!v.__clip && !(await load(v))) return;
+      if (!v.__clip && !(await load(v, other.__me))) return;
       const short = (v.duration || 0) <= 14; hero.classList.toggle("cuts", short);
       v.currentTime = short ? 0 : 0.5; v.play().catch(() => {}); v.classList.add("on"); hero.classList.add("hasvid"); other.classList.remove("on");
       cur = 1 - cur;
-      setTimeout(async () => { free(other); if (list.length > 1) await load(other); }, short ? 250 : 1800);   // the clip that went off frees its decoder, then the following one loads into it
+      const onScreen = v.__me; setTimeout(async () => { free(other); other.__me = null; if (list.length > 1) await load(other, onScreen); }, short ? 250 : 1800);   // the clip that went off frees its decoder, then the following one loads into it
       if (list.length > 1) { let moved = false; const adv = () => { if (moved) return; moved = true; clearTimeout(timer); go(); };
-        if (short) { v.onended = adv; timer = setTimeout(adv, (v.duration || 3) * 1000 + 2500); } else timer = setTimeout(adv, 9000); }
+        if (short) { v.onended = adv; timer = setTimeout(adv, (v.duration || 3) * 1000 + 2500); } else timer = setTimeout(adv, 6000); }
       else { v.loop = true; }
       // a clip that stalls or freezes for 2.5 s is skipped (or restarted when it is the only one)
       let last = v.currentTime, still = 0; const wd = setInterval(() => { if (!v.isConnected || !v.classList.contains("on")) return clearInterval(wd); if (v.paused && !v.ended) v.play().catch(() => {}); if (Math.abs(v.currentTime - last) < .05 && !v.ended) still++; else still = 0; last = v.currentTime; if (still >= 3) { clearInterval(wd); if (list.length > 1) { clearTimeout(timer); go(); } else { v.currentTime = 0.5; v.play().catch(() => {}); } } }, 900);

@@ -435,6 +435,7 @@ figure.apin,.ph.apin,.vid.apin{animation-name:apinf}
 .hero .sub,.hero .loc,.hero .sub span{color:#d9d6cf!important}
 .hero .bg{opacity:.7!important}
 .hero::after{background:linear-gradient(to top,var(--ink) 4%,rgba(8,8,10,.5) 40%,transparent 78%)!important}
+.hero.cuts .hv{transition:opacity .1s linear!important}
 </style>
 </head>
 <body>
@@ -635,22 +636,29 @@ function heroVideo() {
     const blobs = new Set();
     // a small clip is fetched whole first and played from memory: no range requests, no waiting for the end of a .mov, so it cannot stall; a big one streams as before
     const show = (v, clip) => new Promise(async res => {
-      v.loop = true; v.addEventListener("error", () => res(false), { once: true });
+      v.loop = false; v.onended = null; v.addEventListener("error", () => res(false), { once: true });
       let src = stream(clip.path) + "#t=0.5";
       if (!demo && clip.size && clip.size <= 70e6) { try { const r = await fetch(stream(clip.path)); if (r.ok) { const u = URL.createObjectURL(await r.blob()); blobs.add(u); src = u; } } catch (e) { /* streams instead */ } }
       { const f = vinfo(clip).fmt; v.style.scale = f === "4:3" ? "1.34" : ""; v.style.objectPosition = (f === "9:16" || f === "4:5") && !phone ? "50% 30%" : ""; }   // VHS sits in a 16:9 file with bars: zoomed away; a standing clip is framed on the upper part
       v.addEventListener("canplaythrough", () => res(true), { once: true }); v.addEventListener("canplay", () => setTimeout(() => res(true), 1500), { once: true }); v.src = src;
     });
-    const next = async () => {
-      const v = vs[cur], other = vs[1 - cur], clip = list[n % list.length]; n++;
-      const ok = await show(v, clip); if (!ok) { if (n < list.length * 2) return next(); return; }
-      v.currentTime = 0.5; v.play().catch(() => {}); v.classList.add("on"); hero.classList.add("hasvid"); other.classList.remove("on");
-      setTimeout(() => { if (!other.classList.contains("on")) { other.pause(); const old = other.src; other.removeAttribute("src"); other.load(); if (old && old.startsWith("blob:")) { URL.revokeObjectURL(old); blobs.delete(old); } } }, 1800);   // the faded-out clip frees its decoder
-      cur = 1 - cur; if (list.length > 1) { const dur = Math.max(1500, (v.duration || 3) * 1000); timer = setTimeout(next, Math.min(10000, Math.max(5000, Math.ceil(7000 / dur) * dur))); }   // a whole number of loops
-      // a clip that stalls or freezes for 2.5 s is swapped for the next one (or restarted when it is the only one)
-      let last = v.currentTime, still = 0; const wd = setInterval(() => { if (!v.isConnected || !v.classList.contains("on")) return clearInterval(wd); if (v.paused && !v.ended) v.play().catch(() => {}); if (Math.abs(v.currentTime - last) < .05) still++; else still = 0; last = v.currentTime; if (still >= 3) { clearInterval(wd); if (list.length > 1) { clearTimeout(timer); next(); } else { v.currentTime = 0.5; v.play().catch(() => {}); } } }, 900);
+    const free = v => { v.pause(); v.onended = null; const old = v.src; v.removeAttribute("src"); v.load(); v.__clip = null; if (old && old.startsWith("blob:")) { URL.revokeObjectURL(old); blobs.delete(old); } };
+    const load = async v => { for (let t = 0; t <= list.length; t++) { const clip = list[n++ % list.length]; if (await show(v, clip)) { v.__clip = clip; return clip; } } return null; };
+    // like an edit: short clips play once and cut to the next one (it is already loaded and waiting); a long clip (a multicam set) shows a stretch of it and fades over
+    const go = async () => {
+      clearTimeout(timer); const v = vs[cur], other = vs[1 - cur];
+      if (!v.__clip && !(await load(v))) return;
+      const short = (v.duration || 0) <= 14; hero.classList.toggle("cuts", short);
+      v.currentTime = short ? 0 : 0.5; v.play().catch(() => {}); v.classList.add("on"); hero.classList.add("hasvid"); other.classList.remove("on");
+      cur = 1 - cur;
+      setTimeout(async () => { free(other); if (list.length > 1) await load(other); }, short ? 250 : 1800);   // the clip that went off frees its decoder, then the following one loads into it
+      if (list.length > 1) { let moved = false; const adv = () => { if (moved) return; moved = true; clearTimeout(timer); go(); };
+        if (short) { v.onended = adv; timer = setTimeout(adv, (v.duration || 3) * 1000 + 2500); } else timer = setTimeout(adv, 9000); }
+      else { v.loop = true; }
+      // a clip that stalls or freezes for 2.5 s is skipped (or restarted when it is the only one)
+      let last = v.currentTime, still = 0; const wd = setInterval(() => { if (!v.isConnected || !v.classList.contains("on")) return clearInterval(wd); if (v.paused && !v.ended) v.play().catch(() => {}); if (Math.abs(v.currentTime - last) < .05 && !v.ended) still++; else still = 0; last = v.currentTime; if (still >= 3) { clearInterval(wd); if (list.length > 1) { clearTimeout(timer); go(); } else { v.currentTime = 0.5; v.play().catch(() => {}); } } }, 900);
     };
-    setTimeout(next, 600);
+    setTimeout(go, 600);
   } catch (e) { /* the photo stays */ }
 }
 

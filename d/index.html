@@ -1274,5 +1274,20 @@ $("#sa").onclick = () => M.select ? sendSel() : send("approved"); $("#sc").oncli
   addEventListener("scroll", () => { const c = document.querySelector(".scue"); if (c) c.classList.toggle("gone", scrollY > 60); }, { passive: true });
 })();
 </script>
+<script>
+/* double-click makes a video or the photo viewer fullscreen (and back). Where the browser already does it on its own, nothing is done twice. */
+(() => {
+  document.addEventListener("dblclick", e => {
+    const v = e.target.closest && e.target.closest("video:not(.hv)"), lb = e.target.closest && e.target.closest(".lb, #lb");
+    const el = v || lb; if (!el) return;
+    const was = !!document.fullscreenElement;
+    setTimeout(() => {
+      if (!!document.fullscreenElement !== was) return;   // the browser handled it
+      if (was) { (document.exitFullscreen || document.webkitExitFullscreen || (() => {})).call(document); return; }
+      const f = el.requestFullscreen || el.webkitRequestFullscreen; if (f) { const r = f.call(el); if (r && r.catch) r.catch(() => {}); } else if (v && v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+    }, 120);
+  }, true);
+})();
+</script>
 </body>
 </html>

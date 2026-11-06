@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#08080a">
 <link rel="preconnect" href="https://aanvraag-stevyvergouwen.polished-shape-ff19.workers.dev">
-<title>Album | Stevy Vergouwen</title>
+<title>Stevy Vergouwen × Brada</title>
 <link rel="stylesheet" href="/fonts.css">
 <style>
 :root{--ink:#08080a;--ink2:#111114;--paper:#ebe7e0;--dim:#a09e99;--faint:#2c2b29;--line:rgba(235,231,224,.18);--pad:clamp(16px,3.4vw,48px);--sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--mono:"Roboto Mono",ui-monospace,Menlo,monospace}
@@ -353,17 +353,50 @@ function render(m) {
     const first = setInterval(() => { if (settled && sl.some(x => x.dataset.ok && x.isConnected)) { clearInterval(first); show(); if (!reduce && sl.filter(x => x.dataset.ok && x.isConnected).length > 1) setInterval(show, 7000); } }, 200);
     if (!reduce && matchMedia("(pointer: fine)").matches) $("header").addEventListener("pointermove", e => { const r = e.currentTarget.getBoundingClientRect(); box.style.transform = `translate(${((e.clientX - r.left) / r.width - .5) * -22}px, ${((e.clientY - r.top) / r.height - .5) * -14}px)`; });
   } else if (V.length && !reduce) {
-    const phoneV = matchMedia("(max-width: 760px)").matches, arOf = v => { const m = /(\d{1,2})X(\d{1,2})/i.exec(String(v.p || "").split("/").pop()); return m ? +m[1] / +m[2] : 0; };
+    const phoneV = matchMedia("(max-width: 760px)").matches, hdr = $("header");
+    const arOf = v => { const m = /(\d{1,2})X(\d{1,2})/i.exec(String(v.p || "").split("/").pop()); return m ? +m[1] / +m[2] : 0; };
+    const who = v => String(v.p || "").split("/").pop().split(/[-_ ]/)[0].toUpperCase();   // the artist is the first word of the clip's name
     // always wide clips as the banner; standing ones only when there are none (a phone prefers standing ones)
     const rk = v => { const a = arOf(v); return phoneV ? (a && a < .9 ? 0 : 1) : (a >= 1.25 ? 0 : a ? 2 : 1); };
-    const list = V.filter(v => v.s && v.s < 400e6).sort((a, b) => rk(a) - rk(b) || a.s - b.s).slice(0, 4);
-    if (list.length) { const hs = [0, 1].map(() => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "metadata"; v.disableRemotePlayback = true; $("header").insertBefore(v, $(".grain")); return v; }); let n = 0, c = 0;
-      const next = () => { const v = hs[c], o = hs[1 - c], clip = list[n % list.length]; n++; v.loop = false; v.onended = null; v.onloadeddata = () => { $("header").classList.add("cuts"); { const a = arOf(clip); v.style.scale = a >= 1.25 && a < 1.5 ? "1.34" : ""; v.style.objectPosition = a && a < .9 && !phoneV ? "50% 30%" : ""; } v.currentTime = 0.5; v.play().catch(() => {}); v.classList.remove("on"); void v.offsetWidth; v.classList.add("on"); o.classList.remove("on"); c = 1 - c; if (list.length > 1) { if ((v.duration || 0) <= 14) { v.currentTime = 0; v.onended = next; setTimeout(next, (v.duration || 3) * 1000 + 2500); } else setTimeout(next, 9000); } else v.loop = true; }; v.onerror = () => { if (n < list.length * 2) next(); }; v.src = `${base}/stream?p=${enc(clip.p)}`; };
-      next(); }
+    const list = V.filter(v => v.s && v.s < 400e6).sort((a, b) => rk(a) - rk(b) || a.s - b.s).slice(0, 14);
+    if (list.length) {
+      const vs = [0, 1].map(() => { const v = document.createElement("video"); v.className = "hv"; v.muted = true; v.playsInline = true; v.preload = "metadata"; v.disableRemotePlayback = true; hdr.insertBefore(v, $(".grain")); return v; });
+      let cur = 0, n = 0, timer = null; const blobs = new Set();
+      const show = (v, clip) => new Promise(async res => {
+        v.loop = false; v.onended = null; v.addEventListener("error", () => res(false), { once: true });
+        let src = `${base}/stream?p=${enc(clip.p)}`;
+        if (clip.s <= 70e6) { try { const r = await fetch(src); if (r.ok) { const u = URL.createObjectURL(await r.blob()); blobs.add(u); src = u; } } catch (e) { /* streams instead */ } }   // a small clip is played from memory: it cannot stall
+        { const a = arOf(clip); v.style.scale = a >= 1.25 && a < 1.5 ? "1.34" : ""; v.style.objectPosition = a && a < .9 && !phoneV ? "50% 30%" : ""; }
+        v.addEventListener("canplaythrough", () => res(true), { once: true }); v.addEventListener("canplay", () => setTimeout(() => res(true), 1500), { once: true }); v.src = src;
+      });
+      const free = v => { v.pause(); v.onended = null; const old = v.src; v.removeAttribute("src"); v.load(); v.__clip = null; if (old && old.startsWith("blob:")) { URL.revokeObjectURL(old); blobs.delete(old); } };
+      // never cut to the same camera angle of the same artist: the first frames are compared; another artist may start on the same angle
+      const sigOf = v => { try { const c = document.createElement("canvas"); c.width = 16; c.height = 9; const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(v, 0, 0, 16, 9); const d = x.getImageData(0, 0, 16, 9).data, o = []; for (let i = 0; i < d.length; i += 4) o.push(d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11); const m = o.reduce((p, q) => p + q, 0) / o.length; return o.map(l => l - m); } catch (e) { return null; } };
+      const apart = (p, q) => { if (!p || !q) return 99; let t = 0; for (let i = 0; i < p.length; i++) t += Math.abs(p[i] - q[i]); return t / p.length; };
+      const same = (a, b) => a && b && a.artist === b.artist && apart(a.sig, b.sig) < 14;
+      const load = async (v, from) => { let best = null;
+        for (let t = 0; t <= list.length; t++) { const clip = list[n++ % list.length]; if (!(await show(v, clip))) continue;
+          try { v.currentTime = 0; } catch (e) { /* streams */ }
+          const me = { artist: who(clip), sig: sigOf(v) };
+          if (!from || !same(me, from)) { v.__clip = clip; v.__me = me; return clip; }
+          if (!best || apart(me.sig, from.sig) > best.d) best = { clip, me, d: apart(me.sig, from.sig) }; }
+        if (best) { await show(v, best.clip); v.__clip = best.clip; v.__me = best.me; return best.clip; } return null; };
+      const go = async () => {
+        clearTimeout(timer); const v = vs[cur], other = vs[1 - cur];
+        if (!v.__clip && !(await load(v, other.__me))) return;
+        const short = (v.duration || 0) <= 14; hdr.classList.add("cuts");   // hard cuts, no fade
+        v.currentTime = short ? 0 : 0.5; v.play().catch(() => {}); v.classList.add("on"); other.classList.remove("on"); cur = 1 - cur;
+        const onScreen = v.__me; setTimeout(async () => { free(other); other.__me = null; if (list.length > 1) await load(other, onScreen); }, 250);
+        if (list.length > 1) { let moved = false; const adv = () => { if (moved) return; moved = true; clearTimeout(timer); go(); };
+          if (short) { v.onended = adv; timer = setTimeout(adv, (v.duration || 3) * 1000 + 2500); } else timer = setTimeout(adv, 6000); } else v.loop = true;
+        let last = v.currentTime, still = 0; const wd = setInterval(() => { if (!v.isConnected || !v.classList.contains("on")) return clearInterval(wd); if (v.paused && !v.ended) v.play().catch(() => {}); if (Math.abs(v.currentTime - last) < .05 && !v.ended) still++; else still = 0; last = v.currentTime; if (still >= 3) { clearInterval(wd); if (list.length > 1) { clearTimeout(timer); go(); } else { v.currentTime = 0.5; v.play().catch(() => {}); } } }, 900);
+      };
+      setTimeout(go, 400);
+    }
   }
 }
 if (!slug) fail("This link is not complete", "Ask Stevy for a new link.");
-else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(render).catch(s => s === 404 ? fail("This album was not found", "Check the link or ask Stevy for a new one.") : fail("The album could not be loaded", "Try again in a moment."));
+else fetch(`${base}/manifest?${new URLSearchParams({ k: K, t: T })}`).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(render).catch(s => s === 404 ? fail("This page was not found", "Check the link or ask Stevy for a new one.") : fail("The page could not be loaded", "Try again in a moment."));
 </script>
 <script>
 /* every part of the page eases in one after the other, a soft rise out of a blur, like in the Projecten app */

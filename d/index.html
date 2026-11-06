@@ -635,7 +635,7 @@ function heroVideo() {
     const blobs = new Set();
     // a small clip is fetched whole first and played from memory: no range requests, no waiting for the end of a .mov, so it cannot stall; a big one streams as before
     const show = (v, clip) => new Promise(async res => {
-      v.loop = list.length === 1; v.addEventListener("error", () => res(false), { once: true });
+      v.loop = true; v.addEventListener("error", () => res(false), { once: true });
       let src = stream(clip.path) + "#t=0.5";
       if (!demo && clip.size && clip.size <= 70e6) { try { const r = await fetch(stream(clip.path)); if (r.ok) { const u = URL.createObjectURL(await r.blob()); blobs.add(u); src = u; } } catch (e) { /* streams instead */ } }
       { const f = vinfo(clip).fmt; v.style.scale = f === "4:3" ? "1.34" : ""; v.style.objectPosition = (f === "9:16" || f === "4:5") && !phone ? "50% 30%" : ""; }   // VHS sits in a 16:9 file with bars: zoomed away; a standing clip is framed on the upper part
@@ -646,7 +646,7 @@ function heroVideo() {
       const ok = await show(v, clip); if (!ok) { if (n < list.length * 2) return next(); return; }
       v.currentTime = 0.5; v.play().catch(() => {}); v.classList.add("on"); hero.classList.add("hasvid"); other.classList.remove("on");
       setTimeout(() => { if (!other.classList.contains("on")) { other.pause(); const old = other.src; other.removeAttribute("src"); other.load(); if (old && old.startsWith("blob:")) { URL.revokeObjectURL(old); blobs.delete(old); } } }, 1800);   // the faded-out clip frees its decoder
-      cur = 1 - cur; if (list.length > 1) timer = setTimeout(next, 9000);
+      cur = 1 - cur; if (list.length > 1) { const dur = Math.max(1500, (v.duration || 3) * 1000); timer = setTimeout(next, Math.min(10000, Math.max(5000, Math.ceil(7000 / dur) * dur))); }   // a whole number of loops
       // a clip that stalls or freezes for 2.5 s is swapped for the next one (or restarted when it is the only one)
       let last = v.currentTime, still = 0; const wd = setInterval(() => { if (!v.isConnected || !v.classList.contains("on")) return clearInterval(wd); if (v.paused && !v.ended) v.play().catch(() => {}); if (Math.abs(v.currentTime - last) < .05) still++; else still = 0; last = v.currentTime; if (still >= 3) { clearInterval(wd); if (list.length > 1) { clearTimeout(timer); next(); } else { v.currentTime = 0.5; v.play().catch(() => {}); } } }, 900);
     };
